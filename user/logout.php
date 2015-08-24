@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class login extends controller
+class logout extends controller
 {
     public function filters()
     {
@@ -13,14 +13,13 @@ class login extends controller
                 'checkPrivilege' => false,
             ),
         );
-    
     }
     
     public function action()
     {
-        $smartyObj = $this->getSmartyObj();
-        $smartyObj->display("user/login.html");
+        $SsoObj = new Sso();
+        $SsoObj->logout();
+        $this->redirect("/user/login.php");
     }
 }
-new login();
-?>
+new logout();
