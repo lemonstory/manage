@@ -10,7 +10,7 @@ abstract class controller
         	header("HTTP/1.0 404 Not Found");
         	exit;
         }
-        include dirname(__FILE__)."/config/zh_language.php";
+        //include dirname(__FILE__)."/config/zh_language.php";
 		$this->checkFilters();
 		$this->action();
 	}

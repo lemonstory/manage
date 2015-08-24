@@ -1,0 +1,42 @@
+{include file="include/header.html"}
+
+<div class="user_list">
+    <h2>最新主题</h2>
+    <form method="post" action="/privilege/useradd.php" id="searchForm">
+    <div class="list_t">
+        <div class="chose">
+            <input class="find" type="text" name="uid" id="action" value="管理员uid" />&nbsp;&nbsp;&nbsp;
+            <input class="find" type="text" name="name" id="desc" value="真实姓名" />&nbsp;&nbsp;&nbsp;
+            <input class="btn" type="submit" name="submit" value="添加管理员" style="float:none;" />
+        </div>
+    </div>
+    </form>
+</div>
+
+<table class="table">
+    <tr>
+		<th width="20%">管理员uid</th>
+        <th width="20%">管理员昵称</th>
+        <th width="20%">管理员真实姓名</th>
+        <th width="20%">添加时间</th>
+        <th width="10%">操作</th>
+    </tr>
+    {foreach from=$userlist item=ui}
+    <tr data-topicid="{$ui.uid}">
+		<td class="column-uid">{$ui.uid}</td>
+        <td class="column-avatar">{$ui.nickname}</td>
+        <td class="column-uid">{$ui.name}</td>
+        <td class="">{$ui.addtime}</td>
+        <td class="act-td">
+            <a class="notice deletePrivilege" href="/privilege/usergroup.php?uid={$ui.uid}">所属组</a>
+            <a class="notice deletePrivilege" href="/privilege/userdelete.php?uid={$ui.uid}">删除</a>
+        </td> 
+    </tr>
+    {/foreach}
+</table>
+
+<div class="page">
+{$page}
+</div>
+
+{include file="include/footer.html"}

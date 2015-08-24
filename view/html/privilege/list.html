@@ -1,0 +1,41 @@
+{include file="include/header.html"}
+
+<div class="user_list">
+    <h2>最新主题</h2>
+    <form method="post" action="/privilege/add.php" id="searchForm">
+    <div class="list_t">
+        <div class="chose">
+            <input class="find" type="text" name="action" id="action" value="动作标记" />&nbsp;&nbsp;&nbsp;
+            <input class="find" type="text" name="desc" id="desc" value="动作描述" />&nbsp;&nbsp;&nbsp;
+            <input class="btn" type="submit" name="submit" value="添加权限" style="float:none;" />
+        </div>
+    </div>
+    </form>
+</div>
+
+<table class="table">
+    <tr>
+        <th width="20%">权限ID</th>
+        <th width="20%">权限标志</th>
+        <th width="30%">权限描述</th>
+        <th width="20%">添加时间</th>
+        <th width="10%">操作</th>
+    </tr>
+    {foreach from=$privileges item=privilege}
+    <tr data-topicid="{$privilege.id}">
+        <td class="column-avatar">{$privilege.id}</td>
+        <td class="column-uid">{$privilege.action}</td>
+        <td class="column-avatar">{$privilege.desc}</td>
+        <td class="">{$privilege.addtime}</td>
+        <td class="act-td">
+            <a class="notice deletePrivilege" href="/privilege/delete.php?id={$privilege.id}">删除</a>
+        </td> 
+    </tr>
+    {/foreach}
+</table>
+
+<div class="page">
+{$page}
+</div>
+
+{include file="include/footer.html"}

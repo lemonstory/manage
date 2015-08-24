@@ -1,0 +1,43 @@
+{include file="include/header.html"}
+
+<div class="user_list">
+    <h2>最新主题</h2>
+    <form method="post" action="/privilege/groupadd.php" id="searchForm">
+    <div class="list_t">
+        <div class="chose">
+            <input class="find" type="text" name="name" id="name" value="组名" />&nbsp;&nbsp;&nbsp;
+            <input class="find" type="text" name="desc" id="desc" value="组描述" />&nbsp;&nbsp;&nbsp;
+            <input class="btn" type="submit" name="submit" value="添加组" style="float:none;" />
+        </div>
+    </div>
+    </form>
+</div>
+
+<table class="table">
+    <tr>
+        <th width="10%">组ID</th>
+        <th width="20%">组名</th>
+        <th width="20%">组描述</th>
+        <th width="20%">添加时间</th>
+        <th width="30%">操作</th>
+    </tr>
+    {foreach from=$groups item=group}
+    <tr data-topicid="{$group.id}">
+        <td class="column-avatar">{$group.id}</td>
+        <td class="column-uid">{$group.name}</td>
+        <td class="column-avatar">{$group.desc}</td>
+        <td class="">{$group.addtime}</td>
+        <td class="act-td">
+        	<a class="notice deletePrivilege" href="">查看组用户</a>&nbsp;&nbsp;&nbsp;
+            <a class="notice deletePrivilege" href="/privilege/groupdel.php?id={$group.id}">删除</a>&nbsp;&nbsp;&nbsp;
+            <a class="notice deletePrivilege" href="/privilege/groupedit.php?id={$group.id}">编辑组权限</a>&nbsp;&nbsp;&nbsp;
+        </td> 
+    </tr>
+    {/foreach}
+</table>
+
+<div class="page">
+{$page}
+</div>
+
+{include file="include/footer.html"}
