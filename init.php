@@ -35,13 +35,13 @@ function __autoload($className){
 		return;
 	}
 	
-	$incFile = API_TUTUIM_ROOT."model/$className.class.php";
+	$incFile = API_LEMON_ROOT."model/$className.class.php";
 	if (file_exists($incFile)){
 	    include_once $incFile;
 	    return;
 	}
 	
-	$incFile = API_TUTUIM_ROOT."libs/$className.class.php";
+	$incFile = API_LEMON_ROOT."libs/$className.class.php";
 	if (file_exists($incFile)){
 	    include_once $incFile;
 	    return;

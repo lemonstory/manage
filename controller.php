@@ -5,7 +5,7 @@ abstract class controller
 	public function __construct()
 	{
 		$host = $_SERVER['HTTP_HOST'];
-		if($host!='c.tutuim.com')
+		if($host!='c.lemon.com')
         {
         	header("HTTP/1.0 404 Not Found");
         	exit;
