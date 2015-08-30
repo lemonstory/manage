@@ -6,7 +6,7 @@ define("SERVER_ROOT", dirname(__FILE__)."/");
 if (DIRECTORY_SEPARATOR == '/'){
     define("API_LEMON_ROOT", dirname(SERVER_ROOT)."/api.lemon.com/");
 } else {
-    define("API_LEMON_ROOT", dirname(dirname(dirname(SERVER_ROOT)))."/lemonstory/trunk/");
+    define("API_LEMON_ROOT", dirname(dirname(dirname(SERVER_ROOT)))."/www/api.lemon.com/");
 }
 
 

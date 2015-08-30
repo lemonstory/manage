@@ -3,6 +3,19 @@ include_once '../controller.php';
 
 class addPrivilege extends controller
 {
+	// @huqq delete
+	public function filters()
+    {
+        return array(
+            'authLogin' => array(
+                'requireLogin' => false,
+            ),
+            'privilege' => array(
+                'checkPrivilege' => false,
+            ),
+        );
+    }
+    
     public function action()
     {
         $pObj = new ManagePrivilege();

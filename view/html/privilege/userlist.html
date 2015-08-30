@@ -1,42 +1,90 @@
 {include file="include/header.html"}
-
-<div class="user_list">
-    <h2>最新主题</h2>
-    <form method="post" action="/privilege/useradd.php" id="searchForm">
-    <div class="list_t">
-        <div class="chose">
-            <input class="find" type="text" name="uid" id="action" value="管理员uid" />&nbsp;&nbsp;&nbsp;
-            <input class="find" type="text" name="name" id="desc" value="真实姓名" />&nbsp;&nbsp;&nbsp;
-            <input class="btn" type="submit" name="submit" value="添加管理员" style="float:none;" />
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">管理员查询</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/privilege/useradd.php" id="searchForm">
+                        <fieldset>
+                            <legend>搜索查询</legend>
+                            <div class="control-group">
+                                <label class="control-label">管理员uid</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="uid">
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">真实姓名</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="name">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">添加管理员</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">管理员列表</div>
+                    <div class="pull-right"><span class="badge badge-info">1,234</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>管理员uid</th>
+						        <th>管理员昵称</th>
+						        <th>管理员真实姓名</th>
+						        <th>添加时间</th>
+						        <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>MarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>Mark</td>
+                                <td>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            {foreach from=$userlist item=ui}
+						    <tr>
+						        <td>{$ui.uid}</td>
+						        <td>{$ui.nickname}</td>
+						        <td>{$ui.name}</td>
+						        <td>{$ui.addtime}</td>
+						        <td>
+						            <a href="/privilege/usergroup.php?uid={$ui.uid}">所属组</a>
+						            <a href="/privilege/userdelete.php?uid={$ui.uid}">删除</a>
+						        </td> 
+						    </tr>
+						    {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
         </div>
     </div>
-    </form>
+    
+    {$pageBanner}
 </div>
-
-<table class="table">
-    <tr>
-		<th width="20%">管理员uid</th>
-        <th width="20%">管理员昵称</th>
-        <th width="20%">管理员真实姓名</th>
-        <th width="20%">添加时间</th>
-        <th width="10%">操作</th>
-    </tr>
-    {foreach from=$userlist item=ui}
-    <tr data-topicid="{$ui.uid}">
-		<td class="column-uid">{$ui.uid}</td>
-        <td class="column-avatar">{$ui.nickname}</td>
-        <td class="column-uid">{$ui.name}</td>
-        <td class="">{$ui.addtime}</td>
-        <td class="act-td">
-            <a class="notice deletePrivilege" href="/privilege/usergroup.php?uid={$ui.uid}">所属组</a>
-            <a class="notice deletePrivilege" href="/privilege/userdelete.php?uid={$ui.uid}">删除</a>
-        </td> 
-    </tr>
-    {/foreach}
-</table>
-
-<div class="page">
-{$page}
-</div>
-
 {include file="include/footer.html"}

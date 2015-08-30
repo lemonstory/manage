@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <title>管理后台</title>
+    <title>Lemon-管理后台</title>
     <!-- Bootstrap -->
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
@@ -24,28 +24,33 @@
                  <span class="icon-bar"></span>
                  <span class="icon-bar"></span>
                 </a>
-                <a class="brand" href="#">Admin Panel</a>
+                <a class="brand" href="/index.php">Lemon</a>
                 <div class="nav-collapse collapse">
                     <ul class="nav pull-right">
                         <li class="dropdown">
-                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> Vincent Gabriel <i class="caret"></i>
-
-                            </a>
+                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> {$userinfo.nickname} <i class="caret"></i></a>
                             <ul class="dropdown-menu">
+                                <!-- <li class="divider"></li> -->
                                 <li>
-                                    <a tabindex="-1" href="#">Profile</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a tabindex="-1" href="login.html">Logout</a>
+                                    <a tabindex="-1" href="/user/logout.php">Logout</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                     <ul class="nav">
-                        <li class="active">
-                            <a href="#">Dashboard</a>
+                        <li class="{$indexactive}"><a href="/index.php">首页</a></li>
+                        <li class="{$priactive}"><a href="/privilege/userlist.php">权限管理</a></li>
+                        <li class="{$useractive}"><a href="/user/getuserlist.php">用户管理</a></li>
+                        <li class="dropdown {$albumactive}">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">专辑故事 <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="menu1">
+                                <li><a href="#">专辑管理</a></li>
+                                <li><a href="#">故事管理</a></li>
+                            </ul>
                         </li>
+                        <li class="{$commentactive}"><a href="#">评论管理</a></li>
+                        <li class="{$anactive}"><a href="#">统计相关</a></li>
+                        <!--
                         <li class="dropdown">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">Settings <b class="caret"></b>
 
@@ -82,45 +87,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Content <i class="caret"></i>
-
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a tabindex="-1" href="#">Blog</a>
-                                </li>
-                                <li>
-                                    <a tabindex="-1" href="#">News</a>
-                                </li>
-                                <li>
-                                    <a tabindex="-1" href="#">Custom Pages</a>
-                                </li>
-                                <li>
-                                    <a tabindex="-1" href="#">Calendar</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a tabindex="-1" href="#">FAQ</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Users <i class="caret"></i>
-
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a tabindex="-1" href="#">User List</a>
-                                </li>
-                                <li>
-                                    <a tabindex="-1" href="#">Search</a>
-                                </li>
-                                <li>
-                                    <a tabindex="-1" href="#">Permissions</a>
-                                </li>
-                            </ul>
-                        </li>
+                        -->
                     </ul>
                 </div>
                 <!--/.nav-collapse -->
@@ -130,56 +97,19 @@
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span3" id="sidebar">
-                <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
-                    <li class="active">
-                        <a href="/test/index.php"><i class="icon-chevron-right"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="###"><i class="icon-chevron-right"></i> Calendar</a>
-                    </li>
-                    <li>
-                        <a href="/test/stats.php"><i class="icon-chevron-right"></i> Statistics (Charts)</a>
-                    </li>
-                    <li>
-                        <a href="/test/addform.php"><i class="icon-chevron-right"></i> Forms</a>
-                    </li>
-                    <li>
-                        <a href="/test/table.php"><i class="icon-chevron-right"></i> Tables</a>
-                    </li>
-                    <li>
-                        <a href="/test/button.php"><i class="icon-chevron-right"></i> Buttons & Icons</a>
-                    </li>
-                    <li>
-                        <a href="###"><i class="icon-chevron-right"></i> WYSIWYG Editors</a>
-                    </li>
-                    <li>
-                        <a href="/test/interfaces.php"><i class="icon-chevron-right"></i> UI & Interface</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-success pull-right">731</span> Orders</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-success pull-right">812</span> Invoices</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-info pull-right">27</span> Clients</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-info pull-right">1,234</span> Users</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-info pull-right">2,221</span> Messages</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-info pull-right">11</span> Reports</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-important pull-right">83</span> Errors</a>
-                    </li>
-                    <li>
-                        <a href="#"><span class="badge badge-warning pull-right">4,231</span> Logs</a>
-                    </li>
-                </ul>
-            </div>
-            
+			    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
+			         {if $indexactive}
+			         <li class="active"><a href="/index.php"><i class="icon-chevron-right"></i>首页</a></li>
+			         {elseif $priactive}
+			         <li class="active"><a href="/privilege/userlist.php"><i class="icon-chevron-right"></i>管理员列表</a></li>
+			         <li><a href="/privilege/grouplist.php"><i class="icon-chevron-right"></i>管理组列表</a></li>
+			         <li><a href="/privilege/list.php"><i class="icon-chevron-right"></i>权限列表</a></li>
+			         {elseif $useractive}
+			         <li class="active"><a href="/user/getuserlist.php"><i class="icon-chevron-right"></i>用户列表</a></li>
+			         {elseif $albumactive}
+			         <li class="active"><a href="#"><i class="icon-chevron-right"></i>专辑列表</a></li>
+			         <li><a href="#"><i class="icon-chevron-right"></i>故事列表</a></li>
+			         {/if}
+			    </ul>
+			</div>
             <!--/span-->

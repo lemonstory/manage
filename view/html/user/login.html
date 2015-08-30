@@ -14,24 +14,57 @@
 	    <script src="/static/vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 	</head>
     <body id="login">
+        <!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">提醒</h4>
+		      </div>
+		      <div class="modal-body"></div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+        
 	    <div class="container">
-	      <form class="form-signin">
+	      <div class="form-signin">
 	        <h2 class="form-signin-heading">请登录</h2>
-	        <input type="text" class="input-block-level" placeholder="Email address">
-	        <input type="password" class="input-block-level" placeholder="Password">
-	        <label class="checkbox">
-	          <input type="checkbox" value="remember-me"> 记住我
-	        </label>
-	        <button class="btn btn-large btn-primary" type="submit">登录</button>
-	      </form>
-	
-	    </div> <!-- /container -->
+	        <input type="text" class="input-block-level" id="username" placeholder="用户名">
+	        <input type="password" class="input-block-level" id="password" placeholder="密码">
+	        <button class="btn btn-large btn-primary" type="submit" id="loginbtn">登录</button>
+	      </div>
 	    <script src="/static/vendors/jquery-1.9.1.min.js"></script>
 	    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     </body>
     {literal}
-    <script>
-    
+    <script><!--
+    $(function(){
+        $("#loginbtn").click(function(){
+        	$(".modal-body").text("");
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if(username == '' || password == '') {
+                $(".modal-body").text("用户名或密码不能为空");
+                $("#myModal").modal({show:true});
+                return false;
+            }
+            
+            var url = "/user/loginsave.php";
+            $.post(url, {username:username, password:password}, function(data){
+                if(data.code == '10000') {
+                    location.href = '/index.php';
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                    return false;
+                }
+            }, "json");
+        });
+    });
     </script>
     {/literal}
 </html>

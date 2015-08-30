@@ -1,11 +1,5 @@
 {include file="include/header.html"}
 
-{literal}
-<style>
-.selectPriv td {background:#95BDFA}
-</style>
-{/literal}
-
 <div class="user_list">
     <h2>{$userinfo.name} 的所属组</h2>
 </div>
@@ -35,8 +29,68 @@
     {/foreach}
 </table>
 
-<div class="page">
-{$page}
+
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">{$userinfo.name} 的所属组</div>
+                    <div class="pull-right"><span class="badge badge-info">1,234</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>组ID</th>
+						        <th>组名</th>
+						        <th>组描述</th>
+						        <th>添加时间</th>
+						        <th>操作</th>
+                                <th>管理员uid</th>
+                                <th>管理员昵称</th>
+                                <th>管理员真实姓名</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>MarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>Mark</td>
+                                <td>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            {foreach from=$groups item=group}
+						    <tr id="{$group.id}" class="{if $group.member}bg-info{/if}">
+						        <td>{$group.id}</td>
+						        <td>{$group.name}</td>
+						        <td>{$group.desc}</td>
+						        <td>{$group.addtime}</td>
+						        <td>
+						        {if $group.member}
+						            <a href="/privilege/userleavegroup.php?uid={$userinfo.uid}&groupid={$group.id}">退出该组</a>
+						        {else}
+						            <a href="/privilege/userjoingroup.php?uid={$userinfo.uid}&groupid={$group.id}">加入该组</a>
+						        {/if}
+						        </td> 
+						    </tr>
+						    {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+    
+    {$pageBanner}
 </div>
 
 {include file="include/footer.html"}
