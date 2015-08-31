@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class addPrivilege extends controller
+class usergroup extends controller
 {
 	// @huqq delete
 	public function filters()
@@ -34,5 +34,5 @@ class addPrivilege extends controller
         $smartyobj->display("privilege/usergroup.html");
     }
 }
-new addPrivilege();
+new usergroup();
 ?>

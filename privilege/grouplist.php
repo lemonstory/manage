@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class addPrivilege extends controller
+class grouplist extends controller
 {
     public function action()
     {
@@ -12,5 +12,5 @@ class addPrivilege extends controller
         $smartyobj->display("privilege/grouplist.html");
     }
 }
-new addPrivilege();
+new grouplist();
 ?>

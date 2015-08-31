@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class addPrivilege extends controller
+class userjoingroup extends controller
 {
     public function action()
     {
@@ -19,5 +19,5 @@ class addPrivilege extends controller
         header('Location:/privilege/usergroup.php?uid='.$uid);
     }
 }
-new addPrivilege();
+new userjoingroup();
 ?>

@@ -1,36 +1,4 @@
 {include file="include/header.html"}
-
-<div class="user_list">
-    <h2>{$userinfo.name} 的所属组</h2>
-</div>
-
-<table class="table">
-    <tr>
-        <th width="20%">组ID</th>
-        <th width="20%">组名</th>
-        <th width="20%">组描述</th>
-        <th width="20%">添加时间</th>
-        <th width="20%">操作</th>
-    </tr>
-    {foreach from=$groups item=group}
-    <tr data-groupid="{$group.id}" class="{if $group.member}selectPriv{/if}">
-        <td class="column-avatar">{$group.id}</td>
-        <td class="column-uid">{$group.name}</td>
-        <td class="column-avatar">{$group.desc}</td>
-        <td class="">{$group.addtime}</td>
-        <td class="act-td">
-        {if $group.member}
-        	<a class="notice addPrivilege" href="/privilege/userleavegroup.php?uid={$userinfo.uid}&groupid={$group.id}">退出该组</a>
-        {else}
-        	<a class="notice addPrivilege" href="/privilege/userjoingroup.php?uid={$userinfo.uid}&groupid={$group.id}">加入该组</a>
-        {/if}
-        </td> 
-    </tr>
-    {/foreach}
-</table>
-
-
-
 <div class="span9" id="content">
     <div class="row-fluid">
         <div>
@@ -57,16 +25,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>MarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>Mark</td>
-                                <td>
-                                    <a href="#">删除</a>
-                                </td>
-                            </tr>
                             {foreach from=$groups item=group}
 						    <tr id="{$group.id}" class="{if $group.member}bg-info{/if}">
 						        <td>{$group.id}</td>

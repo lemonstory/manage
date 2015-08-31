@@ -1,51 +1,83 @@
 {include file="include/header.html"}
-{literal}
-<style>
-.selectPriv td {background:#95BDFA}
-</style>
-{/literal}
 
-<form method="post" action="/privilege/groupedit.php?id={$groupinfo.id}" id="searchForm">
-<div class="user_list">
-    <h2>修改用户组权限</h2>
-    <div class="list_t">
-        <div class="chose">
-            <p>组名：{$groupinfo.name}<br/>组描述：{$groupinfo.desc}</p>
-            <input class="btn" type="submit" name="submit" value="提交修改" style="float:none;" />
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">修改用户组权限</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/privilege/groupedit.php?id={$groupinfo.id}" id="searchForm">
+                        <fieldset>
+                            <legend>修改用户组权限</legend>
+                            <div class="control-group">
+                                <label class="control-label">组名：{$groupinfo.name}</label>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">组描述：{$groupinfo.desc}</label>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">提交修改</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">权限列表</div>
+                    <div class="pull-right"><span class="badge badge-info">1,234</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>权限ID</th>
+						        <th>权限标志</th>
+						        <th>权限描述</th>
+						        <th>添加时间</th>
+						        <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$privileges item=privilege}
+						    <tr data-privid="{$privilege.id}" class="{if $privilege.own}bg-info{/if}">
+						        <td>{$privilege.id}</td>
+						        <td>{$privilege.action}</td>
+						        <td>{$privilege.desc}</td>
+						        <td>{$privilege.addtime}</td>
+						        <td>
+						        {if $privilege.own}
+						            <a class="addPrivilege" href="javascript:void(0);">
+						            <input type="hidden" name="grouppriv[]" value="{$privilege.id}" >取消</a>
+						        {else}
+						            <a class="addPrivilege" href="javascript:void(0);">添加</a>
+						        {/if}
+						        </td> 
+						    </tr>
+						    {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
         </div>
     </div>
+    
+    {$pageBanner}
 </div>
 
-<table class="table">
-    <tr>
-        <th width="20%">权限ID</th>
-        <th width="20%">权限标志</th>
-        <th width="20%">权限描述</th>
-        <th width="20%">添加时间</th>
-        <th width="20%">操作</th>
-    </tr>
-    {foreach from=$privileges item=privilege}
-    <tr data-privid="{$privilege.id}" class="{if $privilege.own}selectPriv{/if}">
-        <td>{$privilege.id}</td>
-        <td>{$privilege.action}</td>
-        <td>{$privilege.desc}</td>
-        <td>{$privilege.addtime}</td>
-        <td class="act-td">
-        {if $privilege.own}
-            <a class="notice addPrivilege" href="javascript:void(0);">
-        	<input type="hidden" name="grouppriv[]" value="{$privilege.id}" >取消</a>
-        {else}
-        	<a class="notice addPrivilege" href="javascript:void(0);">添加</a>
-        {/if}
-        </td> 
-    </tr>
-    {/foreach}
-</table>
-</form>
-
-<div class="page">
-{$page}
-</div>
 
 {literal}
 <script>
@@ -53,10 +85,10 @@ $(document).ready(function(){
     $('.addPrivilege').click(function(){
     	var privid = $(this).parents('tr').data('privid');
     	if ($(this).html()=='添加'){
-    		$(this).parents('tr').addClass('selectPriv');
+    		$(this).parents('tr').addClass('bg-info');
     		$(this).html('<input type="hidden" name="grouppriv[]" value="' + privid + '" >取消');
     	} else {
-    		$(this).parents('tr').removeClass('selectPriv');
+    		$(this).parents('tr').removeClass('bg-info');
         	$(this).html('添加');
     	}
     });

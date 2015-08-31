@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class addPrivilege extends controller
+class groupdel extends controller
 {
     public function action()
     {
@@ -12,5 +12,5 @@ class addPrivilege extends controller
         exit;
     }
 }
-new addPrivilege();
+new groupdel();
 ?>

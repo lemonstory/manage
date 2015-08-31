@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class addPrivilege extends controller
+class listPrivilege extends controller
 {
 	// @huqq delete
 	public function filters()
@@ -25,5 +25,5 @@ class addPrivilege extends controller
         $smartyobj->display("privilege/list.html");
     }
 }
-new addPrivilege();
+new listPrivilege();
 ?>

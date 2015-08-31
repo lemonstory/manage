@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class addPrivilege extends controller
+class useradd extends controller
 {
     public function action()
     {
@@ -16,5 +16,5 @@ class addPrivilege extends controller
         exit;
     }
 }
-new addPrivilege();
+new useradd();
 ?>
