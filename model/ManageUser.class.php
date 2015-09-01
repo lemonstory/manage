@@ -18,8 +18,8 @@ class ManageUser extends ModelBase
         $offset = ($currentPage - 1) * $perPage;
         
         $list = array();
-        $db = DbConnecter::connectMysql('share_user');
-        $sql = "SELECT * FROM `userinfo` ORDER BY `uid` DESC LIMIT {$offset}, {$perPage}";
+        $db = DbConnecter::connectMysql('share_main');
+        $sql = "SELECT * FROM `user_info` ORDER BY `uid` DESC LIMIT {$offset}, {$perPage}";
         
         $st = $db->prepare($sql);
         $st->execute();
@@ -29,14 +29,8 @@ class ManageUser extends ModelBase
     
     public function getUserTotalCount()
     {
-    	$SsoObj = new Sso();
-    	
-    	$maxuid = $SsoObj->getMaxUid();
-    	$count = $maxuid-296821;
-    	return $count;
-    	exit;
-        $db = DbConnecter::connectMysql('share_user');
-        $sql = "SELECT COUNT(*) FROM `userinfo`";
+        $db = DbConnecter::connectMysql('share_main');
+        $sql = "SELECT COUNT(*) FROM `user_info`";
         
         $st = $db->prepare($sql);
         $st->execute();
