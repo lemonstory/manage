@@ -39,7 +39,7 @@
                     </ul>
                     <ul class="nav">
                         <li class="{$indexactive}"><a href="/index.php">首页</a></li>
-                        <li class="{$priactive}"><a href="/privilege/userlist.php">权限管理</a></li>
+                        <li class="{$privilege}"><a href="/privilege/userlist.php">权限管理</a></li>
                         <li class="{$useractive}"><a href="/user/getuserlist.php">用户管理</a></li>
                         <li class="dropdown {$albumactive}">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">专辑故事 <b class="caret"></b></a>
@@ -50,44 +50,6 @@
                         </li>
                         <li class="{$commentactive}"><a href="#">评论管理</a></li>
                         <li class="{$anactive}"><a href="#">统计相关</a></li>
-                        <!--
-                        <li class="dropdown">
-                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Settings <b class="caret"></b>
-
-                            </a>
-                            <ul class="dropdown-menu" id="menu1">
-                                <li>
-                                    <a href="#">Tools <i class="icon-arrow-right"></i>
-
-                                    </a>
-                                    <ul class="dropdown-menu sub-menu">
-                                        <li>
-                                            <a href="#">Reports</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Logs</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Errors</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">SEO Settings</a>
-                                </li>
-                                <li>
-                                    <a href="#">Other Link</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="#">Other Link</a>
-                                </li>
-                                <li>
-                                    <a href="#">Other Link</a>
-                                </li>
-                            </ul>
-                        </li>
-                        -->
                     </ul>
                 </div>
                 <!--/.nav-collapse -->
@@ -99,16 +61,20 @@
             <div class="span3" id="sidebar">
 			    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
 			         {if $indexactive}
-			         <li class="active"><a href="/index.php"><i class="icon-chevron-right"></i>首页</a></li>
-			         {elseif $priactive}
-			         <li class="active"><a href="/privilege/userlist.php"><i class="icon-chevron-right"></i>管理员列表</a></li>
-			         <li><a href="/privilege/grouplist.php"><i class="icon-chevron-right"></i>管理组列表</a></li>
-			         <li><a href="/privilege/list.php"><i class="icon-chevron-right"></i>权限列表</a></li>
+				         <li class="{$indexside}"><a href="/index.php"><i class="icon-chevron-right"></i>首页</a></li>
+				         <li class="{$focusside}"><a href="/system/focuslist.php"><i class="icon-chevron-right"></i>焦点图</a></li>
+				         <li class="{$hotrecommendside}"><a href="/system/hotrecommendlist.php"><i class="icon-chevron-right"></i>热门推荐</a></li>
+				         <li class="{$sameageside}"><a href="/system/sameagelist.php"><i class="icon-chevron-right"></i>同龄在听</a></li>
+				         <li class="{$newonlineside}"><a href="/system/newonlinelist.php"><i class="icon-chevron-right"></i>最新上架</a></li>
+			         {elseif $privilege}
+				         <li class="{$userlistside}"><a href="/privilege/userlist.php"><i class="icon-chevron-right"></i>管理员列表</a></li>
+				         <li class="{$grouplistside}"><a href="/privilege/grouplist.php"><i class="icon-chevron-right"></i>管理组列表</a></li>
+				         <li class="{$listside}"><a href="/privilege/list.php"><i class="icon-chevron-right"></i>权限列表</a></li>
 			         {elseif $useractive}
-			         <li class="active"><a href="/user/getuserlist.php"><i class="icon-chevron-right"></i>用户列表</a></li>
+			             <li class="{$getuserlistside}"><a href="/user/getuserlist.php"><i class="icon-chevron-right"></i>用户列表</a></li>
 			         {elseif $albumactive}
-			         <li class="active"><a href="#"><i class="icon-chevron-right"></i>专辑列表</a></li>
-			         <li><a href="#"><i class="icon-chevron-right"></i>故事列表</a></li>
+				         <li class=""><a href="#"><i class="icon-chevron-right"></i>专辑列表</a></li>
+				         <li class=""><a href="#"><i class="icon-chevron-right"></i>故事列表</a></li>
 			         {/if}
 			    </ul>
 			</div>

@@ -1,0 +1,46 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">添加焦点图</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/system/savefocus.php" enctype="multipart/form-data">
+                        <fieldset>
+                            <legend>添加焦点图</legend>
+                            <div class="control-group">
+                                <div class="control-group">
+	                                <label class="control-label" for="fileInput">上传图片</label>
+	                                <div class="controls">
+	                                    <input class="input-file uniform_on" id="fileInput" type="file" name="focuspic">
+	                                    <p class="help-block">图片尺寸在 xx</p>
+	                                </div>
+	                            </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">上传</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+</div>
+
+
+<script>
+{literal}
+$(function() {
+    
+});
+{/literal}
+</script>
+{include file="include/footer.html"}

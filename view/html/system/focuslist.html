@@ -1,0 +1,83 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">焦点图列表</div>
+                    <div class="pull-right"><a href="/system/addfocus.php" class="badge badge-info">添加</a></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>uid</th>
+						        <th>呢称</th>
+						        <th>头像</th>
+						        <th>注册时间</th>
+						        <th>账号状态</th>
+						        <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>MarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                                <td>Mark</td>
+                                <td>
+                                    <a href="#">删除</a>
+                                </td>
+                            </tr>
+                            {foreach from=$userList item=value}
+                            <tr>
+                                <td>{$value.uid}</td>
+                                <td>{$value.nickname}</td>
+                                <td>{$value.avatar}</td>
+                                <td>{$value.addtime}</td>
+                                <td>
+                                    {if $value.status eq '-3'}已删除
+                                    {elseif $value.status eq '-2'}已封号
+                                    {elseif $value.status eq '-1'}已冻结
+                                    {elseif $value.status eq 1}正常
+                                    {/if}
+                                </td>
+                                <td>
+                                    {if $value.status eq 1}
+                                    <a href="/report/frozenuser.php?frozenuid={$value.uid}">冻结</a>
+                                    &nbsp;|&nbsp;
+                                    <a href="/report/forbiddenuser.php?forbiddenuid={$value.uid}">封号</a>
+                                    {/if}
+						            {if $value.status eq '-1'}
+						            <a href="/user/setuserstatus.php?uid={$value.uid}&status=1&p={$p}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}">解冻</a>
+						            {/if}
+						            {if $value.status eq '-2'}
+						            <a href="/user/setuserstatus.php?uid={$value.uid}&status=1&p={$p}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}">解封</a>
+						            {/if}
+						            &nbsp;|&nbsp;
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+    
+    {$pageBanner}
+</div>
+
+
+<script>
+{literal}
+$(function() {
+    
+});
+{/literal}
+</script>
+{include file="include/footer.html"}

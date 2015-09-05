@@ -9,6 +9,8 @@ class grouplist extends controller
         $groups = $pObj->getGroups('');
         $smartyobj = $this->getSmartyObj();
         $smartyobj->assign('groups', $groups);
+        $smartyobj->assign("privilege", "active");
+        $smartyobj->assign("grouplistside", "active");
         $smartyobj->display("privilege/grouplist.html");
     }
 }

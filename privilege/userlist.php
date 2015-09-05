@@ -24,7 +24,8 @@ class userlist extends controller
         //$userlist = $pObj->getUserList();
         $smartyobj = $this->getSmartyObj();
         //$smartyobj->assign('userlist', $userlist);
-        $smartyobj->assign('priactive', "active");
+        $smartyobj->assign('privilege', "active");
+        $smartyobj->assign('userlistside', "active");
         $smartyobj->display("privilege/userlist.html");
     }
 }

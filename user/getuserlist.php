@@ -99,6 +99,7 @@ class getuserlist extends controller
         $smartyObj->assign('searchContent', $searchContent);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('useractive', "active");
+        $smartyObj->assign('getuserlistside', "active");
         $smartyObj->display("user/getuserlist.html"); 
     }
 }

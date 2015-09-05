@@ -1,8 +1,9 @@
 <?php
 include_once '../controller.php';
 
-class addform extends controller
+class addfocus extends controller
 {
+	// @huqq delete
 	public function filters()
     {
         return array(
@@ -17,9 +18,16 @@ class addform extends controller
     
     public function action()
     {
+        $albumid = $this->getRequest('albumid');
+        
+        
+        
+        
         $smartyObj = $this->getSmartyObj();
-        $smartyObj->display("test/addform.html");
+        $smartyObj->assign('indexactive', "active");
+        $smartyObj->assign('hotrecommendside', "active");
+        $smartyObj->display("system/addfocus.html"); 
     }
 }
-new addform();
+new addfocus();
 ?>
