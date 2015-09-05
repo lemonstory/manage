@@ -23,7 +23,8 @@ class index extends controller
         }
         
         $smartyobj = $this->getSmartyObj();
-        $smartyobj->assign("indexactive", "active");
+        $smartyobj->assign("indexactive", "1");
+        $smartyobj->assign("indexside", "active");
         $smartyobj->display("index.html");
     }
 }
