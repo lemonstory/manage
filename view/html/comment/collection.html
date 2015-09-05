@@ -1,0 +1,72 @@
+{include file="include/header.html"}
+<link rel="stylesheet" type="text/css" href="/static/vendors/chosen.min.css">
+<script type="text/javascript" src="/static/vendors/chosen.jquery.min.js"></script>
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">Form Example</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" action="/comment/collection.php">
+                        <input type="hidden" name="id" value="{$albuminfo.id}" />
+                        <fieldset>
+                            <legend>评论采集</legend>
+                            <div class="control-group">
+								<label class="control-label" for="select01">专辑名称</label>
+								<div class="controls">
+									<select id="select01" class="chzn-select" name="album_id">
+									    {foreach from=$albumlist item=value}
+										<option value="{$value.id}">{$value.title}</option>
+										{/foreach}
+									</select>
+								</div>
+							</div>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">页面地址<span class="required">*</span></label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="source_url" value="" placeholder="http://dangdang.com/xxx.html">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
+                                <button type="reset" class="btn">重置</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    {$pageBanner}
+</div>
+
+
+<script>
+{literal}
+$(function() {
+    $(".chzn-select").chosen();
+    $("#submit_form").on('click', function(e){
+    	e.preventDefault();
+    	$.post('/comment/collection.php', $(this).closest("form").serialize(), function(json){
+    		if (json && json.code == 10000) {
+    			alert('采集成功');
+    		} else {
+    			var name = json.split('-')[0];
+                var msg  = json.split('-')[1];
+                var errObj = $("[name='"+name+"']");
+                errObj.closest(".control-group").addClass('error');
+                errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
+    		}
+    	},'json')
+    	
+    })
+});
+{/literal}
+</script>
+{include file="include/footer.html"}
