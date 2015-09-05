@@ -1,0 +1,92 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left"></div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" action="/story/story_edit.php">
+                        <input type="hidden" name="id" value="{$storyinfo.id}" />
+                        <fieldset>
+                            <legend>编辑故事</legend>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">故事名称<span class="required">*</span></label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="title" value="{$storyinfo.title}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">简介<span class="required">*</span></label>
+                                <div class="controls">
+                                    <textarea class="span6 m-wrap" name="intro">{$storyinfo.intro}</textarea>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">时长</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="author" value="{$storyinfo.times}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">文件大小</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="author" value="{$storyinfo.file_size}">
+                                </div>
+                            </div>
+                            <!-- <div class="control-group">
+                                <label class="control-label">封面预览</label>
+                                <div class="controls">
+                                    <input type="indden" name="cover" value="" />
+                                </div>
+                            </div> -->
+                            <div class="control-group">
+                                <label class="control-label" for="fileInput">封面</label>
+                                <div class="controls">
+                                    <div class="uploader" id="uniform-fileInput"><input class="input-file uniform_on" id="fileInput" type="file"><span class="filename" style="-webkit-user-select: none;">No file selected</span><span class="action" style="-webkit-user-select: none;">Choose File</span></div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
+                                <button type="reset" class="btn">重置</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    {$pageBanner}
+</div>
+
+
+<script>
+{literal}
+$(function() {
+    $("#submit_form").on('click', function(e){
+        $(".help-inline").remove();
+        e.preventDefault();
+        $(".control-group").removeClass("error");
+        $.post('/story/story_edit.php', $(this).closest("form").serialize(), function(json){
+            console.log(json);
+            if (json && json.code == 10000) {
+                alert('操作成功');
+            } else {
+                var name = json.split('-')[0];
+                var msg  = json.split('-')[1];
+                var errObj = $("[name='"+name+"']");
+                errObj.closest(".control-group").addClass('error');
+                errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
+            }
+        },'json');
+    })
+});
+{/literal}
+</script>
+{include file="include/footer.html"}
