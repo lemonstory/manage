@@ -3,19 +3,6 @@ include_once '../controller.php';
 
 class index extends controller
 {
-	// @huqq delete
-	public function filters()
-    {
-        return array(
-            'authLogin' => array(
-                'requireLogin' => false,
-            ),
-            'privilege' => array(
-                'checkPrivilege' => false,
-            ),
-        );
-    }
-    
     public function action()
     {
         $currentPage = $this->getRequest('p') + 0;
