@@ -81,12 +81,11 @@ class ManageSystem extends ModelBase
 	 * 后台添加焦点图
 	 * @param S $content
 	 * @param I $ordernum
-	 * @param S $addtime
 	 * @return boolean
 	 */
-	public function addFocusDb($content, $ordernum)
+	public function addFocusDb($content, $ordernum = 100)
 	{
-		if (empty($content) || empty($ordernum)) {
+		if (empty($content)) {
 			return false;
 		}
 		$status = 0;
@@ -108,9 +107,9 @@ class ManageSystem extends ModelBase
 	 * @param I $ordernum
 	 * @return bool
 	 */
-	public function addRecommendHotDb($albumid, $ordernum)
+	public function addRecommendHotDb($albumid, $ordernum = 100)
 	{
-		if (empty($albumid) || empty($ordernum)) {
+		if (empty($albumid)) {
 			$this->setError(ErrorConf::paramError());
 			return false;
 		}
@@ -130,6 +129,38 @@ class ManageSystem extends ModelBase
         	return false;
         }
         return true;
+	}
+	
+	
+	/**
+	 * 抓取的新专辑，自动添加到最新上架数据表
+	 * @param I $albumid
+	 * @param I $agetype    专辑适合年龄段
+	 * @param I $ordernum   排序
+	 * @return bool
+	 */
+	public function addRecommendNewOnlineDb($albumid, $agetype, $ordernum = 100)
+	{
+	    if (empty($albumid)) {
+	        $this->setError(ErrorConf::paramError());
+	        return false;
+	    }
+	    $check = $this->checkNewOnlineIsExist($albumid);
+	    if ($check) {
+	        $this->setError(array('code'=>'100002','desc'=>'此专辑已经在最新上架中存在'));
+	        return false;
+	    }
+	    
+	    $status = $this->RECOMMEND_STATUS_OFFLINE;
+	    $addtime = date("Y-m-d H:i:s");
+	    $db = DbConnecter::connectMysql('share_main');
+	    $sql = "INSERT INTO `recommend_new_online` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
+	    $st = $db->prepare($sql);
+	    $result = $st->execute(array($albumid, $agetype, $ordernum, $status, $addtime));
+	    if (empty($result)) {
+	        return false;
+	    }
+	    return true;
 	}
 	
 	
