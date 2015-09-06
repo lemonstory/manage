@@ -19,11 +19,11 @@ class index extends controller
     {
         $uid = $this->getUid();
         if (empty($uid)) {
-            //$this->redirect('/user/login.php');
+            $this->redirect('/user/login.php');
         }
         
         $smartyobj = $this->getSmartyObj();
-        $smartyobj->assign("indexactive", "1");
+        $smartyobj->assign("indexactive", "active");
         $smartyobj->assign("indexside", "active");
         $smartyobj->display("index.html");
     }

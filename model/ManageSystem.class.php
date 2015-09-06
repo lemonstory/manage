@@ -13,7 +13,7 @@ class ManageSystem extends ModelBase
 		}
 		
 		$db = DbConnecter::connectMysql('share_manage');
-        $sql = "SELECT * FROM `focus` WHERE `status` = 1 ORDER BY `ordernum` DESC LIMIT $len";
+        $sql = "SELECT * FROM `focus` WHERE `status` = '{$this->RECOMMEND_STATUS_ONLIINE}' ORDER BY `ordernum` DESC LIMIT $len";
         $st = $db->prepare($sql);
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -33,7 +33,7 @@ class ManageSystem extends ModelBase
 		}
 		
 		$db = DbConnecter::connectMysql('share_main');
-        $sql = "SELECT * FROM `recommend_hot` WHERE `status` = 1 ORDER BY `ordernum` DESC LIMIT $len";
+        $sql = "SELECT * FROM `recommend_hot` WHERE `status` = '{$this->RECOMMEND_STATUS_ONLIINE}' ORDER BY `ordernum` DESC LIMIT $len";
         $st = $db->prepare($sql);
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -50,8 +50,7 @@ class ManageSystem extends ModelBase
 	 */
 	public function getNewOnlineList($babyagetype = 0, $len = 5)
 	{
-		$listenobj = new Listen();
-		if (!empty($babyagetype) && !in_array($babyagetype, $listenobj->AGE_TYPE_LIST)) {
+		if (!empty($babyagetype) && !in_array($babyagetype, $this->AGE_TYPE_LIST)) {
 			$this->setError(ErrorConf::paramError());
 			return array();
 		}
@@ -60,7 +59,7 @@ class ManageSystem extends ModelBase
 			$len = 5;
 		}
 		
-		$status = $listenobj->RECOMMEND_STATUS_ONLIINE; // 已上线状态
+		$status = $this->RECOMMEND_STATUS_ONLIINE; // 已上线状态
 		$where = "`status` = '{$status}'";
 		if (!empty($babyagetype)) {
 			$where .= " AND `agetype` = '{$babyagetype}'";
@@ -85,7 +84,7 @@ class ManageSystem extends ModelBase
 	 * @param S $addtime
 	 * @return boolean
 	 */
-	public function addFocusDb($content, $ordernum, $addtime)
+	public function addFocusDb($content, $ordernum)
 	{
 		if (empty($content) || empty($ordernum)) {
 			return false;
@@ -96,7 +95,10 @@ class ManageSystem extends ModelBase
         $sql = "INSERT INTO `focus` (`content`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?)";
         $st = $db->prepare($sql);
         $result = $st->execute(array($content, $ordernum, $status, $addtime));
-        return $result;
+        if (empty($result)) {
+            return false;
+        }
+        return true;
 	}
 	
 	
@@ -104,25 +106,30 @@ class ManageSystem extends ModelBase
 	 * 后台编辑推荐，热门专辑数据
 	 * @param I $albumid
 	 * @param I $ordernum
-	 * @param S $addtime
-	 * @return array
+	 * @return bool
 	 */
-	public function addRecommendHotDb($albumid, $ordernum, $addtime)
+	public function addRecommendHotDb($albumid, $ordernum)
 	{
 		if (empty($albumid) || empty($ordernum)) {
 			$this->setError(ErrorConf::paramError());
-			return array();
+			return false;
 		}
-		$status = 2;
+		$check = $this->checkRecommendHotIsExist($albumid);
+		if ($check) {
+		    $this->setError(array('code'=>'100002','desc'=>'此专辑已经在热门推荐中存在'));
+		    return false;
+		}
+		
+		$status = $this->RECOMMEND_STATUS_OFFLINE;
 		$addtime = date("Y-m-d H:i:s");
 		$db = DbConnecter::connectMysql('share_main');
         $sql = "INSERT INTO `recommend_hot` (`albumid`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?)";
         $st = $db->prepare($sql);
         $result = $st->execute(array($albumid, $ordernum, $status, $addtime));
         if (empty($result)) {
-        	return array();
+        	return false;
         }
-        return $result;
+        return true;
 	}
 	
 	
@@ -200,8 +207,7 @@ class ManageSystem extends ModelBase
     
     public function updateRecommendStatusByIds($dbinstance, $tablename, $ids, $status)
     {
-    	$listenobj = new Listen();
-        if (empty($ids) || !in_array($status, in_array($listenobj->RECOMMEND_STATUS_OFFLINE, $listenobj->RECOMMEND_STATUS_ONLIINE))) {
+        if (empty($ids) || !in_array($status, $this->AGE_TYPE_LIST)) {
             return false;
         }
         if (!is_array($ids)) {
@@ -218,5 +224,51 @@ class ManageSystem extends ModelBase
         $st = $db->prepare($sql);
         $result = $st->execute(array($status));
         return $result;
+    }
+    
+    
+    /**
+     * 检测指定专辑是否已经在热门推荐表中
+     * @param I $albumid
+     * @return boolean    true/false    存在/不存在
+     */
+    private function checkRecommendHotIsExist($albumid)
+    {
+        if (empty($albumid)) {
+            $this->setError(ErrorConf::paramError());
+            return false;
+        }
+        $db = DbConnecter::connectMysql('share_main');
+        $sql = "SELECT * FROM `recommend_hot` WHERE `albumid` = ?";
+        $st = $db->prepare($sql);
+        $st->execute(array($albumid));
+        $info = $st->fetch(PDO::FETCH_ASSOC);
+        if (empty($info)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    /**
+     * 检测指定专辑是否已经在最新上架表中
+     * @param I $albumid
+     * @return boolean    true/false    存在/不存在
+     */
+    private function checkNewOnlineIsExist($albumid)
+    {
+        if (empty($albumid)) {
+            $this->setError(ErrorConf::paramError());
+            return false;
+        }
+        $db = DbConnecter::connectMysql('share_main');
+        $sql = "SELECT * FROM `recommend_new_online` WHERE `albumid` = ?";
+        $st = $db->prepare($sql);
+        $st->execute(array($albumid));
+        $info = $st->fetch(PDO::FETCH_ASSOC);
+        if (empty($info)) {
+            return false;
+        }
+        return true;
     }
 }
