@@ -1,0 +1,134 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">评论列表筛选</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <legend>搜索查询</legend>
+                            <div class="control-group">
+                                <label class="control-label">条件</label>
+                                <div class="controls">
+                                    <select id="selectError" class="auto_submit">
+                                        <option value="">评论名称</option>
+                                    </select>
+                                    <p class="help-block">请选择查询条件</p>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">内容</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" id="typeahead">
+                                    <p class="help-block">输入查询内容</p>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="list-filter">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">评论列表</div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th width="100">用户ID</th>
+						        <th width="500">评论内容</th>
+						        <th>添加时间</th>
+						        <th>状态</th>
+						        <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$commentList item=value}
+                            <tr>
+                                <td>{$value.id}</td>
+                                <td>{$value.userid}</td>
+                                <td>{$value.content}</td>
+                                <td>{$value.addtime}</td>
+                                <td>
+                                    {if $value.status eq '0'}已删除
+                                    {elseif $value.status eq 1}正常
+                                    {/if}
+                                </td>
+                                <td>
+                                    {if $value.status eq 1}
+                                    <a href="javascript:void(0);" id="op_comment_edit_{$value.id}">编辑</a>
+                                    &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_comment_delete_{$value.id}">删除</a>
+                                    {else}
+                                    <a href="javascript:void(0);" id="op_comment_recover_{$value.id}">恢复</a>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+    
+    {$pageBanner}
+</div>
+
+
+<script>
+{literal}
+$(function() {
+    $("[id^='op_comment']").on('click', function(){
+    	var data = {};
+    	var op = $(this).attr('id');
+    	data.op_name = op.split('_')[2];
+    	data.op_id   = op.split('_')[3];
+
+        if (data.op_name == 'edit') {
+            window.location.href = '/comment/comment_edit.php?id='+data.op_id;
+            return false;
+        }
+        console.log(data);
+    	
+    	$.post('/comment/comment_op.php', data, function(json){
+    		if (json && json.code == 10000) {
+                alert('操作成功');
+                window.location.reload();
+            } else {
+                alert(json);
+            }
+    	},'json')
+    })
+    $("#list-filter").on('click', function(){
+    	var url = window.location.href.split('?')[0];
+    	var data = {};
+    	var form_element = $(this).closest("form").find('.auto_submit');
+    	$.each(form_element, function(k,v){
+    		$(v).attr('name')
+    		// eval('data.' + ) = '';
+    	})
+    })
+});
+{/literal}
+</script>
+{include file="include/footer.html"}
