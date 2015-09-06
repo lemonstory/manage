@@ -6,7 +6,7 @@
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">Form Example</div>
+                <div class="muted pull-left"></div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
@@ -53,6 +53,8 @@ $(function() {
     $(".chzn-select").chosen();
     $("#submit_form").on('click', function(e){
     	e.preventDefault();
+    	$(".control-group").removeClass('error');
+    	$(".help-inline").remove();
     	$.post('/comment/collection.php', $(this).closest("form").serialize(), function(json){
     		if (json && json.code == 10000) {
     			alert('采集成功');
