@@ -67,7 +67,7 @@ class index extends controller
         // $smartyObj->assign('searchContent', $searchContent);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('storyList', $storyList);
-        $smartyObj->assign('albumactive', "active");
+        $smartyObj->assign('storyactive', "active");
         $smartyObj->display("album/story_list.html"); 
     }
 }

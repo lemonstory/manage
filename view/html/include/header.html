@@ -60,8 +60,8 @@
                         <li class="dropdown {$albumactive}">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">专辑故事 <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="menu1">
-                                <li><a href="#">专辑管理</a></li>
-                                <li><a href="#">故事管理</a></li>
+                                <li class="{$albumactive}"><a href="/album/index.php">专辑管理</a></li>
+                                <li class="{$storyactive}"><a href="/album/storylist.php">故事管理</a></li>
                             </ul>
                         </li>
                         <li class="{$commentactive}"><a href="#">评论管理</a></li>
@@ -88,9 +88,9 @@
 				         <li class="{$listside}"><a href="/privilege/list.php"><i class="icon-chevron-right"></i>权限列表</a></li>
 			         {elseif $useractive}
 			             <li class="{$getuserlistside}"><a href="/user/getuserlist.php"><i class="icon-chevron-right"></i>用户列表</a></li>
-			         {elseif $albumactive}
-				         <li class=""><a href="#"><i class="icon-chevron-right"></i>专辑列表</a></li>
-				         <li class=""><a href="#"><i class="icon-chevron-right"></i>故事列表</a></li>
+			         {elseif ($albumactive || $storyactive)}
+				         <li class="{$albumactive}"><a href="/album/index.php"><i class="icon-chevron-right"></i>专辑列表</a></li>
+				         <li class="{$storyactive}"><a href="/album/storylist.php"><i class="icon-chevron-right"></i>故事列表</a></li>
 			         {/if}
 			    </ul>
 			</div>
