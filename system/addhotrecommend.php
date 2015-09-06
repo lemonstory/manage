@@ -11,14 +11,17 @@ class addhotrecommend extends controller
         }
         $albumobj = new Album();
         $albuminfo = $albumobj->get_album_info($albumid);
+        if (empty($albuminfo)) {
+            $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
+        }
         
-        $ordernum = 100;
-        $manageobj = new ManageSystem();
-        $manageobj->addRecommendHotDb($albumid, $ordernum);
-        
-        
+        $refer = "";
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $refer = $_SERVER['HTTP_REFERER'];
+        }
         $smartyObj = $this->getSmartyObj();
         $smartyobj->assign('albuminfo', $albuminfo);
+        $smartyobj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('hotrecommendside', "active");
         $smartyObj->display("system/addhotrecommend.html"); 

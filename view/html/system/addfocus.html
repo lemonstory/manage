@@ -13,16 +13,24 @@
                         <fieldset>
                             <legend>添加焦点图</legend>
                             <div class="control-group">
-                                <div class="control-group">
-	                                <label class="control-label" for="fileInput">上传图片</label>
-	                                <div class="controls">
-	                                    <input class="input-file uniform_on" id="fileInput" type="file" name="focuspic">
-	                                    <p class="help-block">图片尺寸在 xx</p>
-	                                </div>
+	                            <label class="control-label" for="fileInput">上传图片</label>
+	                            <div class="controls">
+	                                {if $focusinfo.content}
+	                                <img src="{$focusinfo.content}" />
+	                                {/if}
+	                                <input class="input-file uniform_on" id="fileInput" type="file" name="focuspic">
+	                                <p class="help-block">图片尺寸在 xx</p>
 	                            </div>
+	                        </div>
+                            <div class="control-group">
+                                <label class="control-label">链接地址</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="linkurl" value="{$focusinfo.linkurl}">
+                                </div>
                             </div>
+                            <input type="hidden" id="focusid" name="focusid" value="{$focusinfo.id}" />
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">上传</button>
+                                <button type="submit" class="btn btn-primary">提交</button>
                             </div>
                         </fieldset>
                     </form>

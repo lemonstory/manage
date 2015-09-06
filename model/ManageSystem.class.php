@@ -77,27 +77,77 @@ class ManageSystem extends ModelBase
 	}
 	
 	
+	public function getFocusInfo($focusid) 
+	{
+	    $db = DbConnecter::connectMysql('share_manage');
+	    $sql = "SELECT * FROM `focus` WHERE `id` = ?";
+	    $st = $db->prepare($sql);
+	    $st->execute(array($focusid));
+	    $info = $st->fetch(PDO::FETCH_ASSOC);
+	    if (empty($info)) {
+	        return array();
+	    }
+	    return $info;
+	}
+	
 	/**
 	 * 后台添加焦点图
 	 * @param S $content
+	 * @param S $linkurl
 	 * @param I $ordernum
 	 * @return boolean
 	 */
-	public function addFocusDb($content, $ordernum = 100)
+	public function addFocusDb($picid, $content, $linkurl, $ordernum = 100)
 	{
-		if (empty($content)) {
+		if (empty($picid) || empty($content) || empty($linkurl)) {
 			return false;
 		}
 		$status = 0;
 		$addtime = date("Y-m-d H:i:s");
 		$db = DbConnecter::connectMysql('share_manage');
-        $sql = "INSERT INTO `focus` (`content`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO `focus` (`picid`, `content`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
-        $result = $st->execute(array($content, $ordernum, $status, $addtime));
+        $result = $st->execute(array($picid, $content, $linkurl, $ordernum, $status, $addtime));
         if (empty($result)) {
             return false;
         }
         return true;
+	}
+	
+	public function updateFocusInfo($focusid, $data)
+	{
+	    if (empty($focusid) || empty($data)) {
+	        return false;
+	    }
+	    
+	    $setstr = "";
+	    if (!empty($data['picid'])) {
+	        $setstr .= "`picid` = '{$data['picid']}',";
+	    }
+	    if (!empty($data['content'])) {
+	        $setstr .= "`content` = '{$data['content']}',";
+	    }
+	    if (!empty($data['linkurl'])) {
+	        $setstr .= "`linkurl` = '{$data['linkurl']}',";
+	    }
+	    if (!empty($data['ordernum'])) {
+	        $setstr .= "`ordernum` = '{$data['ordernum']}',";
+	    }
+	    $setstr = rtrim($setstr, ",");
+	    
+	    $db = DbConnecter::connectMysql('share_manage');
+	    $sql = "UPDATE `focus` SET {$setstr} WHERE `id` = '{$focusid}'";
+	    $st = $db->prepare($sql);
+	    $result = $st->execute();
+	    if (empty($result)) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	public function delFocusDb()
+	{
+	    
 	}
 	
 	
@@ -263,7 +313,7 @@ class ManageSystem extends ModelBase
      * @param I $albumid
      * @return boolean    true/false    存在/不存在
      */
-    private function checkRecommendHotIsExist($albumid)
+    public function checkRecommendHotIsExist($albumid)
     {
         if (empty($albumid)) {
             $this->setError(ErrorConf::paramError());
@@ -286,7 +336,7 @@ class ManageSystem extends ModelBase
      * @param I $albumid
      * @return boolean    true/false    存在/不存在
      */
-    private function checkNewOnlineIsExist($albumid)
+    public function checkNewOnlineIsExist($albumid)
     {
         if (empty($albumid)) {
             $this->setError(ErrorConf::paramError());

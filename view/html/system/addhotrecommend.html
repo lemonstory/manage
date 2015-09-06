@@ -9,20 +9,25 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/system/savehotrecommend.php">
+                    <form class="form-horizontal" method="post" action="###">
                         <fieldset>
                             <legend>热门推荐专辑</legend>
                             <div class="control-group">
-                                <div class="control-group">
-	                                <label class="control-label" for="fileInput">专辑名称</label>
-	                                <div class="controls">
-	                                    <input class="input-file uniform_on" id="fileInput" type="file" name="focuspic">
-	                                    <p class="help-block">图片尺寸在 xx</p>
-	                                </div>
-	                            </div>
+                                <label class="control-label">专辑名称</label>
+                                <div class="controls">
+                                    {$albuminfo.title}
+                                </div>
                             </div>
+                            <div class="control-group">
+                                <label class="control-label">专辑封面</label>
+                                <div class="controls">
+                                    {$albuminfo.cover}
+                                </div>
+                            </div>
+                            <input type="hidden" id="albumid" name="albumid" value="{$albuminfo.id}" />
+                            <input type="hidden" id="refer" name="refer" value="{$refer}" />
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">上传</button>
+                                <button type="submit" class="btn btn-primary">加入热门推荐</button>
                             </div>
                         </fieldset>
                     </form>
@@ -35,11 +40,28 @@
     
 </div>
 
-
 <script>
 {literal}
 $(function() {
-    
+    $("#btn-primary").click(function(){
+        $(".modal-body").text("");
+        var albumid = $("#albumid").val();
+        var refer = $("#refer").val();
+        var url = "/system/savehotrecommend.php";
+        $.post(url, {albumid:albumid}, function(data){
+            if(data.code == '10000') {
+            	if (refer == '') {
+            		location.href = '/system/hotrecommend.php';
+            	} else {
+            		location.href = refer;
+            	}
+            } else {
+                $(".modal-body").text(data.desc);
+                $("#myModal").modal({show:true});
+                return false;
+            }
+        }, "json");
+    });
 });
 {/literal}
 </script>
