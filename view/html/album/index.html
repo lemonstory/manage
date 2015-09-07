@@ -13,20 +13,16 @@
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
-                                <label class="control-label">条件</label>
+                                <label class="control-label">专辑ID</label>
                                 <div class="controls">
-                                    <select id="selectError" class="auto_submit">
-                                        <option value="">专辑ID</option>
-                                        <option value="">专辑名称</option>
-                                    </select>
-                                    <p class="help-block">请选择查询条件</p>
+                                    <input type="text" class="span6 auto_submit" id="typeahead" name="albumid">
+                                    <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
-                            
                             <div class="control-group">
-                                <label class="control-label">内容</label>
+                                <label class="control-label">专辑名称</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" id="typeahead">
+                                    <input type="text" class="span6 auto_submit" id="typeahead" name="title">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
@@ -58,6 +54,7 @@
 						        <th>名称</th>
 						        <th>添加时间</th>
 						        <th>排序</th>
+                                <th>是否显示</th>
 						        <th>状态</th>
 						        <th>操作</th>
                             </tr>
@@ -69,6 +66,13 @@
                                 <td>{$value.title}</td>
                                 <td>{$value.add_time}</td>
                                 <td><input type="text" name="view_order" class="form-control" op_id="{$value.id}" old_val="{$value.view_order}" value="{$value.view_order}" style="width: 60px;" /></td>
+                                <td>
+                                    {if $value.is_show}
+                                    <a href="javascript:void(0);" id="op_album_notshow_{$value.id}">取消</a>
+                                    {else}
+                                    <a href="javascript:void(0);" id="op_album_show_{$value.id}">显示</a>
+                                    {/if}
+                                </td>
                                 <td>
                                     {if $value.status eq '0'}已删除
                                     {elseif $value.status eq 1}正常
@@ -122,12 +126,16 @@ $(function() {
     })
     $("#list-filter").on('click', function(){
     	var url = window.location.href.split('?')[0];
+        var params = '';
     	var data = {};
     	var form_element = $(this).closest("form").find('.auto_submit');
     	$.each(form_element, function(k,v){
-    		$(v).attr('name')
-    		// eval('data.' + ) = '';
+            var k = $(v).attr('name');
+    		var v = $(v).attr('value');
+            params += k + '='+v+'&'
+    		
     	})
+        window.location.href = url+'?'+params;
     })
     $("[name='view_order']").on('change', function(){
         var old_val = parseInt($(this).attr('old_val'));

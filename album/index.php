@@ -7,56 +7,38 @@ class index extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
-        $searchCondition = $this->getRequest('searchCondition', 'uid');
-        $searchContent = $this->getRequest('searchContent', '');
+        
         if (empty($currentPage)) {
             $currentPage = 0;
         } 
         if (empty($perPage)) {
             $perPage = 20;
         }
-        
+
+        $albumid = $this->getRequest('albumid', '');
+        $title   = $this->getRequest('title', '');
+
+        $search_filter = array();
+
+        if ($title) {
+            $search_filter['title'] = $title;
+        }
+        if ($albumid) {
+            $search_filter['albumid'] = $albumid;
+        }
+
         $pageBanner = "";
-        $baseUri = "/album/index.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}";
         
-    	
-        $ssoList = array();
-        $ssoObj = new Sso();
-        if (!empty($searchContent)) {
-            // 搜索
-            // if ($searchCondition == 'uid') {
-            //     $uid = intval($searchContent);
-            //     $ssoInfo = $ssoObj->getInfoWithUid($uid);
-            //     if (empty($ssoInfo)) {
-            //         $this->showErrorJson("账户不存在");
-            //     }
-            //     $albumObj = new Album();
-            //     $albumList = $albumObj->getAlbumInfo($uid);
-            // } elseif ($searchCondition == 'phone') {
-            //     $phoneNumber = $searchContent;
-            //     $ssoInfo = $ssoObj->getInfoWithPhoneNumber($phoneNumber);
-            //     if (empty($ssoInfo)) {
-            //         $this->showErrorJson("账户不存在");
-            //     }
-            //     $uid = $ssoInfo['uid'];
-            //     $albumObj = new Album();
-            //     $albumList = $albumObj->getAlbumInfo($uid);
-            // }
-            // if(empty($albumList)) {
-            //     $this->showErrorJson("用户数据为空");
-            // }
-            // $ssoList = array($ssoInfo['uid'] => $ssoInfo);
-        } else {
-            $manageAlbumObj = new ManageAlbum();
-            $albumList = $manageAlbumObj->getAlbumList($currentPage + 1, $perPage);
-            if(empty($albumList)) {
-                $this->showErrorJson("专辑数据为空");
-            }
-            $totalCount = $manageAlbumObj->getAlbumTotalCount();
-            
-            if ($totalCount > $perPage) {
-                $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
-            }
+        $manageAlbumObj = new ManageAlbum();
+        $albumList = $manageAlbumObj->getAlbumList($currentPage + 1, $perPage);
+        if(empty($albumList)) {
+            $this->showErrorJson("专辑数据为空");
+        }
+        $totalCount = $manageAlbumObj->getAlbumTotalCount();
+        
+        if ($totalCount > $perPage) {
+            $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
         }
 
         $smartyObj = $this->getSmartyObj();
