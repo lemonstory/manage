@@ -57,14 +57,14 @@
                         <li class="{$indexactive}"><a href="/index.php">首页</a></li>
                         <li class="{$privilege}"><a href="/privilege/userlist.php">权限管理</a></li>
                         <li class="{$useractive}"><a href="/user/getuserlist.php">用户管理</a></li>
-                        <li class="dropdown {$albumactive}">
+                        <li class="dropdown {$albumactive}{$storyactive}">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">专辑故事 <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="menu1">
                                 <li class="{$albumactive}"><a href="/album/index.php">专辑管理</a></li>
                                 <li class="{$storyactive}"><a href="/album/storylist.php">故事管理</a></li>
                             </ul>
                         </li>
-                        <li class="{$commentactive}"><a href="#">评论管理</a></li>
+                        <li class="{$commentlistactive}{$commentcollectionactive}"><a href="/comment/commentlist.php">评论管理</a></li>
                         <li class="{$anactive}"><a href="#">统计相关</a></li>
                     </ul>
                 </div>
@@ -91,6 +91,9 @@
 			         {elseif ($albumactive || $storyactive)}
 				         <li class="{$albumactive}"><a href="/album/index.php"><i class="icon-chevron-right"></i>专辑列表</a></li>
 				         <li class="{$storyactive}"><a href="/album/storylist.php"><i class="icon-chevron-right"></i>故事列表</a></li>
+                      {elseif ($commentlistactive || $commentcollectionactive)}
+                         <li class="{$commentcollectionactive}"><a href="/comment/collection.php"><i class="icon-chevron-right"></i>评论采集</a></li>
+                         <li class="{$commentlistactive}"><a href="/comment/commentlist.php"><i class="icon-chevron-right"></i>评论列表</a></li>
 			         {/if}
 			    </ul>
 			</div>

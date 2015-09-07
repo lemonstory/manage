@@ -17,7 +17,7 @@ class index extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/comment/index.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/comment/commentlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         
     	
         $ssoList = array();
@@ -67,7 +67,7 @@ class index extends controller
         // $smartyObj->assign('searchContent', $searchContent);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('commentList', $commentList);
-        $smartyObj->assign('commentactive', "active");
+        $smartyObj->assign('commentlistactive', "active");
         $smartyObj->display("comment/comment_list.html"); 
     }
 }
