@@ -15,14 +15,14 @@
                             <div class="control-group">
                                 <label class="control-label">专辑ID</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" id="typeahead" name="albumid">
+                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$search_filter.albumid}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="control-label">专辑名称</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" id="typeahead" name="title">
+                                    <input type="text" class="span6 auto_submit" name="title" value="{$search_filter.title}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
@@ -79,8 +79,9 @@
                                     {/if}
                                 </td>
                                 <td>
+                                    <a href="javascript:void(0);" id="op_album_view_{$value.id}">查看故事</a>
                                     {if $value.status eq 1}
-                                    <a href="javascript:void(0);" id="op_album_edit_{$value.id}">编辑</a>
+                                    &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_album_edit_{$value.id}">编辑</a>
                                     &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_album_delete_{$value.id}">删除</a>
                                     {else}
                                     <a href="javascript:void(0);" id="op_album_recover_{$value.id}">恢复</a>
@@ -111,6 +112,9 @@ $(function() {
 
         if (data.op_name == 'edit') {
             window.location.href = '/album/album_edit.php?id='+data.op_id;
+            return false;
+        } else if (data.op_name == 'view') {
+            window.location.href = '/album/storylist.php?albumid='+data.op_id;
             return false;
         }
         console.log(data);

@@ -7,6 +7,7 @@ class index extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
+        $where = array();
         
         if (empty($currentPage)) {
             $currentPage = 0;
@@ -22,20 +23,23 @@ class index extends controller
 
         if ($title) {
             $search_filter['title'] = $title;
+            $where[] = "`title` like '%{$title}%' ";
         }
         if ($albumid) {
             $search_filter['albumid'] = $albumid;
+            $where[] = "`id` ='{$albumid}' ";
         }
 
         $pageBanner = "";
         $baseUri = "/album/index.php?albumid={$albumid}&title={$title}";
         
         $manageAlbumObj = new ManageAlbum();
-        $albumList = $manageAlbumObj->getAlbumList($currentPage + 1, $perPage);
-        if(empty($albumList)) {
-            $this->showErrorJson("专辑数据为空");
+        // where 处理
+        if ($where) {
+            $where = implode(" AND ", $where);
         }
-        $totalCount = $manageAlbumObj->getAlbumTotalCount();
+        $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
+        $totalCount = $manageAlbumObj->getAlbumTotalCount($where);
         
         if ($totalCount > $perPage) {
             $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
@@ -45,8 +49,7 @@ class index extends controller
         $smartyObj->assign('totalCount', $totalCount);
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
-        // $smartyObj->assign('searchCondition', $searchCondition);
-        // $smartyObj->assign('searchContent', $searchContent);
+        $smartyObj->assign('search_filter', $search_filter);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('albumList', $albumList);
         $smartyObj->assign('albumactive', "active");

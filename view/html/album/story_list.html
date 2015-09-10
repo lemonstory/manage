@@ -13,20 +13,23 @@
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
-                                <label class="control-label">条件</label>
+                                <label class="control-label">专辑ID</label>
                                 <div class="controls">
-                                    <select id="selectError" class="auto_submit">
-                                        <option value="">专辑ID</option>
-                                        <option value="">专辑名称</option>
-                                    </select>
-                                    <p class="help-block">请选择查询条件</p>
+                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$search_filter.albumid}">
+                                    <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
-                            
                             <div class="control-group">
-                                <label class="control-label">内容</label>
+                                <label class="control-label">故事ID</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" id="typeahead">
+                                    <input type="text" class="span6 auto_submit" name="storyid" value="{$search_filter.storyid}">
+                                    <p class="help-block">输入查询内容</p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">故事名称</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="title" value="{$search_filter.title}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
@@ -119,13 +122,17 @@ $(function() {
     	},'json')
     })
     $("#list-filter").on('click', function(){
-    	var url = window.location.href.split('?')[0];
-    	var data = {};
-    	var form_element = $(this).closest("form").find('.auto_submit');
-    	$.each(form_element, function(k,v){
-    		$(v).attr('name')
-    		// eval('data.' + ) = '';
-    	})
+        var url = window.location.href.split('?')[0];
+        var params = '';
+        var data = {};
+        var form_element = $(this).closest("form").find('.auto_submit');
+        $.each(form_element, function(k,v){
+            var k = $(v).attr('name');
+            var v = $(v).attr('value');
+            params += k + '='+v+'&'
+            
+        })
+        window.location.href = url+'?'+params;
     })
 });
 {/literal}

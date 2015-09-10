@@ -1,7 +1,7 @@
 <?php
 class ManageAlbum extends ModelBase 
 {
-    public function getAlbumList($currentPage = 1, $perPage = 50) 
+    public function getAlbumList($where = array(), $currentPage = 1, $perPage = 50) 
     {
         if (empty($currentPage)) {
             $currentPage = 1;
@@ -15,11 +15,16 @@ class ManageAlbum extends ModelBase
         if ($perPage <= 0) {
             $perPage = 50;
         }
+        if ($where) {
+            $where = " where {$where} ";
+        } else {
+            $where = '';
+        }
         $offset = ($currentPage - 1) * $perPage;
         
         $list = array();
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "SELECT * FROM `album` ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
+        $sql = "SELECT * FROM `album` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
         
         $st = $db->prepare($sql);
         $st->execute();
@@ -27,9 +32,14 @@ class ManageAlbum extends ModelBase
         return $list;
     }
     
-    public function getAlbumTotalCount()
+    public function getAlbumTotalCount($where = array())
     {
         $db = DbConnecter::connectMysql('share_story');
+        if ($where) {
+            $where = " where {$where} ";
+        } else {
+            $where = '';
+        }
         $sql = "SELECT COUNT(*) FROM `album`";
         
         $st = $db->prepare($sql);

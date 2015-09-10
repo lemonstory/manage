@@ -7,64 +7,57 @@ class index extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
-        $searchCondition = $this->getRequest('searchCondition', 'uid');
-        $searchContent = $this->getRequest('searchContent', '');
+        $albumid = (int)$this->getRequest('albumid', 0);
+        $storyid = (int)$this->getRequest('storyid', 0);
+        $title   = $this->getRequest('title', '');
+
+        $search_filter = $where = array();
+
         if (empty($currentPage)) {
             $currentPage = 0;
         } 
         if (empty($perPage)) {
             $perPage = 20;
         }
+
+        if ($albumid) {
+            $search_filter['albumid'] = $albumid;
+            $where[] = " `album_id` = '{$albumid}' ";
+        }
+
+        if ($storyid) {
+            $search_filter['storyid'] = $storyid;
+            $where[] = " `id` = '{$storyid}' ";
+        }
+        if ($title) {
+            $search_filter['title'] = $title;
+            $where[] = " `title` like '%{$title}%' ";
+        }
         
         $pageBanner = "";
-        $baseUri = "/story/index.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/story/index.php?perPage={$perPage}&";
         
     	
         $ssoList = array();
         $ssoObj = new Sso();
-        if (!empty($searchContent)) {
-            // 搜索
-            // if ($searchCondition == 'uid') {
-            //     $uid = intval($searchContent);
-            //     $ssoInfo = $ssoObj->getInfoWithUid($uid);
-            //     if (empty($ssoInfo)) {
-            //         $this->showErrorJson("账户不存在");
-            //     }
-            //     $storyObj = new Story();
-            //     $storyList = $storyObj->getStoryInfo($uid);
-            // } elseif ($searchCondition == 'phone') {
-            //     $phoneNumber = $searchContent;
-            //     $ssoInfo = $ssoObj->getInfoWithPhoneNumber($phoneNumber);
-            //     if (empty($ssoInfo)) {
-            //         $this->showErrorJson("账户不存在");
-            //     }
-            //     $uid = $ssoInfo['uid'];
-            //     $storyObj = new Story();
-            //     $storyList = $storyObj->getStoryInfo($uid);
-            // }
-            // if(empty($storyList)) {
-            //     $this->showErrorJson("用户数据为空");
-            // }
-            // $ssoList = array($ssoInfo['uid'] => $ssoInfo);
-        } else {
-            $manageStoryObj = new ManageStory();
-            $storyList = $manageStoryObj->getStoryList($currentPage + 1, $perPage);
-            if(empty($storyList)) {
-                $this->showErrorJson("专辑数据为空");
-            }
-            $totalCount = $manageStoryObj->getStoryTotalCount();
-            
-            if ($totalCount > $perPage) {
-                $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
-            }
+        
+        $manageStoryObj = new ManageStory();
+        if ($where) {
+            $where = implode(" AND ", $where);
+        }
+        $storyList = $manageStoryObj->getStoryList($where, $currentPage + 1, $perPage);
+
+        $totalCount = $manageStoryObj->getStoryTotalCount($where);
+        
+        if ($totalCount > $perPage) {
+            $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
         }
 
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('totalCount', $totalCount);
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
-        // $smartyObj->assign('searchCondition', $searchCondition);
-        // $smartyObj->assign('searchContent', $searchContent);
+        $smartyObj->assign('search_filter', $search_filter);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('storyList', $storyList);
         $smartyObj->assign('storyactive', "active");
