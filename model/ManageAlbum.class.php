@@ -40,7 +40,7 @@ class ManageAlbum extends ModelBase
         } else {
             $where = '';
         }
-        $sql = "SELECT COUNT(*) FROM `album`";
+        $sql = "SELECT COUNT(*) FROM `album` {$where}";
         
         $st = $db->prepare($sql);
         $st->execute();

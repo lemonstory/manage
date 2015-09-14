@@ -6,67 +6,55 @@ class index extends controller
     public function action()
     {
         $currentPage = $this->getRequest('p') + 0;
-        $perPage = $this->getRequest('perPage', 20) + 0;
-        $searchCondition = $this->getRequest('searchCondition', 'uid');
-        $searchContent = $this->getRequest('searchContent', '');
+        $perPage     = $this->getRequest('perPage', 20) + 0;
+        $content     = $this->getRequest('content', '');
+        $albumid     = (int)$this->getRequest('albumid', 0);
+        $status      = (int)$this->getRequest('status', 1);
+
+        $searchFilter = $where = array();
+        $where[] = "`status` = {$status} ";
+
         if (empty($currentPage)) {
             $currentPage = 0;
         } 
         if (empty($perPage)) {
             $perPage = 20;
         }
-        
+
+        if ($albumid) {
+            $searchFilter['albumid'] = $albumid;
+            $where[] = "`albumid` = {$albumid} ";
+        }
+        if ($content) {
+            $searchFilter['content'] = $content;
+            $where[] = "`content` like '%{$content}%'";
+        }
+
+        if ($where) {
+            $where = implode(" AND ", $where);
+        }
+
         $pageBanner = "";
-        $baseUri = "/comment/commentlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/comment/commentlist.php?perPage={$perPage}";
+
+        $manageCommentObj = new ManageComment();
+        $commentList = $manageCommentObj->getCommentList($where, $currentPage + 1, $perPage);
+        if(empty($commentList)) {
+            $this->showErrorJson("专辑数据为空");
+        }
+        $totalCount = $manageCommentObj->getCommentTotalCount($where);
         
-    	
-        $ssoList = array();
-        $ssoObj = new Sso();
-        if (!empty($searchContent)) {
-            // 搜索
-            // if ($searchCondition == 'uid') {
-            //     $uid = intval($searchContent);
-            //     $ssoInfo = $ssoObj->getInfoWithUid($uid);
-            //     if (empty($ssoInfo)) {
-            //         $this->showErrorJson("账户不存在");
-            //     }
-            //     $commentObj = new Comment();
-            //     $commentList = $commentObj->getCommentInfo($uid);
-            // } elseif ($searchCondition == 'phone') {
-            //     $phoneNumber = $searchContent;
-            //     $ssoInfo = $ssoObj->getInfoWithPhoneNumber($phoneNumber);
-            //     if (empty($ssoInfo)) {
-            //         $this->showErrorJson("账户不存在");
-            //     }
-            //     $uid = $ssoInfo['uid'];
-            //     $commentObj = new Comment();
-            //     $commentList = $commentObj->getCommentInfo($uid);
-            // }
-            // if(empty($commentList)) {
-            //     $this->showErrorJson("用户数据为空");
-            // }
-            // $ssoList = array($ssoInfo['uid'] => $ssoInfo);
-        } else {
-            $manageCommentObj = new ManageComment();
-            $commentList = $manageCommentObj->getCommentList($currentPage + 1, $perPage);
-            if(empty($commentList)) {
-                $this->showErrorJson("专辑数据为空");
-            }
-            $totalCount = $manageCommentObj->getCommentTotalCount();
-            
-            if ($totalCount > $perPage) {
-                $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
-            }
+        if ($totalCount > $perPage) {
+            $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
         }
 
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('totalCount', $totalCount);
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
-        // $smartyObj->assign('searchCondition', $searchCondition);
-        // $smartyObj->assign('searchContent', $searchContent);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('commentList', $commentList);
+        $smartyObj->assign('searchFilter', $searchFilter);
         $smartyObj->assign('commentlistactive', "active");
         $smartyObj->display("comment/comment_list.html"); 
     }

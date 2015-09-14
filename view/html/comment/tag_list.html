@@ -5,7 +5,7 @@
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">评论列表筛选</div>
+                <div class="muted pull-left">标签列表筛选</div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
@@ -13,19 +13,16 @@
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
-                                <label class="control-label">专辑ID</label>
+                                <label class="control-label">关键字</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$searchFilter.albumid}">
-                                        <option value="">评论名称</option>
-                                    </select>
-                                    <p class="help-block">请选择查询条件</p>
+                                    <input type="text" class="span6 auto_submit" name="keywords" value="{$search_filter.keywords}">
+                                    <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
-                            
                             <div class="control-group">
-                                <label class="control-label">内容</label>
+                                <label class="control-label">标签ID</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" name="content" value="{$searchFilter.content}">
+                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$search_filter.albumid}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
@@ -46,7 +43,7 @@
             <!-- block -->
             <div class="block">
                 <div class="navbar navbar-inner block-header">
-                    <div class="muted pull-left">评论列表</div>
+                    <div class="muted pull-left">标签列表</div>
                     <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
                 </div>
                 <div class="block-content collapse in">
@@ -54,19 +51,17 @@
                         <thead>
                             <tr>
                                 <th>id</th>
-                                <th width="100">用户ID</th>
-                                <th width="100">专辑ID</th>
-						        <th width="500">评论内容</th>
+						        <th>标签ID</th>
+						        <th>名称</th>
 						        <th>添加时间</th>
 						        <th>状态</th>
 						        <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {foreach from=$commentList item=value}
+                            {foreach from=$tagList item=value}
                             <tr>
                                 <td>{$value.id}</td>
-                                <td>{$value.userid}</td>
                                 <td>{$value.albumid}</td>
                                 <td>{$value.content}</td>
                                 <td>{$value.addtime}</td>
@@ -77,10 +72,10 @@
                                 </td>
                                 <td>
                                     {if $value.status eq 1}
-                                    <a href="javascript:void(0);" id="op_comment_edit_{$value.id}">编辑</a>
-                                    &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_comment_delete_{$value.id}">删除</a>
+                                    <a href="javascript:void(0);" id="op_tag_edit_{$value.id}">编辑</a>
+                                    &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_tag_delete_{$value.id}">删除</a>
                                     {else}
-                                    <a href="javascript:void(0);" id="op_comment_recover_{$value.id}">恢复</a>
+                                    <a href="javascript:void(0);" id="op_tag_recover_{$value.id}">恢复</a>
                                     {/if}
                                 </td>
                             </tr>
@@ -100,19 +95,19 @@
 <script>
 {literal}
 $(function() {
-    $("[id^='op_comment']").on('click', function(){
+    $("[id^='op_tag']").on('click', function(){
     	var data = {};
     	var op = $(this).attr('id');
     	data.op_name = op.split('_')[2];
     	data.op_id   = op.split('_')[3];
 
         if (data.op_name == 'edit') {
-            window.location.href = '/comment/comment_edit.php?id='+data.op_id;
+            window.location.href = '/album/tag_edit.php?id='+data.op_id;
             return false;
         }
         console.log(data);
     	
-    	$.post('/comment/comment_op.php', data, function(json){
+    	$.post('/album/tag_op.php', data, function(json){
     		if (json && json.code == 10000) {
                 alert('操作成功');
                 window.location.reload();
@@ -122,13 +117,17 @@ $(function() {
     	},'json')
     })
     $("#list-filter").on('click', function(){
-    	var url = window.location.href.split('?')[0];
-    	var data = {};
-    	var form_element = $(this).closest("form").find('.auto_submit');
-    	$.each(form_element, function(k,v){
-    		$(v).attr('name')
-    		// eval('data.' + ) = '';
-    	})
+        var url = window.location.href.split('?')[0];
+        var params = '';
+        var data = {};
+        var form_element = $(this).closest("form").find('.auto_submit');
+        $.each(form_element, function(k,v){
+            var k = $(v).attr('name');
+            var v = $(v).attr('value');
+            params += k + '='+v+'&'
+            
+        })
+        window.location.href = url+'?'+params;
     })
 });
 {/literal}
