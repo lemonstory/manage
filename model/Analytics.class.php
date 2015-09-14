@@ -259,9 +259,6 @@ class Analytics extends ModelBase
     		case 'reg' :
     			$sql = "select  personnum as pn, personnum as tn, substring(timeline,9,2) as tl from countreg where timeline>=? and timeline<=? limit 25 ;";
     			break;
-    		case 'reg' :
-    			$sql = "select totalcount as tn,uidnum as pn, friendnum as fn , substring(timeline,9,2) as tl from countfriend where timeline>=? and timeline<=? limit 25 ;";
-    			break;
     		case 'down' :
     			$sql = "select  personnum as tn, substring(timeline,9,2) as tl from houronline where timeline>=? and timeline<=? limit 25 ;";
     			break;
