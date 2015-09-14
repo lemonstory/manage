@@ -1,0 +1,178 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">标签列表筛选</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <legend>搜索查询</legend>
+                            <div class="control-group">
+                                <label class="control-label">关键字</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="keywords" value="{$search_filter.keywords}">
+                                    <p class="help-block">输入查询内容</p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">标签ID</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$search_filter.albumid}">
+                                    <p class="help-block">输入查询内容</p>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="list-filter">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">标签列表</div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+						        <th>UID</th>
+						        <th>内容</th>
+						        <th>添加时间</th>
+						        <th>状态</th>
+						        <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$feedbackList item=value}
+                            <tr>
+                                <td>{$value.id}</td>
+                                <td>{$value.uid}</td>
+                                <td class="content">{$value.content}</td>
+                                <td>{$value.addtime}</td>
+                                <td>
+                                    {if $value.status eq '0'}已删除
+                                    {elseif $value.status eq 1}正常
+                                    {/if}
+                                </td>
+                                <td>
+                                    {if $value.status eq 1}
+                                    <a href="javascript:void(0);" id="op_feedback_edit_{$value.id}">编辑</a>
+                                    &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_feedback_delete_{$value.id}">删除</a>
+                                    &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_feedback_reply_{$value.id}">回复</a>
+                                    {else}
+                                    <a href="javascript:void(0);" id="op_feedback_recover_{$value.id}">恢复</a>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+    
+    {$pageBanner}
+</div>
+<div id="myModal" class="modal hide fade in lemon-alert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false" style="display: none;">
+<div class="modal-header">
+  <button type="button" class="close close-alert" data-dismiss="modal" aria-hidden="true">×</button>
+  <h3 id="myModalLabel">回复</h3>
+</div>
+<form class="form-horizontal" action="/album/album_edit.php">
+	<div class="modal-body">
+	    <input type="hidden" name="feedbackid" value="" />
+	    <fieldset>
+	    	<div class="control-group">
+	            <label class="control-label">意见反馈：</label>
+	            <div class="controls" style="margin-top:5px;">
+	                <span class="feedback-content"></span>
+	            </div>
+	        </div>
+	        <div class="control-group">
+	            <label class="control-label">回复内容：<span class="required">*</span></label>
+	            <div class="controls">
+	                <textarea class="span6 m-wrap" name="intro" style="margin: 0px; height: 137px; width: 233px;">{$albuminfo.intro}</textarea>
+	            </div>
+	        </div>
+	    </fieldset>
+
+	</div>
+	<div class="modal-footer">
+	  <button class="btn close-alert" data-dismiss="modal">关闭</button>
+	  <button class="btn btn-primary submit-alert">Save changes</button>
+	</div>
+</form>
+</div>
+<div class="modal-backdrop fade in" style="display:none;"></div>
+
+<script>
+{literal}
+$(function() {
+    $("[id^='op_feedback']").on('click', function(){
+    	var data = {};
+    	var op = $(this).attr('id');
+    	data.op_name = op.split('_')[2];
+    	data.op_id   = op.split('_')[3];
+    	if (data.op_name == 'reply') {
+    		$("[name='feedbackid']").val('');
+    		$(".feedback-content").html('');
+    		$(".feedback-content").html($(this).closest("tr").find('.content').html());
+    		$("[name='feedbackid']").val(data.op_id);
+    		$(".modal-backdrop").show();
+	    	$(".lemon-alert").show();
+			return false;
+    	}
+    	
+    	
+    	$.post('/album/feedback_op.php', data, function(json){
+    		if (json && json.code == 10000) {
+                alert('操作成功');
+                window.location.reload();
+            } else {
+                alert(json);
+            }
+    	},'json')
+    })
+    $("#list-filter").on('click', function(){
+        var url = window.location.href.split('?')[0];
+        var params = '';
+        var data = {};
+        var form_element = $(this).closest("form").find('.auto_submit');
+        $.each(form_element, function(k,v){
+            var k = $(v).attr('name');
+            var v = $(v).attr('value');
+            params += k + '='+v+'&'
+            
+        })
+        window.location.href = url+'?'+params;
+    })
+    $(".close-alert").on('click', function(e){
+    	e.preventDefault();
+    	$(".lemon-alert").hide();
+    	$(".modal-backdrop").hide();
+    })
+    $(".submit-alert").on('click', function(e){
+    	e.preventDefault();
+    })
+});
+{/literal}
+</script>
+{include file="include/footer.html"}
