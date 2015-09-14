@@ -1,0 +1,59 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">封号用户</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/user/forbiddenuser.php">
+                        <fieldset>
+                            <legend>封号用户</legend>
+                            <div class="control-group">
+                                <label class="control-label">用户信息</label>
+                                <div class="controls">
+                                    {$userinfo.nickname}<br /><img alt="" src="{$userinfo.avatar}" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">原因</label>
+                                <div class="controls">
+                                    {foreach from=$reasons key=reasonid item=reason}
+                                    <label class="radio-inline">
+                                      <input type="radio" name="reason" id="inlineRadio1" value="{$reasonid}"> {$reason}
+                                    </label>
+                                    {/foreach}
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">其他原因</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="admininput" name="admininput" value="">
+                                </div>
+                            </div>
+                            <input type="hidden" name="forbiddenuid" value="{$userinfo.uid}">
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+</div>
+ 
+{literal}
+<script>
+$(document).ready(function(){
+});
+</script>
+{/literal}
+
+{include file="include/footer.html"}

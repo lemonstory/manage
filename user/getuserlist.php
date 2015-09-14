@@ -19,7 +19,7 @@ class getuserlist extends controller
         $pageBanner = "";
         $baseUri = "/user/getuserlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         
-        /*$ssoList = array();
+        $ssoList = array();
         $ssoObj = new Sso();
         if (!empty($searchContent)) {
             // 搜索
@@ -27,29 +27,29 @@ class getuserlist extends controller
                 $uid = intval($searchContent);
                 $ssoInfo = $ssoObj->getInfoWithUid($uid);
                 if (empty($ssoInfo)) {
-                    $this->showErrorJson("账户不存在");
+                    $this->showErrorJson(ErrorConf::userNoExist());
                 }
                 $userObj = new User();
                 $userList = $userObj->getUserInfo($uid);
             } elseif ($searchCondition == 'phone') {
-                $phoneNumber = $searchContent;
+                /*$phoneNumber = $searchContent;
                 $ssoInfo = $ssoObj->getInfoWithPhoneNumber($phoneNumber);
                 if (empty($ssoInfo)) {
-                    $this->showErrorJson("账户不存在");
+                    $this->showErrorJson(ErrorConf::userNoExist());
                 }
                 $uid = $ssoInfo['uid'];
                 $userObj = new User();
-                $userList = $userObj->getUserInfo($uid);
+                $userList = $userObj->getUserInfo($uid);*/
             }
             if(empty($userList)) {
-                $this->showErrorJson("用户数据为空");
+                $this->showErrorJson(ErrorConf::userNoExist());
             }
             $ssoList = array($ssoInfo['uid'] => $ssoInfo);
         } else {
             $manageUserObj = new ManageUser();
             $userList = $manageUserObj->getUserList($currentPage + 1, $perPage);
             if(empty($userList)) {
-                $this->showErrorJson("用户数据为空");
+                $this->showErrorJson(ErrorConf::userNoExist());
             }
             $totalCount = $manageUserObj->getUserTotalCount();
            
@@ -69,17 +69,14 @@ class getuserlist extends controller
         $aliOssObj = new AliOss();
         $dealUserList = array();
         foreach ($userList as $value) {
-        	
-        	$UserHomeCover = new UserHomeCover();
-        	$value['homecoverurl'] = current($UserHomeCover->getUserinfoHomeCover($uid));
             $value['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 100);
-            $value['phone'] = substr($ssoList[$value['uid']]['username'], 2);
+            $value['phone'] = substr($ssoList[$value['uid']]['phonenumber'], 2);
             $dealUserList[] = $value;
-        }*/
+        }
         
         $smartyObj = $this->getSmartyObj();
-        //$smartyObj->assign('userList', $dealUserList);
-        //$smartyObj->assign('totalCount', $totalCount);
+        $smartyObj->assign('userList', $dealUserList);
+        $smartyObj->assign('totalCount', $totalCount);
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('searchCondition', $searchCondition);

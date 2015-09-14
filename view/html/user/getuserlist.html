@@ -16,8 +16,8 @@
                                 <label class="control-label">条件</label>
                                 <div class="controls">
                                     <select id="selectError">
-                                        <option value="">用户UID</option>
-                                        <option value="">昵称</option>
+                                        <option {if $searchCondition=="uid"}selected{/if} value="uid">用户UID</option>
+                                        <option {if $searchCondition=="nickname"}selected{/if} value="nickname">名称</option>
                                     </select>
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
@@ -26,7 +26,7 @@
                             <div class="control-group">
                                 <label class="control-label">内容</label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead">
+                                    <input type="text" class="span6" id="typeahead" value="{$searchContent}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
             <div class="block">
                 <div class="navbar navbar-inner block-header">
                     <div class="muted pull-left">用户列表</div>
-                    <div class="pull-right"><span class="badge badge-info">1,234</span></div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
@@ -57,27 +57,19 @@
                                 <th>uid</th>
 						        <th>呢称</th>
 						        <th>头像</th>
+						        <th>手机号</th>
 						        <th>注册时间</th>
 						        <th>账号状态</th>
 						        <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>MarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>Mark</td>
-                                <td>
-                                    <a href="#">删除</a>
-                                </td>
-                            </tr>
                             {foreach from=$userList item=value}
                             <tr>
                                 <td>{$value.uid}</td>
                                 <td>{$value.nickname}</td>
                                 <td>{$value.avatar}</td>
+                                <td>{$value.phonenumber}</td>
                                 <td>{$value.addtime}</td>
                                 <td>
                                     {if $value.status eq '-3'}已删除
@@ -99,6 +91,9 @@
 						            <a href="/user/setuserstatus.php?uid={$value.uid}&status=1&p={$p}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}">解封</a>
 						            {/if}
 						            &nbsp;|&nbsp;
+						            <a href="#">查看评论</a>
+						            &nbsp;|&nbsp;
+						            <a href="#">查看收听</a>
                                 </td>
                             </tr>
                             {/foreach}
