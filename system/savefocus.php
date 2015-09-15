@@ -9,22 +9,29 @@ class savefocus extends controller
         $focusid = $this->getRequest("focusid");
         $linkurl = $this->getRequest("linkurl");
         $ordernum = $this->getRequest("ordernum");
+        if (empty($_FILES['focuspic']) || empty($linkurl) || empty($ordernum)) {
+            $this->showErrorJson(ErrorConf::paramError());
+        }
         
         $manageobj = new ManageSystem();
         $uploadobj = new Upload();
         if (empty($focusid)) {
         	// add
-            $picid = time();
+            $picid = $manageobj->getMaxPicId();
             $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $picid);
             if (!empty($path)) {
-                $content = $path;
-                $manageobj->addFocusDb($content, $linkurl);
+                $manageobj->addFocusDb($picid, $linkurl);
             }
         } else {
+            // edit
             $data = array();
             if (!empty($_FILES['focuspic'])) {
-                $focusinfo = $manageobj->getFocusInfo($focusid);
-                $data['picid'] = $focusinfo['picid'];
+                $picid = $manageobj->getMaxPicId();
+                $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $picid);
+                if (!empty($path)) {
+                    // 更新picid
+                    $data['picid'] = $picid;
+                }
             }
             if (!empty($linkurl)) {
                 $data['linkurl'] = $linkurl;
@@ -32,6 +39,7 @@ class savefocus extends controller
             if (!empty($ordernum)) {
                 $data['ordernum'] = $ordernum;
             }
+            $data['status'] = 0;
             $manageobj->updateFocusInfo($focusid, $data);
         }
         

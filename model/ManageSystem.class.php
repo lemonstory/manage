@@ -20,6 +20,15 @@ class ManageSystem extends ModelBase
         return $list;
 	}
 	
+	public function getMaxPicId() {
+	    $db = DbConnecter::connectMysql("share_manage");
+	    $sql = "select max(picid) from `focus` ";
+	    $st = $db->prepare($sql);
+	    $st->execute();
+	    $picid = $st->fetch(PDO::FETCH_COLUMN) + 1;
+	    return $picid;
+	}
+	
 	
 	/**
 	 * 首页获取热门推荐列表
@@ -92,22 +101,23 @@ class ManageSystem extends ModelBase
 	
 	/**
 	 * 后台添加焦点图
-	 * @param S $content
+	 * @param S $picid
 	 * @param S $linkurl
-	 * @param I $ordernum
 	 * @return boolean
 	 */
-	public function addFocusDb($picid, $content, $linkurl, $ordernum = 100)
+	public function addFocusDb($picid, $linkurl)
 	{
-		if (empty($picid) || empty($content) || empty($linkurl)) {
+		if (empty($picid) || empty($linkurl)) {
 			return false;
 		}
+		
 		$status = 0;
 		$addtime = date("Y-m-d H:i:s");
+		$ordernum = $picid + 100;
 		$db = DbConnecter::connectMysql('share_manage');
-        $sql = "INSERT INTO `focus` (`picid`, `content`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `focus` (`picid`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
-        $result = $st->execute(array($picid, $content, $linkurl, $ordernum, $status, $addtime));
+        $result = $st->execute(array($picid, $linkurl, $ordernum, $status, $addtime));
         if (empty($result)) {
             return false;
         }
@@ -123,9 +133,6 @@ class ManageSystem extends ModelBase
 	    $setstr = "";
 	    if (!empty($data['picid'])) {
 	        $setstr .= "`picid` = '{$data['picid']}',";
-	    }
-	    if (!empty($data['content'])) {
-	        $setstr .= "`content` = '{$data['content']}',";
 	    }
 	    if (!empty($data['linkurl'])) {
 	        $setstr .= "`linkurl` = '{$data['linkurl']}',";
