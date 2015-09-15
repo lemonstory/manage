@@ -1,0 +1,134 @@
+{include file="include/header.html"}
+
+
+
+<div>
+    <h2>主题统计</h2>
+    <form method="post" action="/analytics/analyticstopic.php" id="searchForm">
+	<input type='hidden' name='showflag' value='{$showflag}' />
+    <div>
+            选择数据类型：<a href="/analytics/analyticstopic.php?showflag=fbl"><font {if $showflag == 'fbl'}color='#ff9a00'{/if}>主题发布量趋势</font></a>&nbsp;&nbsp;&nbsp;
+    <a href="/analytics/analyticstopic.php?showflag=drb"><font {if $showflag == 'drb'}color='#ff9a00'{/if}>主题单日对比</font></a>&nbsp;&nbsp;&nbsp;
+    <a href="/analytics/analyticstopic.php?showflag=rjb"><font {if $showflag == 'rjb'}color='#ff9a00'{/if}>主题发布量人均比走势</font></a>&nbsp;&nbsp;&nbsp;
+    <a href="/analytics/analyticstopic.php?showflag=dlu"><font {if $showflag == 'dlu'}color='#ff9a00'{/if}>主题独立发布用户走势</font></a>&nbsp;&nbsp;&nbsp;
+	</div> 
+	<BR>
+    <div class="list_t">
+    
+	开始时间:<input name='stime' id='stime' value='{$stime}' placeholder="20141201" />&nbsp;&nbsp;结束时间:<input id="etime" name='etime' value='{$etime}'  placeholder="20141202" />
+    <input class="btn" type="submit" name="submit" value="查询" />
+    </div>
+    </form>
+</div><BR>
+<div style="margin-left:40%"><font size='4px'>{$stime}到{$etime}区间{$titleflag}</font></div>
+<div id="main" style="height:500px"></div>
+<div></div>
+<table class='table'>
+{if $showflag=='drb'}
+<tr><th>日期/小时</th><th>{$timestrforshow.$etime}</th><th>{$timestrforshow.$stime}</th><th>数据变化</th></tr>
+{foreach from=$slist key=skey item=sv}
+<tr>
+<td>{$sv.tl}</td>
+<td>{if $elist.$skey.tn neq ''}{$elist.$skey.tn}{else}---{/if}</td>
+<td>{$sv.tn}</td>
+<td>{$eslist.$skey.tn}</td>
+</tr>
+{/foreach}
+{else}
+<tr><th>日期</th><th>{$titleflag}</th></tr>
+{foreach from=$list item=value}
+<tr>
+<td>{$value.tl}</td>
+<td>{$value.tn}</td>
+</tr>
+{/foreach}
+{/if}
+</table>
+<div style="height:20px"></div>
+<!-- ECharts单文件引入 -->
+{literal}
+<script src="../../../static/js/echarts219/build/dist/echarts.js"></script>
+<script src="../../../static/js/jquery.js"></script>
+<script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '../../../static/js/echarts219/build/dist'
+        }
+    });
+    // 使用
+    require(
+            [
+                'echarts',
+                'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+
+    			option = {
+                	    tooltip : {
+                	        trigger: 'axis'
+                	    },
+                	    legend: {
+                	        data:{/literal}{$title}{literal}
+                	    },
+                	    toolbox: {
+                	        show : false,
+                	        feature : {
+                	            mark : {show: true},
+                	            dataView : {show: true, readOnly: false},
+                	            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                	            restore : {show: true},
+                	            saveAsImage : {show: true}
+                	        }
+                	    },
+                	    calculable : true,
+                	    xAxis : [
+                	        {
+                	            type : 'category',
+                	            boundaryGap : false,
+                	            data : {/literal}{$xaxis}{literal}
+                	        }
+                	    ],
+                	    yAxis : [
+                	        {
+                	            type : 'value'
+                	        }
+                	    ],
+                	    series : [
+							{/literal}
+               	        	{if $showflag=='drb'}
+                     	    {literal}
+   	                	        {
+   	                	            name:'{/literal}{$stime}{literal}',
+   	                	            type:'line',
+   	                	            data:{/literal}{$stn}{literal}
+   	                	        },
+   	                	        {
+   	                	            name:'{/literal}{$etime}{literal}',
+   	                	            type:'line',
+   	                	            data:{/literal}{$etn}{literal}
+   	                	        }
+   							{/literal}
+               	        	{else}
+                         	{literal}
+   	                	        {
+   	                	            name:'{/literal}{$titleflag}{literal}',
+   	                	            type:'line',
+   	                	            data:{/literal}{$tn}{literal}
+   	                	        }
+	                	    {/literal}
+               	        	{/if}
+	                	    {literal}
+                	    ]
+                	};
+
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+</script>
+{/literal}
+
+{include file="include/footer.html"}

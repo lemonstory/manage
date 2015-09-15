@@ -1,0 +1,226 @@
+{include file="include/header.html"}
+
+<div>
+    <h2>发布量统计</h2>
+    <form method="post" action="/analytics/analyticscount.php" id="searchForm">
+	<input type='hidden' name='showtype' value='{$showtype}' />
+    <div>
+            选择数据类型：<a href="/analytics/analyticscount.php?showtype=topic"><font {if $showtype == 'topic'}color='#ff9a00'{/if}>主题数据</font></a>&nbsp;&nbsp;&nbsp;
+    <a href="/analytics/analyticscount.php?showtype=comment"><font {if $showtype == 'comment'}color='#ff9a00'{/if}>评论数据</font></a>&nbsp;&nbsp;&nbsp;
+    <a href="/analytics/analyticscount.php?showtype=msg"><font {if $showtype == 'msg'}color='#ff9a00'{/if}>私信数据</font></a>&nbsp;&nbsp;&nbsp;
+    <a href="/analytics/analyticscount.php?showtype=digg"><font {if $showtype == 'digg'}color='#ff9a00'{/if}>点赞数据</font></a>&nbsp;&nbsp;&nbsp;
+    <a href="/analytics/analyticscount.php?showtype=reg"><font {if $showtype == 'reg'}color='#ff9a00'{/if}>注册数据</font></a>&nbsp;&nbsp;&nbsp;
+   <!--  <a href="/analytics/analyticscount.php?showtype=friend"><font {if $showtype == 'friend'}color='#ff9a00'{/if}>交友数据</font></a>&nbsp;&nbsp;&nbsp; -->
+   <!--  <a href="/analytics/analyticscount.php?showtype=countavg"><font {if $showtype == 'countavg'}color='#ff9a00'{/if}>人均比走势</font></a>-->
+	</div>
+	<BR>
+    <div class="list_t">
+	开始时间:<input name='stime' value='{$stime}' placeholder="20141201" />&nbsp;&nbsp;结束时间:<input name='etime' value='{$etime}'  placeholder="20141202" />
+    <input class="btn" type="submit" name="submit" value="查询" />
+    </div>
+    </form>
+</div>
+
+<div id="main" style="height:500px"></div>
+<div></div>
+<table class='table'>
+{if $showtype eq 'countavg'}
+<tr>
+	<th>日期</th>
+	<th>主题量/人</th>
+	<th>评论量/人</th>
+	<th>私信量/人</th>
+	<th>点赞量/人</th>
+	<th>交友量/人</th>
+</tr>
+{foreach from=$list item=value}
+<tr>
+	<td>{$value.tl}</td>
+	<td>{$value.topic}</td>
+	<td>{$value.comment}</td>
+	<td>{$value.msg}</td>
+	<td>{$value.digg}</td>
+	<td>{$value.friend}</td>
+</tr>
+{/foreach}
+{elseif $showtype eq 'friend'}
+<tr>
+	<th>日期</th>
+	<th>添加好友次数</th>
+	<th>操作人数</th>
+	<th>被添加人数</th>
+</tr>
+{foreach from=$list item=value}
+<tr>
+	<td>{$value.tl}</td>
+	<td>{$value.pn}</td>
+	<td>{$value.tn}</td>
+	<td>{$value.fn}</td>
+</tr>
+{/foreach}
+{elseif $showtype eq 'reg'}
+<tr>
+	<th>日期</th>
+	<th>注册人数</th>
+</tr>
+{foreach from=$list item=value}
+<tr>
+	<td>{$value.tl}</td>
+	<td>{$value.pn}</td>
+</tr>
+{/foreach}
+{else}
+<tr>
+	<th>日期</th>
+
+	{if $showtype=='topic'}
+	<th>主题发布总量</th>
+	<!--<th>主题发布人数</th>-->
+	{/if}
+	
+    {if $showtype=='comment'}
+	<th>评论发布总量</th>
+	<!--<th>评论发布人数</th>-->
+	{/if}
+
+    {if $showtype=='msg'}
+	<th>私信总量</th>
+	<!--<th>私信人数</th>-->
+	{/if}
+
+    {if $showtype=='digg'}
+	<th>点赞总量</th>
+	<!--<th>点赞人数</th>-->
+	{/if}
+
+
+</tr>
+{foreach from=$list item=value}
+<tr>
+	<td>{$value.tl}</td>
+	<td>{$value.tn}</td>
+	<!--<td>{$value.pn}</td>-->
+	
+</tr>
+{/foreach}
+{/if}
+</table>
+<div style="height:20px"></div>
+<!-- ECharts单文件引入 -->
+{literal}
+<script src="../../../static/js/echarts219/build/dist/echarts.js"></script>
+<script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '../../../static/js/echarts219/build/dist'
+        }
+    });
+    // 使用
+    require(
+            [
+                'echarts',
+                'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+
+    			option = {
+                	    tooltip : {
+                	        trigger: 'axis'
+                	    },
+                	    legend: {
+                	        data:{/literal}{$title}{literal}
+                	    },
+                	    toolbox: {
+                	        show : false,
+                	        feature : {
+                	            mark : {show: true},
+                	            dataView : {show: true, readOnly: false},
+                	            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                	            restore : {show: true},
+                	            saveAsImage : {show: true}
+                	        }
+                	    },
+                	    calculable : true,
+                	    xAxis : [
+                	        {
+                	            type : 'category',
+                	            boundaryGap : false,
+                	            data : {/literal}{$xaxis}{literal}
+                	        }
+                	    ],
+                	    yAxis : [
+                	        {
+                	            type : 'value'
+                	        }
+                	    ],
+                	    series : [
+							{/literal}
+							{if $showtype eq 'friend'}
+							{literal}
+							{
+                	            name:'操作人数',
+                	            type:'line',
+                	            data:{/literal}{$pn}{literal}
+                	        },
+                	        {
+                	            name:'次数',
+                	            type:'line',
+                	            data:{/literal}{$tn}{literal}
+                	        },
+                	        {
+                	            name:'被添加人数',
+                	            type:'line',
+                	            data:{/literal}{$fn}{literal}
+                	        }
+							{/literal}
+                	        {elseif $showtype eq "countavg"}
+                	        {literal}
+
+							{
+                	            name:'主题量/人',
+                	            type:'line',
+                	            data:{/literal}{$topic}{literal}
+                	        },
+                	        {
+                	            name:'评论量/人',
+                	            type:'line',
+                	            data:{/literal}{$comment}{literal}
+                	        },
+                	        {
+                	            name:'私信量/人',
+                	            type:'line',
+                	            data:{/literal}{$msg}{literal}
+                	        },
+                	        {
+                	            name:'点赞量/人',
+                	            type:'line',
+                	            data:{/literal}{$digg}{literal}
+                	        },
+                	        {
+                	            name:'交友量/人',
+                	            type:'line',
+                	            data:{/literal}{$friend}{literal}
+                	        }
+                	        {/literal}
+                	        {else}
+                	        {literal}
+	                	        {
+	                	            name:'数据量',
+	                	            type:'line',
+	                	            data:{/literal}{$tn}{literal}
+	                	        }
+	                	    {/literal}{/if}{literal}
+                	    ]
+                	};
+
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+</script>
+{/literal}
+
+{include file="include/footer.html"}

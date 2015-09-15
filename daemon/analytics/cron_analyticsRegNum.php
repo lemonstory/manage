@@ -1,6 +1,6 @@
 <?php
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
-class cron_analyticsTopicNum extends DaemonBase {
+class cron_analyticsRegNum extends DaemonBase {
 	public $isWhile = false;
 	protected function deal() {
 		$analytics = new Analytics();
@@ -21,4 +21,4 @@ class cron_analyticsTopicNum extends DaemonBase {
 	protected function checkLogPath() {}
 
 }
-new cron_analyticsTopicNum ();
+new cron_analyticsRegNum ();
