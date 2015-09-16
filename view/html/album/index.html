@@ -111,7 +111,7 @@ $(function() {
     	data.op_id   = op.split('_')[3];
 
         if (data.op_name == 'edit') {
-            window.location.href = '/album/album_edit.php?id='+data.op_id;
+            window.location.href = '/album/album_edit.php?id='+data.op_id+'&gourl='+window.location.href;
             return false;
         } else if (data.op_name == 'view') {
             window.location.href = '/album/storylist.php?albumid='+data.op_id;

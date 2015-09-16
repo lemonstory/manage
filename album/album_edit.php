@@ -19,20 +19,20 @@ class index extends controller
         		$albuminfo = $album->get_album_info($id);
         	}
         	if (!$albuminfo) {
-        		return $this->showErrorJson('不存在的专辑');
+        		return $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
         	}
         	if (!$title) {
-        		return $this->showErrorJson('title-标题不能为空');
+        		return $this->showErrorJson(ErrorConf::albumTitleNotEmpty());
         	} else {
                 $newalbuminfo['title'] = $title;
             }
         	if (!$intro) {
-				return $this->showErrorJson('intro-简介不能为空');
+				return $this->showErrorJson(ErrorConf::albumIntroNotEmpty());
         	} else {
                 $newalbuminfo['intro'] = $intro;
             }
             if (strlen($view_order) == 0) {
-                return $this->showErrorJson('view_order-排序不正确');
+                return $this->showErrorJson(ErrorConf::albumViewOrderNotEmpty());
             }
             $newalbuminfo['age_type'] = $age_type;
             $newalbuminfo['view_order'] = $view_order;

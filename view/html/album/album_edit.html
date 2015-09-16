@@ -85,12 +85,13 @@ $(function() {
         e.preventDefault();
         $(".control-group").removeClass("error");
         $.post('/album/album_edit.php', $(this).closest("form").serialize(), function(json){
-            console.log(json);
+
             if (json && json.code == 10000) {
                 alert('操作成功');
+                window.location.href = window.location.href.split('gourl=')[1];
             } else {
-                var name = json.split('-')[0];
-                var msg  = json.split('-')[1];
+                var name = json.desc.split('-')[0];
+                var msg  = json.desc.split('-')[1];
                 var errObj = $("[name='"+name+"']");
                 errObj.closest(".control-group").addClass('error');
                 errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');

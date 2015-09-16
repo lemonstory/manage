@@ -17,15 +17,15 @@ class index extends controller
         		$storyinfo = $story->get_story_info($id);
         	}
         	if (!$storyinfo) {
-        		return $this->showErrorJson('不存在的专辑');
+        		return $this->showErrorJson(ErrorConf::storyTitleNotEmpty());
         	}
         	if (!$title) {
-        		return $this->showErrorJson('title-标题不能为空');
+        		return $this->showErrorJson(ErrorConf::storyTitleNotEmpty());
         	} else {
                 $newstoryinfo['title'] = $title;
             }
         	if (!$intro) {
-				return $this->showErrorJson('intro-简介不能为空');
+				return $this->showErrorJson(ErrorConf::storyIntroNotEmpty());
         	} else {
                 $newstoryinfo['intro'] = $intro;
             }
