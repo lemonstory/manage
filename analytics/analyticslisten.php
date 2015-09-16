@@ -44,23 +44,6 @@ class analyticslisten extends controller
 				$title = "['$stime','$etime']";
 				list($elist,$slist,$eslist) = $analytics->getdrbresult($elist,$slist); 
 				break;
-			case 'rjb':
-				$list = $analytics->getanalyticspersonavg($showtype,$stime,$etime);
-				list($titleflag,$title,$xaxis,$tn) = $analytics->getechars_personavgresult($list,$showtype);
-				foreach($list as $lk=>$lv)
-				{
-					if ($lv!='' && $lv!=0)
-					{
-						$list[$lk]['tn'] = round($lv['tn']/$lv['pn'],2);
-					}else{
-						$list[$lk]['tn'] = 0;
-					}
-				}
-				break;
-			case 'dlu':
-				$list = $analytics->getanalyticsperson('topic',$stime,$etime);
-				list($titleflag,$title,$xaxis,$tn) = $analytics->getechars_personresult($list,$showtype);
-				break;				
 		}
 		
 // 		print_r($elist);

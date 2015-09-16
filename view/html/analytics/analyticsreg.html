@@ -1,128 +1,108 @@
 {include file="include/header.html"}
+<script src="/static/vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 
-<div>
-    <h2>评论统计</h2>
-    <form method="post" action="/analytics/analyticsreg.php" id="searchForm">
-	<input type='hidden' name='showflag' value='{$showflag}' />
-    <div>
-            选择数据类型：<a href="/analytics/analyticsreg.php?showflag=fbl"><font {if $showflag == 'fbl'}color='#ff9a00'{/if}>注册量趋势</font></a>&nbsp;&nbsp;&nbsp;
-    <a href="/analytics/analyticsreg.php?showflag=drb"><font {if $showflag == 'drb'}color='#ff9a00'{/if}>注册量单日对比</font></a>&nbsp;&nbsp;&nbsp;
-	</div> 
-	<BR>
-    <div class="list_t">
-	开始时间:<input name='stime' value='{$stime}' placeholder="20141201" />&nbsp;&nbsp;结束时间:<input name='etime' value='{$etime}'  placeholder="20141202" />
-    <input class="btn" type="submit" name="submit" value="查询" />
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">注册统计筛选</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/analytics/analyticsreg.php">
+                        <fieldset>
+                            <legend>搜索查询</legend>
+                            <div class="control-group">
+                                <label class="control-label">类型</label>
+                                <div class="controls">
+                                    <select id="selectError" name="showflag">
+                                        <option {if $showflag=="fbl"}selected{/if} value="fbl">注册量走势</option>
+                                        <option {if $showflag=="drb"}selected{/if} value="drb">注册量单日对比</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label" for="date01">开始时间/单日时间</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" id="stime" value="{$stime}">
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label" for="date01">结束时间/单日时间</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" id="etime" value="{$etime}">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
     </div>
-    </form>
-</div><BR>
-<div style="margin-left:40%"><font size='4px'>{$stime}到{$etime}区间{$titleflag}</font></div>
-<div id="main" style="height:500px"></div>
-<div></div>
-<table class='table'>
-{if $showflag=='drb'}
-<tr><th>日期/小时</th><th>{$timestrforshow.$etime}</th><th>{$timestrforshow.$stime}</th><th>数据变化</th></tr>
-{foreach from=$slist key=skey item=sv}
-<tr>
-<td>{$sv.tl}</td>
-<td>{if $elist.$skey.tn neq ''}{$elist.$skey.tn}{else}---{/if}</td>
-<td>{$sv.tn}</td>
-<td>{$eslist.$skey.tn}</td>
-</tr>
-{/foreach}
-{else}
-<tr><th>日期</th><th>{$titleflag}</th></tr>
-{foreach from=$list item=value}
-<tr>
-<td>{$value.tl}</td>
-<td>{$value.tn}</td>
-</tr>
-{/foreach}
-{/if}
-</table>
-<div style="height:20px"></div>
-<!-- ECharts单文件引入 -->
+    
+     <!-- morris stacked chart -->
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">统计曲线图</div>
+                <div class="pull-right"><span class="badge badge-warning">&nbsp;</span></div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <div id="hero-area" style="height: 250px;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+
+</div>
+
+<!--/.fluid-container-->
+<link rel="stylesheet" href="/static/vendors/morris/morris.css">
+<script src="/static/vendors/jquery.knob.js"></script>
+<script src="/static/vendors/raphael-min.js"></script>
+<script src="/static/vendors/morris/morris.min.js"></script>
+<script src="/static/vendors/flot/jquery.flot.js"></script>
+<script src="/static/vendors/flot/jquery.flot.categories.js"></script>
+<script src="/static/vendors/flot/jquery.flot.pie.js"></script>
+<script src="/static/vendors/flot/jquery.flot.time.js"></script>
+<script src="/static/vendors/flot/jquery.flot.stack.js"></script>
+<script src="/static/vendors/flot/jquery.flot.resize.js"></script>
+<script>
 {literal}
-<script src="../../../static/js/echarts219/build/dist/echarts.js"></script>
-<script type="text/javascript">
-    // 路径配置
-    require.config({
-        paths: {
-            echarts: '../../../static/js/echarts219/build/dist'
-        }
-    });
-    // 使用
-    require(
-            [
-                'echarts',
-                'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
-            ],
-            function (ec) {
-                // 基于准备好的dom，初始化echarts图表
-                var myChart = ec.init(document.getElementById('main')); 
-
-    			option = {
-                	    tooltip : {
-                	        trigger: 'axis'
-                	    },
-                	    legend: {
-                	        data:{/literal}{$title}{literal}
-                	    },
-                	    toolbox: {
-                	        show : false,
-                	        feature : {
-                	            mark : {show: true},
-                	            dataView : {show: true, readOnly: false},
-                	            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-                	            restore : {show: true},
-                	            saveAsImage : {show: true}
-                	        }
-                	    },
-                	    calculable : true,
-                	    xAxis : [
-                	        {
-                	            type : 'category',
-                	            boundaryGap : false,
-                	            data : {/literal}{$xaxis}{literal}
-                	        }
-                	    ],
-                	    yAxis : [
-                	        {
-                	            type : 'value'
-                	        }
-                	    ],
-                	    series : [
-							{/literal}
-               	        	{if $showflag=='drb'}
-                     	    {literal}
-   	                	        {
-   	                	            name:'{/literal}{$stime}{literal}',
-   	                	            type:'line',
-   	                	            data:{/literal}{$stn}{literal}
-   	                	        },
-   	                	        {
-   	                	            name:'{/literal}{$etime}{literal}',
-   	                	            type:'line',
-   	                	            data:{/literal}{$etn}{literal}
-   	                	        }
-   							{/literal}
-               	        	{else}
-                         	{literal}
-   	                	        {
-   	                	            name:'{/literal}{$titleflag}{literal}',
-   	                	            type:'line',
-   	                	            data:{/literal}{$tn}{literal}
-   	                	        }
-	                	    {/literal}
-               	        	{/if}
-	                	    {literal}
-                	    ]
-                	};
-
-                // 为echarts对象加载数据 
-                myChart.setOption(option); 
-            }
-        );
-</script>
+// Morris Area Chart
+Morris.Area({
+    element: 'hero-area',
+    data: [
+        {period: '2010 Q1', iphone: 2666, ipad: null, itouch: 2647},
+        {period: '2010 Q2', iphone: 2778, ipad: 2294, itouch: 2441},
+        {period: '2010 Q3', iphone: 4912, ipad: 1969, itouch: 2501},
+        {period: '2010 Q4', iphone: 3767, ipad: 3597, itouch: 5689},
+        {period: '2011 Q1', iphone: 6810, ipad: 1914, itouch: 2293},
+        {period: '2011 Q2', iphone: 5670, ipad: 4293, itouch: 1881},
+        {period: '2011 Q3', iphone: 4820, ipad: 3795, itouch: 1588},
+        {period: '2011 Q4', iphone: 15073, ipad: 5967, itouch: 5175},
+        {period: '2012 Q1', iphone: 10687, ipad: 4460, itouch: 2028},
+        {period: '2012 Q2', iphone: 8432, ipad: 5713, itouch: 1791}
+    ],
+    xkey: 'period',
+    ykeys: ['iphone', 'ipad', 'itouch'],
+    labels: ['iPhone', 'iPad', 'iPod Touch'],
+    lineWidth: 2,
+    hideHover: 'auto',
+    lineColors: ["#81d5d9", "#a6e182", "#67bdf8"]
+});
 {/literal}
+</script>
 
 {include file="include/footer.html"}
