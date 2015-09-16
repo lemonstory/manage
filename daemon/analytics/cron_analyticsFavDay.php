@@ -8,7 +8,7 @@ class cron_analyticsFavDay extends DaemonBase {
 		$todocounttime = time()-720;
 		$day = date('Y-m-d',$todocounttime);
 		
-		$sql = "select count(distinct(uid)) as pn,count(1) as tn from user_fav where addtime like ? limit 1;";
+		$sql = "select count(distinct(uid)) as pn,count(1) as tn from fav_album where addtime like ? limit 1;";
 		$st = $db->prepare($sql);
 		$st->execute(array($day.'%'));
 		$list = $st->fetch(PDO::FETCH_ASSOC);
