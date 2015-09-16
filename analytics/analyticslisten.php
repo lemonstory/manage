@@ -1,6 +1,6 @@
 <?php
 include_once '../controller.php';
-class analyticstopic extends controller
+class analyticslisten extends controller
 {
 	public function action()
 	{
@@ -23,7 +23,7 @@ class analyticstopic extends controller
 		$timestrforshow = array();
 		$timestrforshow[$stime] = date('Y-m-d',strtotime($stime));
 		$timestrforshow[$etime] = date('Y-m-d',strtotime($etime));
-		$showtype='topic';
+		$showtype='listen';
 		
 		$analytics = new Analytics();
 		$pn = $tl = $title = $xaxis = $tn = $fn = $topic = $comment = $msg = $digg = $friend = $stn = $etn = '';
@@ -82,9 +82,9 @@ class analyticstopic extends controller
 		$smartyobj->assign('tn',$tn);
 		$smartyobj->assign('stn',$stn);
 		$smartyobj->assign('etn',$etn);
-		$smartyobj->display('analytics/analyticstopic.html');
+		$smartyobj->display('analytics/analyticslisten.html');
 	}
 }
 
-new analyticstopic();
+new analyticslisten();
 ?>

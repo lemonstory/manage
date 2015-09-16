@@ -240,8 +240,8 @@ class Analytics extends ModelBase
     }
     
     
-    //获取发布量对比数据
-    public function getanalyticscontrast($showtype, $stime, $etime)
+    //获取两个单日对比数据
+    public function getanalyticscountrast($showtype, $stime, $etime)
     {
     	$list = array();
     	$db = DbConnecter::connectMysql($this->DB_INSTANCE);
@@ -260,7 +260,7 @@ class Analytics extends ModelBase
     			$sql = "select  personnum as pn, personnum as tn, substring(timeline,9,2) as tl from countreg where timeline>=? and timeline<=? limit 25 ;";
     			break;
     		case 'down' :
-    			$sql = "select  personnum as tn, substring(timeline,9,2) as tl from houronline where timeline>=? and timeline<=? limit 25 ;";
+    			$sql = "select  personnum as tn, substring(timeline,9,2) as tl from countdown where timeline>=? and timeline<=? limit 25 ;";
     			break;
     		case 'countavg' :
     			$sql = "select * from countavg where timeline>=? and timeline<=? limit 25 ;";
@@ -272,72 +272,9 @@ class Analytics extends ModelBase
     	return $list;
     }
     
-    //获取独立用户走势数据
-    public function getanalyticsperson($showtype, $stime, $etime)
-    {
-    	$list = array();
-    	$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-    	
-    	switch ($showtype)
-    	{
-    	    case 'topicvideo' :
-    	        $sql = "select  personnum as pn, personnum as tn, timeline as tl from daytopicvideo where timeline>=? and timeline<=?;";
-    	        break;
-    		case 'topic' :
-    			$sql = "select  personnum as pn, personnum as tn, timeline as tl from daytopic where timeline>=? and timeline<=?;";
-    			break;
-    		case 'comment' :
-    			$sql = "select  personnum as pn, personnum as tn, timeline as tl from daycomment where timeline>=? and timeline<=?;";
-    			break;
-    		case 'msg' :
-    			$sql = "select  personnum as pn, personnum as tn, timeline as tl from daymsg where timeline>=? and timeline<=?;";
-    			break;
-    		case 'digg' :
-    			$sql = "select  personnum as pn, personnum as tn, timeline as tl from daydigg where timeline>=? and timeline<=?;";
-    			break;
-    	}
-    	$st = $db->prepare($sql);
-    	$st->execute(array($stime, $etime));
-    	$list = $st->fetchAll(PDO::FETCH_ASSOC);
-    	return $list;
-    }
-    
-    
-    //获取人均比走势数据 
-    public function getanalyticspersonavg($showtype, $stime, $etime)
-    {
-    	$list = array();
-    	$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-    	switch ($showtype)
-    	{
-    	    case 'topicvideo':
-    	        $sql = "select  personnum as pn, totalnum as tn, timeline as tl from daytopicvideo where timeline>=? and timeline<=?;";
-    	        break;
-    		case 'topic' :
-    			$sql = "select  personnum as pn, totalnum as tn, timeline as tl from daytopic where timeline>=? and timeline<=?;";
-    			break;
-    		case 'comment' :
-    			$sql = "select  personnum as pn, totalnum as tn, timeline as tl from daycomment where timeline>=? and timeline<=?;";
-    			break;
-    		case 'msg' :
-    			$sql = "select  personnum as pn, totalnum as tn, timeline as tl from daymsg where timeline>=? and timeline<=?;";
-    			break;
-    		case 'digg' :
-    			$sql = "select  personnum as pn, totalnum as tn, timeline as tl from daydigg where timeline>=? and timeline<=?;";
-    			break;
-    		case 'follow' :
-    			$sql = "select  fansnum as pn, totalnum as tn, timeline as tl from dayfollowdata where timeline>=? and timeline<=?;";
-    			break;
-    	}
-    	$st = $db->prepare($sql);
-    	$st->execute(array($stime, $etime));
-    	$list = $st->fetchAll(PDO::FETCH_ASSOC);
-    	return $list;
-    }
-    
     
     //获取关注数量
-    public function getfollowdata($stime,$etime)
+    /* public function getfollowdata($stime,$etime)
     {
     	$sql = "select  timeline as tl, totalnum as tn, fansnum as pn, follownum as fn  from dayfollowdata where timeline>=? and timeline<=?;";
     	$list = array();
@@ -346,7 +283,7 @@ class Analytics extends ModelBase
     	$st->execute(array($stime,$etime));
     	$list = $st->fetchAll(PDO::FETCH_ASSOC);
     	return $list;
-    }
+    } */
 
 }
 ?>
