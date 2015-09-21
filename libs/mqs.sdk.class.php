@@ -13,7 +13,8 @@ Class mqs{
     private static $accessKeySecret  = null;
     private static $accessOwnerId    = null;
     private static $accessQueue      = null;
-    private static $mqsVersion       = "2014-07-08";
+    //private static $mqsVersion       = "2014-07-08";
+    private static $mqsVersion       = "2015-06-06";
     private static $retryTime        = 5;       // 若操作失败, 重试次数
     private static $sleepSecond      = 5;       // 若操作失败, 休眠5秒后重试
     private static $serverErrCode    = null;    // 伺服器错误的HTTP Code, 当响应Code匹配上, 则认为服务器暂时未处理请求, 然后重试预设次
@@ -25,7 +26,8 @@ Class mqs{
         self::$accessOwnerId    = isset($data['accessOwnerId'])   ?$data['accessOwnerId']    :"";
         self::$accessQueue      = isset($data['accessQueue'])     ?$data['accessQueue']      :"";
         self::$accessRegion     = isset( $data['accessRegion'] )  ?$data['accessRegion']     :'cn-hangzhou';
-        self::$accessHost       = self::$accessOwnerId . ".mqs-" .self::$accessRegion . ".aliyuncs.com";
+        //self::$accessHost       = self::$accessOwnerId . ".mqs-" .self::$accessRegion . ".aliyuncs.com";
+        self::$accessHost       = self::$accessOwnerId . ".mns." .self::$accessRegion . ".aliyuncs.com";
         self::$serverErrCode    = array(
             500, // Server Internal Error
             501, // Can'T excution Error
@@ -39,7 +41,8 @@ Class mqs{
 
     private static function _array2xml( $array ){
         require_once dirname( __FILE__ ) . "/array2xml.lib.class.php";
-        $array['@attributes'] = array( 'xmlns' => 'http://mqs.aliyuncs.com/doc/v1/' );
+        //$array['@attributes'] = array( 'xmlns' => 'http://mqs.aliyuncs.com/doc/v1/' );
+        $array['@attributes'] = array( 'xmlns' => 'http://mns.aliyuncs.com/doc/v1/' );
         return Array2XML::createXML('Message', $array)->saveXML();
 
     }
@@ -121,7 +124,8 @@ Class mqs{
         );
 
         $sig = base64_encode( hash_hmac('sha1', $string2sign, self::$accessKeySecret, true ) );
-        return "MQS " . self::$accessKeyId . ":" . $sig;
+        //return "MQS " . self::$accessKeyId . ":" . $sig;
+        return "MNS " . self::$accessKeyId . ":" . $sig;
     }
 
     public static function sendMessage( $data ){
@@ -138,9 +142,10 @@ Class mqs{
         $CONTENT_TYPE = self::_getContentType();
         $GMT_DATE = self::_getGMTDate();
         $CanonicalizedMQSHeaders = array(
-            'x-mqs-version' => self::_getVersion()
+            //'x-mqs-version' => self::_getVersion()
+            'x-mns-version' => self::_getVersion()
         );
-        $RequestResource = "/" . self::$accessQueue . "/messages";
+        $RequestResource = "/queues/" . self::$accessQueue . "/messages";
         $sign = self::_getSignature( $VERB, $CONTENT_MD5, $CONTENT_TYPE, $GMT_DATE, $CanonicalizedMQSHeaders, $RequestResource );
         $headers = array(
             'Host' => self::_getAccessHost(),
@@ -152,7 +157,6 @@ Class mqs{
             $headers[ $k ] = $v;
         }
         $headers['Authorization'] = $sign;
-
         $request_uri = self::_getProtocol() . self::_getAccessHost() . $RequestResource;
         $res = self::_requestCore( $request_uri, $VERB, $headers, $CONTENT_BODY );
         if( in_array($res, self::$serverErrCode ) ){
@@ -178,9 +182,10 @@ Class mqs{
         $CONTENT_TYPE = self::_getContentType();
         $GMT_DATE = self::_getGMTDate();
         $CanonicalizedMQSHeaders = array(
-            'x-mqs-version' => self::_getVersion()
+            //'x-mqs-version' => self::_getVersion()
+            'x-mns-version' => self::_getVersion()
         );
-        $RequestResource = "/" . self::$accessQueue . "/messages";
+        $RequestResource = "/queues/" . self::$accessQueue . "/messages";
         $sign = self::_getSignature( $VERB, $CONTENT_MD5, $CONTENT_TYPE, $GMT_DATE, $CanonicalizedMQSHeaders, $RequestResource );
         $headers = array(
             'Host' => self::_getAccessHost(),
@@ -209,9 +214,10 @@ Class mqs{
         $CONTENT_TYPE = self::_getContentType();
         $GMT_DATE = self::_getGMTDate();
         $CanonicalizedMQSHeaders = array(
-            'x-mqs-version' => self::_getVersion()
+            //'x-mqs-version' => self::_getVersion()
+            'x-mns-version' => self::_getVersion()
         );
-        $RequestResource = "/" . self::$accessQueue . "/messages?" . http_build_query( $data );
+        $RequestResource = "/queues" . self::$accessQueue . "/messages?" . http_build_query( $data );
         $sign = self::_getSignature( $VERB, $CONTENT_MD5, $CONTENT_TYPE, $GMT_DATE, $CanonicalizedMQSHeaders, $RequestResource );
         $headers = array(
             'Host' => self::_getAccessHost(),
