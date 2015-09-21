@@ -24,7 +24,7 @@ class ManageUserFeedback extends ModelBase
         
         $list = array();
         $db = DbConnecter::connectMysql('share_main');
-        $sql = "SELECT * FROM `user_feed_back` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";echo $sql;
+        $sql = "SELECT * FROM `user_feed_back` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
         
         $st = $db->prepare($sql);
         $st->execute();
@@ -46,6 +46,30 @@ class ManageUserFeedback extends ModelBase
         $st->execute();
         $count = $st->fetch(PDO::FETCH_COLUMN);
         return $count;
+    }
+
+    public function getByFeedbackId($id)
+    {
+        if (!is_array($id)) {
+            $id = array($id);
+        }
+        $ids = implode(",", $id);
+        if (!$id) {
+            return array();
+        }
+        $db = DbConnecter::connectMysql('share_main');
+        $sql = "SELECT * FROM `user_feed_back` where `replyid` in ({$ids})";
+        
+        $st = $db->prepare($sql);
+        $st->execute();
+        $list = $st->fetchAll(PDO::FETCH_ASSOC);
+        $newlist = array();
+        foreach($list as $k => $v) {
+            $newlist[$v['replyid']] = $v;
+        }
+        unset($list);
+        var_dump($newlist);
+        return $newlist;
     }
     
 }

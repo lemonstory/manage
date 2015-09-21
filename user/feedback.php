@@ -12,7 +12,7 @@ class index extends controller
         $keywords = $this->getRequest('keywords', '');
         $reply    = (int)$this->getRequest('reply', -1);
 
-        $search_filter = $where = array();
+        $replylist = $search_filter = $where = array();
 
         if (empty($currentPage)) {
             $currentPage = 0;
@@ -30,6 +30,8 @@ class index extends controller
                 $where[] = "`replyid` > 0";
             }
             
+        } else {
+            $where[] = "`replyid` = 0";
         }
 
         if ($keywords) {
@@ -56,9 +58,25 @@ class index extends controller
             $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
         }
 
+        if ($feedbackList) {
+            $ids = array();
+            foreach($feedbackList as $k => $v) {
+                array_push($ids, $v['id']);
+            }
+            if ($ids) {
+                $replylist = $manageUserFeedback->getByFeedbackId($ids);
+                foreach ($feedbackList as $k => $v) {
+                    if (isset($replylist[$v['id']])) {
+                        $feedbackList[$k]['reply'] = $replylist[$v['id']];
+                    }
+                }
+            }
+        }
+
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('totalCount', $totalCount);
         $smartyObj->assign('p', $currentPage);
+        $smartyObj->assign('replylist', $replylist);
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('search_filter', $search_filter);
         $smartyObj->assign('pageBanner', $pageBanner);
