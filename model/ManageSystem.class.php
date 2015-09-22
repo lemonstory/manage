@@ -32,17 +32,32 @@ class ManageSystem extends ModelBase
 	
 	/**
 	 * 首页获取热门推荐列表
-	 * @param I $len
+	 * @param S $direction     up代表显示上边，down代表显示下边
+	 * @param I $startalbumid  从某个albumid开始,默认为0表示从第一页获取
+	 * @param I $len           获取长度
 	 * @return array
 	 */
-	public function getRecommendHotList($len = 5)
+	public function getRecommendHotList($direction = "down", $startalbumid = 0, $len = 20)
 	{
 		if (empty($len)) {
-			$len = 5;
+			$len = 20;
+		}
+		if ($len > 50) {
+		    $len = 50;
 		}
 		
+		$where = "";
+		if (!empty($startalbumid)) {
+		    if ($direction == "up") {
+		        $where .= " `albumid` > '{$startalbumid}' AND";
+		    } else {
+		        $where .= " `albumid` < '{$startalbumid}' AND";
+		    }
+		}
+		$where .= " `status` = '{$this->RECOMMEND_STATUS_ONLIINE}'";
+		
 		$db = DbConnecter::connectMysql('share_main');
-        $sql = "SELECT * FROM `recommend_hot` WHERE `status` = '{$this->RECOMMEND_STATUS_ONLIINE}' ORDER BY `ordernum` DESC LIMIT $len";
+        $sql = "SELECT * FROM `recommend_hot` WHERE {$where} ORDER BY `ordernum` DESC LIMIT $len";
         $st = $db->prepare($sql);
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -54,28 +69,40 @@ class ManageSystem extends ModelBase
 	 * 首页最新上架的上线列表
 	 * 按照年龄段，展示最新上架的故事专辑
 	 * @param I $babyagetype
-	 * @param I $len
+	 * @param S $direction     up代表显示上边，down代表显示下边
+	 * @param I $startalbumid  从某个albumid开始,默认为0表示从第一页获取
+	 * @param I $len           获取长度
 	 * @return array
 	 */
-	public function getNewOnlineList($babyagetype = 0, $len = 5)
+	public function getNewOnlineList($babyagetype = 0, $direction = "down", $startalbumid = 0, $len = 20)
 	{
 		if (!empty($babyagetype) && !in_array($babyagetype, $this->AGE_TYPE_LIST)) {
 			$this->setError(ErrorConf::paramError());
 			return array();
 		}
-		$start = 0;
 		if (empty($len)) {
 			$len = 5;
 		}
+		if ($len > 50) {
+		    $len = 50;
+		}
+		
+		$where = "";
+		if (!empty($startalbumid)) {
+		    if ($direction == "up") {
+		        $where .= " `albumid` > '{$startalbumid}' AND";
+		    } else {
+		        $where .= " `albumid` < '{$startalbumid}' AND";
+		    }
+		}
 		
 		$status = $this->RECOMMEND_STATUS_ONLIINE; // 已上线状态
-		$where = "`status` = '{$status}'";
+		$where .= "`status` = '{$status}'";
 		if (!empty($babyagetype)) {
 			$where .= " AND `agetype` = '{$babyagetype}'";
 		}
 		$db = DbConnecter::connectMysql('share_main');
-		$sql = "SELECT * FROM `recommend_new_online` 
-				WHERE {$where} ORDER BY `ordernum` DESC LIMIT $len";
+		$sql = "SELECT * FROM `recommend_new_online` WHERE {$where} ORDER BY `ordernum` DESC LIMIT $len";
 		$st = $db->prepare($sql);
 		$st->execute();
 		$list = $st->fetchAll(PDO::FETCH_ASSOC);
