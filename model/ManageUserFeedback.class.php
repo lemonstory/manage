@@ -68,7 +68,6 @@ class ManageUserFeedback extends ModelBase
             $newlist[$v['replyid']] = $v;
         }
         unset($list);
-        var_dump($newlist);
         return $newlist;
     }
     

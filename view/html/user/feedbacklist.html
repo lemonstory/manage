@@ -19,13 +19,6 @@
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
-                            <div class="control-group">
-                                <label class="control-label">标签ID</label>
-                                <div class="controls">
-                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$search_filter.albumid}">
-                                    <p class="help-block">输入查询内容</p>
-                                </div>
-                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="list-filter">确定</button>
                             </div>
@@ -73,8 +66,8 @@
                                 <td>
                                     {if $value.status eq 1}
                                     <a href="javascript:void(0);" id="op_feedback_delete_{$value.id}">删除</a>
-                                        {if $value.reply }
-                                        &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_feedback_showreply">展开回复</a>
+                                        {if $value.reply}
+                                        &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_feedback_showreply_{$value.id}">展开回复</a>
                                         {else}
                                         &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_feedback_reply_{$value.id}">回复</a>
                                         {/if}
@@ -84,7 +77,7 @@
                                 </td>
                             </tr>
                             {if $value.reply}
-                            <tr>
+                            <tr style="display:none;" id="show_reply_{$value.id}">
                                 <td></td>
                                 <td></td>
                                 <td class="content">{$value.reply.content}</td>
@@ -95,6 +88,10 @@
                                 </td>
                             </tr>
                             {/if}
+                            {foreachelse}
+                            <tr>
+                                <td colspan="6">数据未找到</td>
+                            </tr>
                             {/foreach}
                         </tbody>
                     </table>
@@ -141,7 +138,20 @@
 <script>
 {literal}
 $(function() {
-    $("[id^='op_feedback']").on('click', function(){
+    $("[id^='op_feedback_showreply_']").on('click', function(e){
+        e.preventDefault();
+        var feedbackid = $(this).attr('id').split('_')[3];
+        if ($("#show_reply_"+feedbackid).css('display') == 'none') {
+            $("#show_reply_"+feedbackid).show();
+            $(this).html('收起回复');
+        } else {
+            $("#show_reply_"+feedbackid).hide();
+            $(this).html('展开回复');
+        }
+        return true;
+        
+    })
+    $("[id^='op_feedback_reply_']").on('click', function(){
     	var data = {};
     	var op = $(this).attr('id');
     	data.op_name = op.split('_')[2];
@@ -155,6 +165,9 @@ $(function() {
 	    	$(".lemon-alert").show();
 			return false;
     	}
+        if (data.op_name == 'showreply') {
+            return false;
+        }
     	
     	
     	$.post('/user/feedback_op.php', data, function(json){
