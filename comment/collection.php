@@ -34,6 +34,12 @@ class collection extends controller
                 ));
             }
 
+            $manage_system_user = new ManageSystemUser();
+            $system_user_list = $manage_system_user->getSystemUserList();
+            $uid_list = array();
+            foreach($system_user_list as $k => $v) {
+                array_push($uid_list, $v['uid']);
+            }
             Http::$referer = $source_url;
 
             $page = 1;
@@ -49,7 +55,10 @@ class collection extends controller
                     foreach($r['data'] as $k => $v) {
                         $exists = $comment->check_exists("`albumid`={$albumid} and `content`='{$v['content']}'");
                         if (!$exists) {
+                            // 随机uid
+                            $uid = $uid_list[array_rand($uid_list)];
                             $comment->insert(array(
+                                'userid'  => $uid,
                                 'albumid' => $albumid,
                                 'content' => $v['content'],
                                 'addtime' => date('Y-m-d H:i:s')
