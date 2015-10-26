@@ -21,6 +21,7 @@ class getuserlist extends controller
         
         $ssoList = array();
         $ssoObj = new Sso();
+        $totalCount = 1;
         if (!empty($searchContent)) {
             // 搜索
             if ($searchCondition == 'uid') {
