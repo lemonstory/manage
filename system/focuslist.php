@@ -28,9 +28,12 @@ class focuslist extends controller
         $managesysobj = new ManageSystem();
         $resultList = $managesysobj->getRecommendListByColumnSearch("share_manage", "focus", $column, $columnValue, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
+            $aliossobj = new AliOss();
             foreach ($resultList as $value) {
+                $value['cover'] = $aliossobj->getFocusUrl($value['picid']);
                 $focuslist[] = $value;
             }
+            
             $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_manage", "focus", $column, $columnValue);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
