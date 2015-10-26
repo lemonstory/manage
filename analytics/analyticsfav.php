@@ -34,8 +34,8 @@ class analyticsfav extends controller
 		switch ($showflag)
 		{
 			case 'fbl':
-				$list = $analytics->getanalyticscount($showtype,$stime,$etime);
-				list($title,$xaxis,$pn,$tn) = $analytics->getechars_result($list);
+				//$list = $analytics->getanalyticscount($showtype,$stime,$etime);
+				//list($title,$xaxis,$pn,$tn) = $analytics->getechars_result($list);
 				$titleflag = '注册量';
 				$title = "['注册量']";
 				break;
@@ -54,7 +54,7 @@ class analyticsfav extends controller
 		$smartyobj->assign('stime',$stime);
 		$smartyobj->assign('etime',$etime);
 		$smartyobj->assign('xaxis',$xaxis);
-		$smartyobj->assign('list',array_reverse($list));
+		//$smartyobj->assign('list',array_reverse($list));
 		$smartyobj->assign('elist',($elist));
 		$smartyobj->assign('slist',	($slist));
 		$smartyobj->assign('eslist',($eslist));
