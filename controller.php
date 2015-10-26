@@ -7,8 +7,8 @@ abstract class controller
 		$host = $_SERVER['HTTP_HOST'];
 		if($host!='c.xiaoningmeng.me')
         {
-        	header("HTTP/1.0 404 Not Found");
-        	exit;
+        	//header("HTTP/1.0 404 Not Found");
+        	//exit;
         }
 		$this->checkFilters();
 		$this->action();
