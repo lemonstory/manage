@@ -9,15 +9,15 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" method="post" action="/user/getuserlist.php">
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
                                 <label class="control-label">条件</label>
                                 <div class="controls">
-                                    <select id="selectError">
+                                    <select id="selectError" name="searchCondition">
                                         <option {if $searchCondition=="uid"}selected{/if} value="uid">用户UID</option>
-                                        <option {if $searchCondition=="nickname"}selected{/if} value="nickname">名称</option>
+                                        <!-- <option {if $searchCondition=="nickname"}selected{/if} value="nickname">名称</option> -->
                                     </select>
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
@@ -26,7 +26,7 @@
                             <div class="control-group">
                                 <label class="control-label">内容</label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead" value="{$searchContent}">
+                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>

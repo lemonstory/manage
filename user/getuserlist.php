@@ -31,15 +31,6 @@ class getuserlist extends controller
                 }
                 $userObj = new User();
                 $userList = $userObj->getUserInfo($uid);
-            } elseif ($searchCondition == 'phone') {
-                /*$phoneNumber = $searchContent;
-                $ssoInfo = $ssoObj->getInfoWithPhoneNumber($phoneNumber);
-                if (empty($ssoInfo)) {
-                    $this->showErrorJson(ErrorConf::userNoExist());
-                }
-                $uid = $ssoInfo['uid'];
-                $userObj = new User();
-                $userList = $userObj->getUserInfo($uid);*/
             }
             if(empty($userList)) {
                 $this->showErrorJson(ErrorConf::userNoExist());
@@ -70,7 +61,7 @@ class getuserlist extends controller
         $dealUserList = array();
         foreach ($userList as $value) {
             $value['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 100);
-            $value['phone'] = substr($ssoList[$value['uid']]['phonenumber'], 2);
+            //$value['phone'] = substr($ssoList[$value['uid']]['phonenumber'], 2);
             $dealUserList[] = $value;
         }
         
