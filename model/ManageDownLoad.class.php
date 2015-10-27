@@ -1,5 +1,5 @@
 <?php
-class ManageDownload extends ModelBase 
+class ManageDownLoad extends ModelBase
 {
     public $DB_INSTANCE = 'share_main';
     public $TABLE_NAME = 'download_story';
