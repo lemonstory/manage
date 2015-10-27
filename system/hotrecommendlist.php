@@ -17,7 +17,7 @@ class hotrecommendlist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/user/hotrecommentlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/hotrecommentlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $totalCount = 0;
     	$hotlist = array();
     	if (!empty($searchContent)) {
@@ -46,11 +46,11 @@ class hotrecommendlist extends controller
                     continue;
                 }
                 $albuminfo = $albumlist[$albumid];
-                $cominfo = array_merge($albuminfo, $value);
-                $cominfo['cover'] = $aliossobj->getImageUrlNg($cominfo['cover'], 100);
-                $hotlist[] = $cominfo;
+                $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100);
+                $value['albuminfo'] = $albuminfo;
+                $hotlist[] = $value;
             }
-            var_dump($hotlist);die();
+            
             $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_main", "recommend_hot", $column, $columnValue);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);

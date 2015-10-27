@@ -9,15 +9,15 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" method="post" action="/system/sameagelist.php">
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
                                 <label class="control-label">条件</label>
                                 <div class="controls">
-                                    <select id="selectError">
-                                        <option value="">用户UID</option>
-                                        <option value="">昵称</option>
+                                    <select id="selectError" name="searchCondition">
+                                        <option {if $searchCondition=="albumid"}selected{/if} value="albumid">专辑ID</option>
+                                        <option {if $searchCondition=="title"}selected{/if} value="title">专辑标题</option>
                                     </select>
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
@@ -26,7 +26,7 @@
                             <div class="control-group">
                                 <label class="control-label">内容</label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead">
+                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
@@ -48,57 +48,41 @@
             <div class="block">
                 <div class="navbar navbar-inner block-header">
                     <div class="muted pull-left">同龄在听专辑列表</div>
-                    <div class="pull-right"><span class="badge badge-info">1,234</span></div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>uid</th>
-						        <th>呢称</th>
-						        <th>头像</th>
-						        <th>注册时间</th>
-						        <th>账号状态</th>
-						        <th>操作</th>
+                                <th>id</th>
+                                <th>标题</th>
+                                <th>封面</th>
+                                <th>排序</th>
+                                <th>添加时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {foreach from=$sameagelist item=value}
                             <tr>
-                                <td>1</td>
-                                <td>MarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMarkMark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>Mark</td>
-                                <td>
-                                    <a href="#">删除</a>
-                                </td>
-                            </tr>
-                            {foreach from=$userList item=value}
-                            <tr>
-                                <td>{$value.uid}</td>
-                                <td>{$value.nickname}</td>
-                                <td>{$value.avatar}</td>
+                                <td>{$value.albumid}</td>
+                                <td>{$value.albuminfo.title}</td>
+                                <td>{$value.albuminfo.cover}</td>
+                                <td>{$value.ordernum}</td>
                                 <td>{$value.addtime}</td>
-                                <td>
-                                    {if $value.status eq '-3'}已删除
-                                    {elseif $value.status eq '-2'}已封号
-                                    {elseif $value.status eq '-1'}已冻结
-                                    {elseif $value.status eq 1}正常
+                                <td id="status_{$value.albumid}">
+                                    {if $value.status eq '1'}已上线
+                                    {elseif $value.status eq '2'}已下线
                                     {/if}
                                 </td>
                                 <td>
                                     {if $value.status eq 1}
-                                    <a href="/report/frozenuser.php?frozenuid={$value.uid}">冻结</a>
-                                    &nbsp;|&nbsp;
-                                    <a href="/report/forbiddenuser.php?forbiddenuid={$value.uid}">封号</a>
+                                    <a href="javascript:void(0);" id="{$value.albumid}" class="offline">下线</a>
                                     {/if}
-						            {if $value.status eq '-1'}
-						            <a href="/user/setuserstatus.php?uid={$value.uid}&status=1&p={$p}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}">解冻</a>
-						            {/if}
-						            {if $value.status eq '-2'}
-						            <a href="/user/setuserstatus.php?uid={$value.uid}&status=1&p={$p}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}">解封</a>
-						            {/if}
-						            &nbsp;|&nbsp;
+                                    {if $value.status eq 2}
+                                    <a href="javascript:void(0);" id="{$value.albumid}" class="online">上线</a>
+                                    {/if}
                                 </td>
                             </tr>
                             {/foreach}
@@ -117,7 +101,44 @@
 <script>
 {literal}
 $(function() {
+	var setstatusurl = "/system/setsameagestatus.php";
+    $(".offline").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定要下线吗？")) {
+            var albumid = $(this).attr("id");
+            $.post(setstatusurl, {albumid:albumid, status:2}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("操作成功");
+                    $("#myModal").modal({show:true});
+                    $("#status_"+albumid).text("已下线");
+                    $(this).attr("class", "online");
+                    $(this).text("上线");
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
     
+    $(".online").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定要上线吗？")) {
+            var albumid = $(this).attr("id");
+            $.post(setstatusurl, {albumid:albumid, status:1}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("操作成功");
+                    $("#myModal").modal({show:true});
+                    $("#status_"+albumid).text("已上线");
+                    $(this).attr("class", "offline");
+                    $(this).text("下线");
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
 });
 {/literal}
 </script>

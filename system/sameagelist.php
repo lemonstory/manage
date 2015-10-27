@@ -17,8 +17,10 @@ class sameagelist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/user/sameagelist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/sameagelist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $sameagelist = array();
+        $totalCount = 0;
+        
     	if (!empty($searchContent)) {
             $columnValue = $searchContent;
         } else {
@@ -27,7 +29,26 @@ class sameagelist extends controller
         $managelistenobj = new ManageListen();
         $resultList = $managelistenobj->getSameAgeListByColumnSearch($column, $columnValue, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
+            $albumids = array();
+            $albumlist = array();
             foreach ($resultList as $value) {
+                $albumids[] = $value['albumid'];
+            }
+            if (!empty($albumids)) {
+                $albumids = array_unique($albumids);
+                $albumobj = new Album();
+                $albumlist = $albumobj->getListByIds($albumids);
+            }
+            
+            $aliossobj = new AliOss();
+            foreach ($resultList as $value) {
+                $albumid = $value['albumid'];
+                if (empty($albumlist[$albumid])) {
+                    continue;
+                }
+                $albuminfo = $albumlist[$albumid];
+                $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100);
+                $value['albuminfo'] = $albuminfo;
                 $sameagelist[] = $value;
             }
             $totalCount = $managelistenobj->getSameAgeCountByColumnSearch($column, $columnValue);

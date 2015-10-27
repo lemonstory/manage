@@ -17,7 +17,8 @@ class newonlinelist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/user/newonlinelist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/newonlinelist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $totalCount = 0;
         
     	$newonlinelist = array();
     	if (!empty($searchContent)) {
@@ -28,7 +29,26 @@ class newonlinelist extends controller
         $managesysobj = new ManageSystem();
         $resultList = $managesysobj->getRecommendListByColumnSearch("share_main", "recommend_new_online", $column, $columnValue, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
+            $albumids = array();
+            $albumlist = array();
             foreach ($resultList as $value) {
+                $albumids[] = $value['albumid'];
+            }
+            if (!empty($albumids)) {
+                $albumids = array_unique($albumids);
+                $albumobj = new Album();
+                $albumlist = $albumobj->getListByIds($albumids);
+            }
+            
+            $aliossobj = new AliOss();
+            foreach ($resultList as $value) {
+                $albumid = $value['albumid'];
+                if (empty($albumlist[$albumid])) {
+                    continue;
+                }
+                $albuminfo = $albumlist[$albumid];
+                $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100);
+                $value['albuminfo'] = $albuminfo;
                 $newonlinelist[] = $value;
             }
             $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_main", "recommend_new_online", $column, $columnValue);
