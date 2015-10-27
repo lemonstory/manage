@@ -25,6 +25,7 @@ class forbiddenuseraction extends controller
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('userinfo', $userinfo);
         $smartyObj->assign('reasons', $frozenreasons);
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("user/forbiddenuser.html");
     }
 }

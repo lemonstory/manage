@@ -31,6 +31,17 @@ abstract class controller
 	{
 	    return array();
 	}
+	
+	protected function headerCommonData($uid = 0)
+	{
+	    if (empty($uid)) {
+	        $uid = $this->getUid();
+	    }
+	    $userobj = new User();
+	    $userinfo = current($userobj->getUserInfo($uid));
+	    
+	    return array("userinfo" => $userinfo);
+	}
 
 	protected function getSmartyObj()
 	{

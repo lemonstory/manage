@@ -56,6 +56,7 @@ class index extends controller
         $smartyObj->assign('commentList', $commentList);
         $smartyObj->assign('searchFilter', $searchFilter);
         $smartyObj->assign('commentlistactive', "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("comment/comment_list.html"); 
     }
 }

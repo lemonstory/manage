@@ -48,6 +48,7 @@ class index extends controller
 
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('storyinfo', $storyinfo);
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("album/story_edit.html"); 
 
     }

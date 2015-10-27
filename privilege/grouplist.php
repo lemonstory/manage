@@ -11,6 +11,7 @@ class grouplist extends controller
         $smartyobj->assign('groups', $groups);
         $smartyobj->assign("privilege", "active");
         $smartyobj->assign("grouplistside", "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display("privilege/grouplist.html");
     }
 }

@@ -19,6 +19,7 @@ class usergroup extends controller
         //$smartyobj->assign('userinfo', $userinfo);
         $smartyobj->assign("privilege", 1);
         $smartyobj->assign("grouplistside", "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display("privilege/usergroup.html");
     }
 }

@@ -21,6 +21,7 @@ class addfocus extends controller
         $smartyObj->assign("focusinfo", $focusinfo);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('focusside', "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("system/addfocus.html"); 
     }
 }

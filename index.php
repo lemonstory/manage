@@ -44,6 +44,7 @@ class index extends controller
         $smartyobj = $this->getSmartyObj();
         $smartyobj->assign("indexactive", "active");
         $smartyobj->assign("indexside", "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData($uid));
         $smartyobj->display("index.html");
     }
 }

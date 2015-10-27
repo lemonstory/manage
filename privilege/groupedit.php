@@ -25,6 +25,7 @@ class groupedit extends controller
         $smartyobj->assign('privileges', $privileges);
         $smartyobj->assign("privilege", "active");
         $smartyobj->assign("grouplistside", "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display("privilege/groupedit.html");
     }
 }

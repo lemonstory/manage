@@ -55,6 +55,7 @@ class index extends controller
 
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('albuminfo', $albuminfo);
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("album/album_edit.html"); 
 
     }

@@ -13,6 +13,7 @@ class userlist extends controller
         //$smartyobj->assign('userlist', $userlist);
         $smartyobj->assign('privilege', "active");
         $smartyobj->assign('userlistside', "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display("privilege/userlist.html");
     }
 }

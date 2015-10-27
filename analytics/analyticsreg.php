@@ -64,6 +64,7 @@ class analyticsreg extends controller
 		$smartyobj->assign('tn',$tn);
 		$smartyobj->assign('stn',$stn);
 		$smartyobj->assign('etn',$etn);
+		$smartyobj->assign("headerdata", $this->headerCommonData());
 		$smartyobj->display('analytics/analyticsreg.html');
 	}
 }

@@ -66,6 +66,7 @@ class newonlinelist extends controller
         $smartyObj->assign('newonlinelist', $newonlinelist);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('newonlineside', "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("system/newonlinelist.html"); 
     }
 }

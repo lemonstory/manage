@@ -11,6 +11,7 @@ class listPrivilege extends controller
         $smartyobj->assign('privileges', $privileges);
         $smartyobj->assign("privilege", "active");
         $smartyobj->assign("listside", "active");
+        $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display("privilege/list.html");
     }
 }
