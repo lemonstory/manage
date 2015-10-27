@@ -33,7 +33,7 @@
                                     {elseif $value.status eq '2'}已下线
                                     {/if}
                                 </td>
-                                <td>
+                                <td id="option_{$value.id}">
                                     {if $value.status eq 1}
                                     <a href="javascript:void(0);" id="{$value.id}" class="offline">下线</a>
                                     {/if}
@@ -67,9 +67,9 @@ $(function() {
     			if(data.code == "10000") {
     				$(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
-    				$("#status_"+focusid).text("已下线");
-    				$(this).attr("class", "online");
-                    $(this).text("上线");
+                    $("#modal_closebtn").click(function(){
+                    	location.href=location.href;
+                    });
     			} else {
     				$(".modal-body").text(data.desc);
                     $("#myModal").modal({show:true});
@@ -86,9 +86,9 @@ $(function() {
                 if(data.code == "10000") {
                     $(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
-                    $("#status_"+focusid).text("已上线");
-                    $(this).attr("class", "offline");
-                    $(this).text("下线");
+                    $("#modal_closebtn").click(function(){
+                    	location.href=location.href;
+                    });
                 } else {
                     $(".modal-body").text(data.desc);
                     $("#myModal").modal({show:true});
