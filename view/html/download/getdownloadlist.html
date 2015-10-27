@@ -1,5 +1,4 @@
 {include file="include/header.html"}
-
 <div class="span9" id="content">
     <div class="row-fluid">
         <!-- block -->
@@ -9,14 +8,14 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/user/getdownloadlist.php">
+                    <form class="form-horizontal" method="post" action="/download/getdownloadlist.php">
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
                                 <label class="control-label">条件</label>
                                 <div class="controls">
                                     <select id="selectError" name="searchCondition">
-                                        <option {if $searchCondition=="uimid"}selected{/if} value="uid">设备uimid</option>
+                                        <option {if $searchCondition=="uimid"}selected{/if} value="uimid">用户与设备关联UIMID</option>
                                     </select>
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
@@ -54,7 +53,7 @@
                         <thead>
                             <tr>
                                 <th>id</th>
-						        <th>uimid</th>
+						        <th>UIMID</th>
 						        <th>专辑标题</th>
 						        <th>专辑封面</th>
 						        <th>故事标题</th>

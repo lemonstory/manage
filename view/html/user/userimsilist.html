@@ -1,5 +1,4 @@
 {include file="include/header.html"}
-
 <div class="span9" id="content">
     <div class="row-fluid">
         <!-- block -->
@@ -54,7 +53,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>uimid</th>
+                                <th>UIMID</th>
 						        <th>UID/设备IMSI</th>
 						        <th>类型</th>
 						        <th>操作</th>
@@ -65,7 +64,7 @@
                             <tr>
                                 <td>{$value.uimid}</td>
                                 <td>{$value.resid}</td>
-                                <td>{if $value.restype == 1}{/if}</td>
+                                <td>{if $value.restype == 1}用户UID{else if $value.restype == 2}设备IMSI{/if}</td>
                                 <td id="option_{$value.id}">
                                     &nbsp;
                                 </td>
