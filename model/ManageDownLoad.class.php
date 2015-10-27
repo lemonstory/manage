@@ -1,8 +1,8 @@
 <?php
-class ManageFav extends ModelBase 
+class ManageDownload extends ModelBase 
 {
     public $DB_INSTANCE = 'share_main';
-    public $TABLE_NAME = 'fav_album';
+    public $TABLE_NAME = 'download_story';
     
     
     public function getListByColumnSearch($column = '', $value = '', $currentPage = 1, $perPage = 50)
