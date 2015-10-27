@@ -23,6 +23,7 @@ class userimsilist extends controller
         $totalCount = 0;
         
         if (!empty($searchContent)) {
+            $column = $searchCondition;
             $columnValue = $searchContent;
         } else {
             $column = $columnValue = '';
@@ -34,7 +35,7 @@ class userimsilist extends controller
                 $userimsilist[] = $value;
             }
             
-            $totalCount = $managefavobj->getCountByColumnSearch($column, $columnValue);
+            $totalCount = $manageobj->getCountByColumnSearch($column, $columnValue);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }
