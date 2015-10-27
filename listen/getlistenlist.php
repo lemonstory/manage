@@ -52,6 +52,7 @@ class getlistenlist extends controller
             $aliossobj = new AliOss();
             foreach ($resultList as $value) {
                 $albumid = $value['albumid'];
+                $storyid = $value['storyid'];
                 if (empty($albumlist[$albumid])) {
                     continue;
                 }
