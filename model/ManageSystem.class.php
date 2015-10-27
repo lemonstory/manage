@@ -292,7 +292,7 @@ class ManageSystem extends ModelBase
             }
         }
         
-        $sql .= " ORDER BY `ordernum` DESC LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `status` ASC, `ordernum` ASC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);
