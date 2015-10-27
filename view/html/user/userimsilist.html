@@ -1,0 +1,93 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">用户与设备关联列表筛选</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/user/userimsilist.php">
+                        <fieldset>
+                            <legend>搜索查询</legend>
+                            <div class="control-group">
+                                <label class="control-label">条件</label>
+                                <div class="controls">
+                                    <select id="selectError" name="searchCondition">
+                                        <option {if $searchCondition=="uimid"}selected{/if} value="uimid">用户与设备关联UIMID</option>
+                                        <option {if $searchCondition=="resid"}selected{/if} value="resid">用户UID或设备IMSI</option>
+                                    </select>
+                                    <p class="help-block">请选择查询条件</p>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">内容</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
+                                    <p class="help-block">输入查询内容</p>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">用户与设备关联列表</div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>uimid</th>
+						        <th>UID/设备IMSI</th>
+						        <th>类型</th>
+						        <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$userimsilist item=value}
+                            <tr>
+                                <td>{$value.uimid}</td>
+                                <td>{$value.resid}</td>
+                                <td>{if $value.restype == 1}{/if}</td>
+                                <td id="option_{$value.id}">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+    
+    {$pageBanner}
+</div>
+
+
+<script>
+{literal}
+$(function() {
+	
+});
+{/literal}
+</script>
+{include file="include/footer.html"}
