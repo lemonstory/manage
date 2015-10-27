@@ -110,9 +110,9 @@ $(function() {
                 if(data.code == "10000") {
                     $(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
-                    $("#status_"+albumid).text("已下线");
-                    $(this).attr("class", "online");
-                    $(this).text("上线");
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
                 } else {
                     $(".modal-body").text(data.desc);
                     $("#myModal").modal({show:true});
@@ -129,9 +129,9 @@ $(function() {
                 if(data.code == "10000") {
                     $(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
-                    $("#status_"+albumid).text("已上线");
-                    $(this).attr("class", "offline");
-                    $(this).text("下线");
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
                 } else {
                     $(".modal-body").text(data.desc);
                     $("#myModal").modal({show:true});

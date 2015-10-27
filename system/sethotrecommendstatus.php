@@ -18,7 +18,7 @@ class sethotrecommendstatus extends controller
         }
         
         $managesysobj = new ManageSystem();
-        $result = $managesysobj->updateRecommendStatusByIds('share_main', 'recomment_hot', $albumid, $status);
+        $result = $managesysobj->updateRecommendStatusByIds('share_main', 'recommend_hot', $albumid, $status);
         if(empty($result)) {
             $this->showErrorJson($managesysobj->getError());
         }

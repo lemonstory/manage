@@ -134,7 +134,7 @@ class ManageListen extends ModelBase
     public function updateSameAgeStatusByIds($ids, $status)
     {
     	$listenobj = new Listen();
-        if (empty($ids) || !in_array($status, in_array($listenobj->RECOMMEND_STATUS_OFFLINE, $listenobj->RECOMMEND_STATUS_ONLIINE))) {
+        if (empty($ids) || !in_array($status, array($listenobj->RECOMMEND_STATUS_OFFLINE, $listenobj->RECOMMEND_STATUS_ONLIINE))) {
             return false;
         }
         if (!is_array($ids)) {
