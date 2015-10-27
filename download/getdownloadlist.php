@@ -22,11 +22,12 @@ class getdownloadlist extends controller
         $totalCount = 0;
         
         if (!empty($searchContent)) {
+            $column = $searchCondition;
             $columnValue = $searchContent;
         } else {
             $column = $columnValue = '';
         }
-        $manageobj = new ManageDownload();
+        $manageobj = new ManageDownLoad();
         $resultList = $manageobj->getListByColumnSearch($column, $columnValue, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $albumids = array();
@@ -61,10 +62,10 @@ class getdownloadlist extends controller
                 
                 $storyinfo = $storylist[$storyid];
                 $value['storyinfo'] = $storyinfo;
-                $favlist[] = $value;
+                $downloadlist[] = $value;
             }
             
-            $totalCount = $managefavobj->getCountByColumnSearch($column, $columnValue);
+            $totalCount = $manageobj->getCountByColumnSearch($column, $columnValue);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }
