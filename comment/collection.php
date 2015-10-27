@@ -98,7 +98,7 @@ class collection extends controller
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('albumlist', $albumlist);
         $smartyObj->assign('commentcollectionactive', 'active');
-        $smartyobj->assign("headerdata", $this->headerCommonData());
+        $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("comment/collection.html"); 
 
     }

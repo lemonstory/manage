@@ -67,7 +67,7 @@ class hotrecommendlist extends controller
         $smartyObj->assign('hotlist', $hotlist);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('hotrecommendside', "active");
-        $smartyobj->assign("headerdata", $this->headerCommonData());
+        $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("system/hotrecommendlist.html"); 
     }
 }

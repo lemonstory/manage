@@ -76,7 +76,7 @@ class getuserlist extends controller
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('useractive', "active");
         $smartyObj->assign('getuserlistside', "active");
-        $smartyobj->assign("headerdata", $this->headerCommonData());
+        $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("user/getuserlist.html"); 
     }
 }

@@ -167,6 +167,9 @@ class ManageSystem extends ModelBase
 	    if (!empty($data['ordernum'])) {
 	        $setstr .= "`ordernum` = '{$data['ordernum']}',";
 	    }
+	    if (!empty($data['status'])) {
+	        $setstr .= "`status` = '{$data['status']}',";
+	    }
 	    $setstr = rtrim($setstr, ",");
 	    
 	    $db = DbConnecter::connectMysql('share_manage');

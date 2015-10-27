@@ -49,7 +49,7 @@ class focuslist extends controller
         $smartyObj->assign('focuslist', $focuslist);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('focusside', "active");
-        $smartyobj->assign("headerdata", $this->headerCommonData());
+        $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("system/focuslist.html"); 
     }
 }

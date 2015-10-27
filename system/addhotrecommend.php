@@ -24,7 +24,7 @@ class addhotrecommend extends controller
         $smartyobj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('hotrecommendside', "active");
-        $smartyobj->assign("headerdata", $this->headerCommonData());
+        $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("system/addhotrecommend.html"); 
     }
 }

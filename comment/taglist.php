@@ -60,7 +60,7 @@ class index extends controller
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('tagList', $tagList);
         $smartyObj->assign('tagactive', "active");
-        $smartyobj->assign("headerdata", $this->headerCommonData());
+        $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("comment/tag_list.html"); 
     }
 }

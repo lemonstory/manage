@@ -66,7 +66,7 @@ class sameagelist extends controller
         $smartyObj->assign('sameagelist', $sameagelist);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('sameageside', "active");
-        $smartyobj->assign("headerdata", $this->headerCommonData());
+        $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("system/sameagelist.html"); 
     }
 }
