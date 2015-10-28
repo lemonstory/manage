@@ -65,7 +65,7 @@
                             </ul>
                         </li>
                         <li class="{$commentlistactive}{$commentcollectionactive}{$tagactive}"><a href="/comment/commentlist.php">评论管理</a></li>
-                        <li class="{$anactive}"><a href="/analytics/searchcontentlist.php">统计相关</a></li>
+                        <li class="{$analyticsactive}"><a href="/analytics/searchcontentlist.php">统计相关</a></li>
                         <li class="{$feedbackactive}"><a href="/user/feedback.php">用户反馈</a></li>
                     </ul>
                 </div>
@@ -103,13 +103,13 @@
                          <li class="{$commentcollectionactive}"><a href="/comment/collection.php"><i class="icon-chevron-right"></i>评论采集</a></li>
                          <li class="{$commentlistactive}"><a href="/comment/commentlist.php"><i class="icon-chevron-right"></i>评论列表</a></li>
                          <li class="{$tagactive}"><a href="/comment/taglist.php"><i class="icon-chevron-right"></i>标签列表</a></li>
-                     {elseif $anactive}
-                         <li class="{$searchcontentlistside}"><a href="/analytics/searchcontentlist.php"><i class="icon-chevron-right">搜索关键词统计</i></a></li>
-                         <li class="{$analyticsregside}"><a href="/analytics/analyticsreg.php"><i class="icon-chevron-right">注册用户统计</i></a></li>
-                         <li class="{$analyticsfavside}"><a href="/analytics/analyticsfav.php"><i class="icon-chevron-right">收藏统计</i></a></li>
-                         <li class="{$analyticslistenside}"><a href="/analytics/analyticslisten.php"><i class="icon-chevron-right">收听历史统计</i></a></li>
-                         <li class="{$analyticsdownside}"><a href="/analytics/analyticsdown.php"><i class="icon-chevron-right">下载统计</i></a></li>
-                         <li class="{$analyticscommentside}"><a href="/analytics/analyticscomment.php"><i class="icon-chevron-right">评论统计</i></a></li>
+                     {elseif $analyticsactive}
+                         <li class="{$searchcontentlistside}"><a href="/analytics/searchcontentlist.php"><i class="icon-chevron-right"></i>搜索关键词统计</a></li>
+                         <li class="{$analyticsregside}"><a href="/analytics/analyticsreg.php"><i class="icon-chevron-right"></i>注册用户统计</a></li>
+                         <li class="{$analyticsfavside}"><a href="/analytics/analyticsfav.php"><i class="icon-chevron-right"></i>收藏统计</a></li>
+                         <li class="{$analyticslistenside}"><a href="/analytics/analyticslisten.php"><i class="icon-chevron-right"></i>收听历史统计</a></li>
+                         <li class="{$analyticsdownside}"><a href="/analytics/analyticsdown.php"><i class="icon-chevron-right"></i>下载统计</a></li>
+                         <li class="{$analyticscommentside}"><a href="/analytics/analyticscomment.php"><i class="icon-chevron-right"></i>评论统计</a></li>
 			         {/if}
 			    </ul>
 			</div>
