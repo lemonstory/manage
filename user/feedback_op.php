@@ -12,7 +12,7 @@ class index extends controller
         if (!in_array($op_name, array('delete', 'recover', 'reply'))) {
             $this->showErrorJson("专辑数据为空");
         }
-        $feedback = new UserFeedback();
+        $feedback = new UserFeedBack();
         $feedbackinfo = $feedback->getInfo($op_id);
 
         if ($op_name == 'delete') {
