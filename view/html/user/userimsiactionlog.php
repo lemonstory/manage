@@ -4,11 +4,11 @@
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">用户与设备关联列表筛选</div>
+                <div class="muted pull-left">用户与设备行为日志筛选</div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/user/userimsilist.php">
+                    <form class="form-horizontal" method="post" action="/user/userimsiactionlog.php">
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
@@ -16,7 +16,6 @@
                                 <div class="controls">
                                     <select id="selectError" name="searchCondition">
                                         <option {if $searchCondition=="uimid"}selected{/if} value="uimid">用户与设备关联UIMID</option>
-                                        <option {if $searchCondition=="resid"}selected{/if} value="resid">用户UID或设备IMSI</option>
                                     </select>
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
@@ -46,33 +45,28 @@
             <!-- block -->
             <div class="block">
                 <div class="navbar navbar-inner block-header">
-                    <div class="muted pull-left">用户与设备关联列表</div>
+                    <div class="muted pull-left">日志列表</div>
                     <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>UIMID</th>
-						        <th>UID/设备IMSI</th>
-						        <th>类型</th>
-						        <th>操作</th>
+                                <th>id</th>
+						        <th>UIMID</th>
+						        <th>行为类型</th>
+						        <th>行为ID</th>
+						        <th>时间</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {foreach from=$userimsilist item=value}
+                            {foreach from=$loglist item=value}
                             <tr>
+                                <td>{$value.id}</td>
                                 <td>{$value.uimid}</td>
-                                <td>{$value.resid}</td>
-                                <td>{if $value.restype == 1}用户UID{else if $value.restype == 2}设备IMSI{/if}</td>
-                                <td id="option_{$value.id}">
-                                    <a href="/user/userimsiactionlog.php" target="_blank">行为日志</a>&nbsp;
-                                    <a href="/download/getdownloadlist.php?searchCondition=uimid&searchContent={$value.uimid}" target="_blank">下载内容</a>&nbsp;
-                                    <a href="/listen/getlistenlist.php?searchCondition=uimid&searchContent={$value.uimid}" target="_blank">收听历史</a>&nbsp;
-                                    {if $value.restype == 1}
-                                    <a href="/fav/getfavlist.php?searchCondition=uid&searchContent={$value.resid}" target="_blank">收藏内容</a>&nbsp;
-                                    {/if}
-                                </td>
+                                <td>{$value.actiontype}</td>
+                                <td>{$value.actionid}</td>
+                                <td>{$value.addtime}</td>
                             </tr>
                             {/foreach}
                         </tbody>

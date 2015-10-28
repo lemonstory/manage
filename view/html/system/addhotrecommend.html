@@ -51,7 +51,7 @@ $(function() {
         $.post(url, {albumid:albumid}, function(data){
             if(data.code == '10000') {
             	if (refer == '') {
-            		location.href = '/system/hotrecommend.php';
+            		location.href = '/system/hotrecommendlist.php';
             	} else {
             		location.href = refer;
             	}
