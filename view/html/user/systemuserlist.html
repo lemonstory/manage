@@ -4,22 +4,22 @@
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">搜索统计筛选</div>
+                <div class="muted pull-left">系统僵尸用户筛选</div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/analytics/searchcontentlist.php">
+                    <form class="form-horizontal" method="post" action="/user/systemuserlist.php">
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
                                 <label class="control-label">条件</label>
                                 <div class="controls">
                                     <select id="selectError" name="searchCondition">
-                                        <option {if $searchCondition=="searchcontent"}selected{/if} value="searchcontent">关键词</option>
+                                        <option {if $searchCondition=="uid"}selected{/if} value="uid">系统用户UID</option>
                                     </select><br>
                                     <select id="selectError" name="status">
-                                        <option {if $searchCondition=="1"}selected{/if} value="1">热门</option>
-                                        <option {if $searchCondition=="2"}selected{/if} value="2">非热门</option>
+                                        <option {if $searchCondition=="1"}selected{/if} value="1">已激活</option>
+                                        <option {if $searchCondition=="2"}selected{/if} value="2">未激活</option>
                                     </select>
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
@@ -49,33 +49,33 @@
             <!-- block -->
             <div class="block">
                 <div class="navbar navbar-inner block-header">
-                    <div class="muted pull-left">搜索列表</div>
+                    <div class="muted pull-left">系统用户列表</div>
                     <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>id</th>
-						        <th>关键词</th>
-						        <th>搜索次数</th>
-						        <th>热门关键词</th>
-						        <th>操作</th>
+                                <th>系统Uid</th>
+                                <th>昵称</th>
+                                <th>头像</th>
+                                <th>状态</th>
+                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             {foreach from=$list item=value}
                             <tr>
-                                <td>{$value.id}</td>
-                                <td>{$value.searchcontent}</td>
-                                <td>{$value.count}</td>
-                                <td>{if $value.status == 1}是{else if $value.status == 2}不是{/if}</td>
+                                <td>{$value.uid}</td>
+                                <td>{$value.userinfo.nickname}</td>
+                                <td>{$value.userinfo.avatar}</td>
+                                <td>{if $value.status == 1}已激活{else if $value.status == 2}未激活{/if}</td>
                                 <td>
                                     {if $value.status == 1}
-                                    <a href="">取消热门</a>
+                                    <a href="">取消</a>
                                     &nbsp;
                                     {elseif $value.status == 2}
-                                    <a href="">加入热门</a>
+                                    <a href="">激活</a>
                                     {/if}
                                 </td>
                             </tr>
@@ -95,7 +95,7 @@
 <script>
 {literal}
 $(function() {
-	
+    
 });
 {/literal}
 </script>

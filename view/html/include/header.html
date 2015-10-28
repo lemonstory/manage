@@ -95,6 +95,7 @@
 			             <li class="{$userimsilistside}"><a href="/user/userimsilist.php"><i class="icon-chevron-right"></i>用户与设备关联信息</a></li>
 			             <li class="{$userimsiactionlogside}"><a href="/user/userimsiactionlog.php"><i class="icon-chevron-right">用户与设备行为日志</i></a></li>
 			             <li class="{$userloginlogside}"><a href="/user/userloginlog.php"><i class="icon-chevron-right">用户登录日志</i></a></li>
+			             <li class="{$systemuserlistside}"><a href="/user/systemuserlist.php"><i class="icon-chevron-right">系统僵尸用户列表</i></a></li>
 			         {elseif ($albumactive || $storyactive)}
 				         <li class="{$albumactive}"><a href="/album/index.php"><i class="icon-chevron-right"></i>专辑列表</a></li>
 				         <li class="{$storyactive}"><a href="/album/storylist.php"><i class="icon-chevron-right"></i>故事列表</a></li>
@@ -104,6 +105,11 @@
                          <li class="{$tagactive}"><a href="/comment/taglist.php"><i class="icon-chevron-right"></i>标签列表</a></li>
                      {elseif $anactive}
                          <li class="{$searchcontentlistside}"><a href="/analytics/searchcontentlist.php"><i class="icon-chevron-right">搜索关键词统计</i></a></li>
+                         <li class="{$analyticsregside}"><a href="/analytics/analyticsreg.php"><i class="icon-chevron-right">注册用户统计</i></a></li>
+                         <li class="{$analyticsfavside}"><a href="/analytics/analyticsfav.php"><i class="icon-chevron-right">收藏统计</i></a></li>
+                         <li class="{$analyticslistenside}"><a href="/analytics/analyticslisten.php"><i class="icon-chevron-right">收听历史统计</i></a></li>
+                         <li class="{$analyticsdownside}"><a href="/analytics/analyticsdown.php"><i class="icon-chevron-right">下载统计</i></a></li>
+                         <li class="{$analyticscommentside}"><a href="/analytics/analyticscomment.php"><i class="icon-chevron-right">评论统计</i></a></li>
 			         {/if}
 			    </ul>
 			</div>
