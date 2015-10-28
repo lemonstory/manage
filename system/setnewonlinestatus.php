@@ -6,21 +6,32 @@ class sethotrecommendstatus extends controller
     public function action()
     {
         $albumid = $this->getRequest('albumid', 0) + 0;
+        $type = $this->getRequest("type", '');
         $status = $this->getRequest('status', 0);
+        $ordernum = $this->getRequest('ordernum', 0);
         if (empty($albumid)) {
             $this->showErrorJson(ErrorConf::paramError());
         }
-        
-        $albumobj = new Album();
-        $albuminfo = $albumobj->get_album_info($albumid);
-        if (empty($albuminfo)) {
-            $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
+        $updata = array();
+        if ($type == 'status') {
+            $updata['status'] = $status;
+        }
+        if ($type == 'ordernum') {
+            $updata['ordernum'] = $ordernum;
         }
         
-        $managesysobj = new ManageSystem();
-        $result = $managesysobj->updateRecommendStatusByIds('share_main', 'recommend_new_online', $albumid, $status);
-        if(empty($result)) {
-            $this->showErrorJson($managesysobj->getError());
+        if (!empty($updata)) {
+            $albumobj = new Album();
+            $albuminfo = $albumobj->get_album_info($albumid);
+            if (empty($albuminfo)) {
+                $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
+            }
+            
+            $managesysobj = new ManageSystem();
+            $result = $managesysobj->updateRecommendInfoByIds('share_main', 'recommend_new_online', $albumid, $updata);
+            if(empty($result)) {
+                $this->showErrorJson($managesysobj->getError());
+            }
         }
         
         $this->showSuccJson();

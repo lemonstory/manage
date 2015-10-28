@@ -103,7 +103,7 @@ class ManageListen extends ModelBase
             }
         }
         
-        $sql .= " ORDER BY `status` ASC, `ordernum` DESC LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `status` ASC, `ordernum` ASC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -138,10 +138,10 @@ class ManageListen extends ModelBase
         return $count;
     }
     
-    public function updateSameAgeStatusByIds($ids, $status)
+    public function updateSameAgeInfoByIds($ids, $data)
     {
     	$listenobj = new Listen();
-        if (empty($ids) || !in_array($status, array($listenobj->RECOMMEND_STATUS_OFFLINE, $listenobj->RECOMMEND_STATUS_ONLIINE))) {
+        if (empty($ids) || empty($data)) {
             return false;
         }
         if (!is_array($ids)) {
@@ -153,10 +153,16 @@ class ManageListen extends ModelBase
         }
         $idStr = rtrim($idStr, ",");
     
+        $setstr = "";
+        foreach ($data as $key => $value) {
+            $setstr .= "`{$key}` = '{$value}',";
+        }
+        $setstr = rtrim($setstr, ",");
+        
         $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
-        $sql = "UPDATE `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` SET `status` = ? WHERE `albumid` IN ({$idStr})";
+        $sql = "UPDATE `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
         $st = $db->prepare($sql);
-        $result = $st->execute(array($status));
+        $result = $st->execute();
         return $result;
     }
 }

@@ -80,7 +80,7 @@
                                 <td>{$value.albumid}</td>
                                 <td>{$value.albuminfo.title}</td>
                                 <td>{$value.albuminfo.cover}</td>
-                                <td>{$value.ordernum}</td>
+                                <td><input type="text" name="order" class="form-control" op_id="{$value.albumid}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
                                 <td>{$value.addtime}</td>
                                 <td id="status_{$value.albumid}">
                                     {if $value.status eq '1'}已上线
@@ -148,6 +148,33 @@ $(function() {
                     $("#myModal").modal({show:true});
                 }
             }, "json");
+        }
+    });
+    
+    $("[name='order']").on('change', function(){
+        $(".modal-body").text("");
+        var old_val = parseInt($(this).attr('old_val'));
+        var op_id   = parseInt($(this).attr('op_id'));
+        var new_val = parseInt($(this).val());
+        if (old_val == new_val) {
+            return false;
+        } else {
+            var data = {};
+            data.type = 'ordernum';
+            data.albumid = op_id;
+            data.ordernum = new_val;
+            $.post('/system/setnewonlinestatus.php', data, function(json){
+                if (json.code == 10000) {
+                    $(".modal-body").text("设置成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
+                } else {
+                    $(".modal-body").text(json.desc);
+                    $("#myModal").modal({show:true});
+                }
+            },'json');
         }
     });
 });

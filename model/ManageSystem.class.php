@@ -330,9 +330,9 @@ class ManageSystem extends ModelBase
         return $count;
     }
     
-    public function updateRecommendStatusByIds($dbinstance, $tablename, $ids, $status)
+    public function updateRecommendInfoByIds($dbinstance, $tablename, $ids, $data)
     {
-        if (empty($ids) || !in_array($status, $this->AGE_TYPE_LIST)) {
+        if (empty($ids) || empty($data)) {
             return false;
         }
         if (!is_array($ids)) {
@@ -343,11 +343,17 @@ class ManageSystem extends ModelBase
             $idStr .= $id . ",";
         }
         $idStr = rtrim($idStr, ",");
+        
+        $setstr = "";
+        foreach ($data as $key => $value) {
+            $setstr .= "`{$key}` = '{$value}',";
+        }
+        $setstr = rtrim($setstr, ",");
     
         $db = DbConnecter::connectMysql($dbinstance);
-        $sql = "UPDATE `{$tablename}` SET `status` = ? WHERE `albumid` IN ({$idStr})";
+        $sql = "UPDATE `{$tablename}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
         $st = $db->prepare($sql);
-        $result = $st->execute(array($status));
+        $result = $st->execute();
         return $result;
     }
     

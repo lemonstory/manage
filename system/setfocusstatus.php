@@ -5,20 +5,27 @@ class setfocusstatus extends controller
 {
     public function action()
     {
-        $uid = $this->getUid();
         $focusid = $this->getRequest('focusid', 0) + 0;
+        $type = $this->getRequest("type", '');
         $status = $this->getRequest('status', 0);
-        if (empty($uid)) {
-            $this->showErrorJson(ErrorConf::noLogin());
-        }
+        $ordernum = $this->getRequest('ordernum', 0);
         if (empty($focusid)) {
             $this->showErrorJson(ErrorConf::paramError());
         }
+        $updata = array();
+        if ($type == 'status') {
+            $updata['status'] = $status;
+        }
+        if ($type == 'ordernum') {
+            $updata['ordernum'] = $ordernum;
+        }
         
-        $manageobj = new ManageSystem();
-        $result = $manageobj->updateFocusInfo($focusid, array("status" => $status));
-        if(empty($result)) {
-            $this->showErrorJson($manageobj->getError());
+        if (!empty($updata)) {
+            $manageobj = new ManageSystem();
+            $result = $manageobj->updateFocusInfo($focusid, $updata);
+            if(empty($result)) {
+                $this->showErrorJson($manageobj->getError());
+            }
         }
         
         $this->showSuccJson();

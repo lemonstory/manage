@@ -7,7 +7,8 @@ class focuslist extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
-        $searchCondition = $this->getRequest('searchCondition', 'uid');
+        $status = $this->getRequest('status', 0);
+        $searchCondition = $this->getRequest('searchCondition', 'id');
         $searchContent = $this->getRequest('searchContent', '');
         if (empty($currentPage)) {
             $currentPage = 0;
@@ -17,7 +18,7 @@ class focuslist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/user/focuslist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/user/focuslist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         
     	$focuslist = array();
     	if (!empty($searchContent)) {
@@ -26,7 +27,7 @@ class focuslist extends controller
             $column = $columnValue = '';
         }
         $managesysobj = new ManageSystem();
-        $resultList = $managesysobj->getRecommendListByColumnSearch("share_manage", "focus", $column, $columnValue, $currentPage + 1, $perPage);
+        $resultList = $managesysobj->getRecommendListByColumnSearch("share_manage", "focus", $column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $aliossobj = new AliOss();
             foreach ($resultList as $value) {
@@ -34,7 +35,7 @@ class focuslist extends controller
                 $focuslist[] = $value;
             }
             
-            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_manage", "focus", $column, $columnValue);
+            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_manage", "focus", $column, $columnValue, $status);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }
