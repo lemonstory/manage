@@ -18,7 +18,7 @@ class searchcontentlist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/user/userloginlog.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/user/userloginlog.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $list = array();
         $totalCount = 0;
         

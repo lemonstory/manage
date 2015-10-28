@@ -77,7 +77,7 @@ class ManageUser extends ModelBase
             }
         }
     
-        $sql .= " ORDER BY `status` LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `status`, 'uid' DESC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);

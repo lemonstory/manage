@@ -19,6 +19,8 @@ class systemuserlist extends controller
             $perPage = 20;
         }
         
+        $pageBanner = "";
+        $baseUri = "/user/systemuserlist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $list = array();
         $totalCount = 0;
         
@@ -43,7 +45,7 @@ class systemuserlist extends controller
             
             foreach ($resultlist as $value) {
                 $userinfo = $userlist[$value['uid']];
-                $userinfo['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 100);
+                $userinfo['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $userinfo['avatartime'], 100);
                 $value['userinfo'] = $userinfo;
                 $list[] = $value;
             }
