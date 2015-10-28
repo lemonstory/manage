@@ -7,6 +7,7 @@ class sameagelist extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
+        $status = $this->getRequest('status', 0);
         $searchCondition = $this->getRequest('searchCondition', 'babyagetype');
         $searchContent = $this->getRequest('searchContent', '');
         if (empty($currentPage)) {
@@ -17,7 +18,7 @@ class sameagelist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/system/sameagelist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/sameagelist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $sameagelist = array();
         $totalCount = 0;
         
@@ -27,7 +28,7 @@ class sameagelist extends controller
             $column = $columnValue = '';
         }
         $managelistenobj = new ManageListen();
-        $resultList = $managelistenobj->getSameAgeListByColumnSearch($column, $columnValue, $currentPage + 1, $perPage);
+        $resultList = $managelistenobj->getSameAgeListByColumnSearch($column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $albumids = array();
             $albumlist = array();
@@ -51,7 +52,7 @@ class sameagelist extends controller
                 $value['albuminfo'] = $albuminfo;
                 $sameagelist[] = $value;
             }
-            $totalCount = $managelistenobj->getSameAgeCountByColumnSearch($column, $columnValue);
+            $totalCount = $managelistenobj->getSameAgeCountByColumnSearch($column, $columnValue, $status);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }

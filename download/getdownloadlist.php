@@ -7,6 +7,7 @@ class getdownloadlist extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
+        $status = $this->getRequest('status', 0);
         $searchCondition = $this->getRequest('searchCondition', 'uimid');
         $searchContent = $this->getRequest('searchContent', '');
         if (empty($currentPage)) {
@@ -17,7 +18,7 @@ class getdownloadlist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/download/getdownloadlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/download/getdownloadlist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $downloadlist = array();
         $totalCount = 0;
         
@@ -28,7 +29,7 @@ class getdownloadlist extends controller
             $column = $columnValue = '';
         }
         $manageobj = new ManageDownLoad();
-        $resultList = $manageobj->getListByColumnSearch($column, $columnValue, $currentPage + 1, $perPage);
+        $resultList = $manageobj->getListByColumnSearch($column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $albumids = array();
             $storyids = array();
@@ -65,7 +66,7 @@ class getdownloadlist extends controller
                 $downloadlist[] = $value;
             }
             
-            $totalCount = $manageobj->getCountByColumnSearch($column, $columnValue);
+            $totalCount = $manageobj->getCountByColumnSearch($column, $columnValue, $status);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }

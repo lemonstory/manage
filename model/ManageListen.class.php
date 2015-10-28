@@ -68,7 +68,7 @@ class ManageListen extends ModelBase
 	    return $count;
 	}
 	
-	public function getSameAgeListByColumnSearch($column = '', $value = '', $currentPage = 1, $perPage = 50)
+	public function getSameAgeListByColumnSearch($column = '', $value = '', $status = 0, $currentPage = 1, $perPage = 50)
     {
         if (empty($currentPage)) {
             $currentPage = 1;
@@ -85,6 +85,10 @@ class ManageListen extends ModelBase
         $offset = ($currentPage - 1) * $perPage;
         
         $statusWhere = "";
+        if (!empty($status)) {
+            $statusWhere = "`status` = {$status}";
+        }
+        
         $list = $resIds = array();
         $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
         $sql = "SELECT * FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}`";
@@ -99,7 +103,7 @@ class ManageListen extends ModelBase
             }
         }
         
-        $sql .= " ORDER BY `ordernum` DESC LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `status` ASC, `ordernum` DESC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -108,9 +112,12 @@ class ManageListen extends ModelBase
     }
     
     
-	public function getSameAgeCountByColumnSearch($column = '', $value = '')
+	public function getSameAgeCountByColumnSearch($column = '', $value = '', $status = 0)
     {
         $statusWhere = "";
+        if (!empty($status)) {
+            $statusWhere = "`status` = {$status}";
+        }
     	
         $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
         $sql = "SELECT COUNT(*) FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}`";

@@ -5,7 +5,7 @@ class ManageDownLoad extends ModelBase
     public $TABLE_NAME = 'download_story';
     
     
-    public function getListByColumnSearch($column = '', $value = '', $currentPage = 1, $perPage = 50)
+    public function getListByColumnSearch($column = '', $value = '', $status = 0, $currentPage = 1, $perPage = 50)
     {
         if (empty($currentPage)) {
             $currentPage = 1;
@@ -20,8 +20,12 @@ class ManageDownLoad extends ModelBase
             $perPage = 50;
         }
         $offset = ($currentPage - 1) * $perPage;
-    
+        
         $statusWhere = "";
+        if (!empty($status)) {
+            $statusWhere = "`status` = {$status}";
+        }
+        
         $list = $resIds = array();
         $db = DbConnecter::connectMysql($this->DB_INSTANCE);
         $sql = "SELECT * FROM `{$this->TABLE_NAME}`";
@@ -36,7 +40,7 @@ class ManageDownLoad extends ModelBase
             }
         }
     
-        $sql .= " ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `status`, `id` DESC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -45,10 +49,13 @@ class ManageDownLoad extends ModelBase
     }
     
     
-    public function getCountByColumnSearch($column = '', $value = '')
+    public function getCountByColumnSearch($column = '', $value = '', $status = 0)
     {
         $statusWhere = "";
-         
+        if (!empty($status)) {
+            $statusWhere = "`status` = {$status}";
+        }
+        
         $db = DbConnecter::connectMysql($this->DB_INSTANCE);
         $sql = "SELECT COUNT(*) FROM `{$this->TABLE_NAME}`";
         if (!empty($column)) {

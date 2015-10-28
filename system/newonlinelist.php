@@ -7,6 +7,7 @@ class newonlinelist extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
+        $status = $this->getRequest('status', 0);
         $searchCondition = $this->getRequest('searchCondition', 'uid');
         $searchContent = $this->getRequest('searchContent', '');
         if (empty($currentPage)) {
@@ -17,7 +18,7 @@ class newonlinelist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/system/newonlinelist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/newonlinelist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $totalCount = 0;
         
     	$newonlinelist = array();
@@ -27,7 +28,7 @@ class newonlinelist extends controller
             $column = $columnValue = '';
         }
         $managesysobj = new ManageSystem();
-        $resultList = $managesysobj->getRecommendListByColumnSearch("share_main", "recommend_new_online", $column, $columnValue, $currentPage + 1, $perPage);
+        $resultList = $managesysobj->getRecommendListByColumnSearch("share_main", "recommend_new_online", $column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $albumids = array();
             $albumlist = array();
@@ -51,7 +52,7 @@ class newonlinelist extends controller
                 $value['albuminfo'] = $albuminfo;
                 $newonlinelist[] = $value;
             }
-            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_main", "recommend_new_online", $column, $columnValue);
+            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_main", "recommend_new_online", $column, $columnValue, $status);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }

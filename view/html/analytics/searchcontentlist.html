@@ -15,6 +15,7 @@
                                 <label class="control-label">条件</label>
                                 <div class="controls">
                                     <select id="selectError" name="searchCondition">
+                                        <option value="">全部</option>
                                         <option {if $searchCondition=="searchcontent"}selected{/if} value="searchcontent">关键词</option>
                                     </select>
                                 </div>
@@ -23,7 +24,7 @@
                                 <label class="control-label">状态</label>
                                 <div class="controls">
                                     <select id="selectError" name="status">
-                                        <option {if $searchCondition=="0"}selected{/if} value="0">全部</option>
+                                        <option value="0">全部</option>
                                         <option {if $searchCondition=="1"}selected{/if} value="1">热门</option>
                                         <option {if $searchCondition=="2"}selected{/if} value="2">非热门</option>
                                     </select>

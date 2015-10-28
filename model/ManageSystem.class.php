@@ -261,7 +261,7 @@ class ManageSystem extends ModelBase
 	 * @param unknown_type $perPage
 	 * @return Ambiguous
 	 */
-	public function getRecommendListByColumnSearch($dbinstance, $tablename, $column = '', $value = '', $currentPage = 1, $perPage = 50)
+	public function getRecommendListByColumnSearch($dbinstance, $tablename, $column = '', $value = '', $status = 0, $currentPage = 1, $perPage = 50)
     {
         if (empty($currentPage)) {
             $currentPage = 1;
@@ -278,6 +278,10 @@ class ManageSystem extends ModelBase
         $offset = ($currentPage - 1) * $perPage;
         
         $statusWhere = "";
+        if (!empty($status)) {
+            $statusWhere = "`status` = {$status}";
+        }
+        
         $list = $resIds = array();
         $db = DbConnecter::connectMysql($dbinstance);
         $sql = "SELECT * FROM `{$tablename}`";
@@ -300,9 +304,12 @@ class ManageSystem extends ModelBase
     }
     
     
-	public function getRecommendCountByColumnSearch($dbinstance, $tablename, $column = '', $value = '')
+	public function getRecommendCountByColumnSearch($dbinstance, $tablename, $column = '', $value = '', $status = 0)
     {
         $statusWhere = "";
+        if (!empty($status)) {
+            $statusWhere = "`status` = {$status}";
+        }
     	
         $db = DbConnecter::connectMysql($dbinstance);
         $sql = "SELECT COUNT(*) FROM `{$tablename}`";
