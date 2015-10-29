@@ -57,7 +57,9 @@ class getlistenlist extends controller
                     continue;
                 }
                 $albuminfo = $albumlist[$albumid];
-                $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100);
+                if (!empty($albuminfo['cover'])) {
+                    $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100);
+                }
                 $value['albuminfo'] = $albuminfo;
                 
                 $storyinfo = $storylist[$storyid];
