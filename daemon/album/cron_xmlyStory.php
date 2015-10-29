@@ -22,10 +22,11 @@ class deal_userListenStory extends DaemonBase {
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='xmly'", " {$limit},{$per_page}");
+            $album_list = $album->get_list("`id` = 6880 and `from`='xmly'", " {$limit},{$per_page}");
             if (!$album_list) {
                 break;
             }
+            $time = time();
             echo " {$limit},{$per_page}\n";
             foreach($album_list as $k => $v) {
 	        	$album_id = Http::sub_data($v['link_url'], 'album/');
@@ -52,7 +53,7 @@ class deal_userListenStory extends DaemonBase {
 		                    'add_time' => date('Y-m-d H:i:s'),
 		                ));
 		                if ($story_id) {
-		                    // MnsQueueManager::pushAlbumToSearchQueue($story_id);
+		                    MnsQueueManager::pushAlbumToSearchQueue($story_id);
 		                }
 		                $story_url->insert(array(
 		                    'res_name'         => 'story',
@@ -65,7 +66,7 @@ class deal_userListenStory extends DaemonBase {
 		                echo $story_id;
 		                echo "<br />\n";
 		                if (!$story_id) {
-		                	var_dump($v,$v2);exit;
+		                	var_dump($v,$v2);
 		                }
 	                }
 	                $page ++;

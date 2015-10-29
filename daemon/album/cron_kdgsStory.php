@@ -49,7 +49,7 @@ class deal_userListenStory extends DaemonBase {
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
                     if ($story_id) {
-                        // MnsQueueManager::pushAlbumToSearchQueue($story_id);
+                        MnsQueueManager::pushAlbumToSearchQueue($story_id);
                     }
                     $story_url->insert(array(
                         'res_name'         => 'story',
