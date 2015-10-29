@@ -4,6 +4,8 @@
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class deal_userListenStory extends DaemonBase {
+
+    protected $home_url = 'http://m.idaddy.cn/mobile.php?etr=touch&mod=freeAudio&hidden=';
     protected $processnum = 1;
 	protected function deal() {
 		$this->c_kdgs_category();
@@ -47,7 +49,7 @@ class deal_userListenStory extends DaemonBase {
                     'add_time' => date('Y-m-d H:i:s'),
                 ));
                 echo $category_id;
-                echo "<br />";
+                echo "<br />\n";
             }
         }
         // 子类
@@ -79,7 +81,7 @@ class deal_userListenStory extends DaemonBase {
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
                     echo "children：".$category_id;
-                    echo "<br />";
+                    echo "<br />\n";
                 }
             }
         }

@@ -52,7 +52,7 @@ class deal_userListenStory extends DaemonBase {
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
                     echo $album_id;
-                    echo "<br />";
+                    echo "<br />\n";
                 }
                 $page ++;
             }

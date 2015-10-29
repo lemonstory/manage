@@ -4,6 +4,7 @@
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class deal_userListenStory extends DaemonBase {
+    protected $home_url = 'http://m.ximalaya.com/album-tag/kid';
     protected $processnum = 1;
 	protected function deal() {
 		$this->c_xmly_category();
@@ -42,7 +43,7 @@ class deal_userListenStory extends DaemonBase {
                 'add_time' => date('Y-m-d H:i:s'),
             ));
             echo $category_id;
-            echo "<br />";
+            echo "<br />\n";
         }
     }
 
