@@ -69,7 +69,7 @@
                             <tr>
                                 <td>{$value.uid}</td>
                                 <td>{$value.nickname}</td>
-                                <td>{$value.avatar}</td>
+                                <td><img src="{$value.avatar}" width="80" height="80" /></td>
                                 <td>{$value.phonenumber}</td>
                                 <td id="status_{$value.uid}">
                                     {if $value.status eq '-3'}已删除
