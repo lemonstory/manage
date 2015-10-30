@@ -3,7 +3,7 @@
  * 口袋故事分类采集
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
-class deal_userListenStory extends DaemonBase {
+class cron_kdgsCategory extends DaemonBase {
 
     protected $home_url = 'http://m.idaddy.cn/mobile.php?etr=touch&mod=freeAudio&hidden=';
     protected $processnum = 1;
@@ -89,4 +89,4 @@ class deal_userListenStory extends DaemonBase {
 
 
 }
-new deal_userListenStory ();
+new cron_kdgsCategory();

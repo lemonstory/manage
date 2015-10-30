@@ -3,7 +3,7 @@
  * 口袋故事专辑采集
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
-class deal_userListenStory extends DaemonBase {
+class cron_kdgsAlbum extends DaemonBase {
     protected $processnum = 1;
 	protected function deal() {
 		$this->c_kdgs_album();
@@ -67,4 +67,4 @@ class deal_userListenStory extends DaemonBase {
 
 
 }
-new deal_userListenStory ();
+new cron_kdgsAlbum();

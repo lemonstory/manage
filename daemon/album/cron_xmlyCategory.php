@@ -3,7 +3,7 @@
  * 喜马拉雅故事分类采集
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
-class deal_userListenStory extends DaemonBase {
+class cron_xmlyCategory extends DaemonBase {
     protected $home_url = 'http://m.ximalaya.com/album-tag/kid';
     protected $processnum = 1;
 	protected function deal() {
@@ -50,4 +50,4 @@ class deal_userListenStory extends DaemonBase {
 
 
 }
-new deal_userListenStory ();
+new cron_xmlyCategory();

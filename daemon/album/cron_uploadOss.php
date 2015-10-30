@@ -1,7 +1,7 @@
 <?php
 
 include_once '../controller.php';
-class upload_oss extends controller
+class cron_uploadOss extends controller
 {
     public function action() {
         // // 更新专辑封面
@@ -83,4 +83,4 @@ class upload_oss extends controller
 
     }
 }
-new upload_oss();
+new cron_uploadOss();

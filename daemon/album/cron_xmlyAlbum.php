@@ -3,7 +3,7 @@
  * 喜马拉雅故事专辑采集
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
-class deal_userListenStory extends DaemonBase {
+class cron_xmlyAlbum extends DaemonBase {
     protected $processnum = 1;
 	protected function deal() {
 		$this->c_xmly_album();
@@ -63,4 +63,4 @@ class deal_userListenStory extends DaemonBase {
 
 
 }
-new deal_userListenStory ();
+new cron_xmlyAlbum();
