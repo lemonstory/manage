@@ -6,25 +6,30 @@ class cron_uploadOss extends controller
     public function action() {
         // // 更新专辑封面
         $album = new Album();
-        $album_list = $album->get_list("cover=''", 100);
+        $album_list = $album->get_list("cover=''", 1);
+        var_dump($album_list);
         foreach ($album_list as $k => $v) {
             $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
             if (is_string($r)) {
                 $album->update(array('cover' = $r), "`id`={$v['id']}");
             }
         }
+        var_dump($r);
         // 更新故事封面
         $story = new Story();
-        $story_list = $album->get_list("cover=''", 100);
+        $story_list = $album->get_list("cover=''", 1);
+        var_dump($story_list);
         foreach ($story_list as $k => $v) {
             $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
             if (is_string($r)) {
                 $album->update(array('cover' = $r), "`id`={$v['id']}");
             }
         }
+        var_dump($r);
         // 更新故事为本地地址
         $story = new Story();
         $story_list = $story->get_list("mediapath=''", 1);
+        var_dump($story_list);
         foreach ($story_list as $k => $v) {
             $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
             if (is_array($r) && $r) {
