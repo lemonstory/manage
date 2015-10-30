@@ -19,36 +19,43 @@ class cron_uploadOss extends DaemonBase
         // // 更新专辑封面
         $album = new Album();
         $album_list = $album->get_list("cover=''", 1);
-        var_dump($album_list);
+
         foreach ($album_list as $k => $v) {
             $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
             if (is_string($r)) {
                 $album->update(array('cover' => $r), "`id`={$v['id']}");
+                $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
+            } else {
+                $this->writeLog("专辑封面 {$v['id']} => cover 更新失败");
             }
         }
-        var_dump($r);
+
         // 更新故事封面
         $story = new Story();
         $story_list = $album->get_list("cover=''", 1);
-        var_dump($story_list);
         foreach ($story_list as $k => $v) {
             $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
             if (is_string($r)) {
                 $story->update(array('cover' => $r), "`id`={$v['id']}");
+                $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+            } else {
+                $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
             }
         }
-        var_dump($r);
+
         // 更新故事为本地地址
         $story = new Story();
         $story_list = $story->get_list("mediapath=''", 1);
-        var_dump($story_list);
         foreach ($story_list as $k => $v) {
             $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
             if (is_array($r) && $r) {
                 $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
+                $this->writeLog("故事 {$v['id']} => cover 更新成功");
+            } else {
+                $this->writeLog("故事 {$v['id']} => cover 更新失败");
             }
         }
-        var_dump($r);
+
     }
 
     /**
@@ -100,6 +107,16 @@ class cron_uploadOss extends DaemonBase
 
         return '';
 
+    }
+
+    protected function writeLog($content = '')
+    {
+        static $manageCollectionCronLog = null;
+        if (!$manageCollectionCronLog) {
+            $manageCollectionCronLog = new ManageCollectionCronLog();
+        }
+        $manageCollectionCronLog->insert(array('type' => 'upload_oss', 'content' => $content));
+        
     }
 }
 new cron_uploadOss();
