@@ -18,6 +18,7 @@ class cron_kdgsStory extends DaemonBase {
         $story = new Story();
         $kdgs  = new Kdgs();
         $story_url = new StoryUrl();
+        $this->writeLog("采集口袋故事开始");
         $p = 1;
         $per_page = 500;
 
@@ -27,7 +28,8 @@ class cron_kdgsStory extends DaemonBase {
             if (!$album_list) {
                 break;
             }
-            echo " {$limit},{$per_page}\n";
+
+            $this->writeLog("采集口袋故事  {$limit},{$per_page}");
 
             foreach ($album_list as $k => $v) {
                 if (!$v['age_type']) {
@@ -59,18 +61,28 @@ class cron_kdgsStory extends DaemonBase {
                         'source_file_name' => ltrim(strrchr($v2['cover'], '/'), '/'),
                         'add_time'         => date('Y-m-d H:i:s'),
                     ));
-                    echo $story_id;
-                    if (!$story_id) {
-                        var_dump($v, $v2);exit;
+                    if ($story_id) {
+                        $this->writeLog("{$story_id} 入库");
+                    } else {
+                        $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
                     }
-                    echo "<br />\n";
                 }
             }
 
             $p++;
         }
+        $this->writeLog("采集口袋故事结束");
     }
 
+    protected function writeLog($content = '')
+    {
+        static $manageCollectionCronLog = null;
+        if (!$manageCollectionCronLog) {
+            $manageCollectionCronLog = new ManageCollectionCronLog();
+        }
+        $manageCollectionCronLog->insert(array('type' => 'kdgs_story', 'content' => $content));
+        
+    }
 
 }
 new cron_kdgsStory();

@@ -17,6 +17,7 @@ class cron_xmlyStory extends DaemonBase {
         $story = new Story();
         $xmly  = new Xmly();
         $story_url = new StoryUrl();
+        $this->writeLog("采集喜马拉雅故事开始");
         $p = 1;
         $per_page = 500;
 
@@ -27,7 +28,7 @@ class cron_xmlyStory extends DaemonBase {
                 break;
             }
             $time = time();
-            echo " {$limit},{$per_page}\n";
+            $this->writeLog("采集喜马拉雅故事  {$limit},{$per_page}");
             foreach($album_list as $k => $v) {
 	        	$album_id = Http::sub_data($v['link_url'], 'album/');
 	        	$page = 1;
@@ -63,20 +64,29 @@ class cron_xmlyStory extends DaemonBase {
 		                    'source_file_name' => ltrim(strrchr($v2['s_cover'], '/'), '/'),
 		                    'add_time'         => date('Y-m-d H:i:s'),
 		                ));
-		                echo $story_id;
-		                echo "<br />\n";
-		                if (!$story_id) {
-		                	var_dump($v,$v2);
-		                }
+		                if ($story_id) {
+	                        $this->writeLog("{$story_id} 入库");
+	                    } else {
+	                        $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
+	                    }
 	                }
 	                $page ++;
 	        	}
 	        }
             $p++;
         }
+        $this->writeLog("采集喜马拉雅故事结束");
     }
 
-
+    protected function writeLog($content = '')
+    {
+        static $manageCollectionCronLog = null;
+        if (!$manageCollectionCronLog) {
+            $manageCollectionCronLog = new ManageCollectionCronLog();
+        }
+        $manageCollectionCronLog->insert(array('type' => 'xmly_story', 'content' => $content));
+        
+    }
 
 }
 new cron_xmlyStory();

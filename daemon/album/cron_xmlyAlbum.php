@@ -17,6 +17,7 @@ class cron_xmlyAlbum extends DaemonBase {
         $xmly = new Xmly();
         $story_url = new StoryUrl();
         $album = new Album();
+        $this->writeLog("采集喜马拉雅专辑开始");
         $current_time = date('Y-m-d H:i:s');
         // 分类
         $category_list = $category->get_list("`res_name`='xmly'");
@@ -51,16 +52,28 @@ class cron_xmlyAlbum extends DaemonBase {
                         'source_file_name' => ltrim(strrchr($v2['cover'], '/'), '/'),
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
-                    echo $album_id;
-                    echo "<br />\n";
+                    if ($album_id) {
+                        $this->writeLog("{$album_id} 入库");
+                    } else {
+                        $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
+                    }
                 }
                 $page ++;
             }
 
         }
+        $this->writeLog("采集喜马拉雅专辑结束");
     }
 
-
+    protected function writeLog($content = '')
+    {
+        static $manageCollectionCronLog = null;
+        if (!$manageCollectionCronLog) {
+            $manageCollectionCronLog = new ManageCollectionCronLog();
+        }
+        $manageCollectionCronLog->insert(array('type' => 'xmly_album', 'content' => $content));
+        
+    }
 
 }
 new cron_xmlyAlbum();

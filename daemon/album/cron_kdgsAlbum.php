@@ -19,6 +19,8 @@ class cron_kdgsAlbum extends DaemonBase {
         $story_url = new StoryUrl();
         $manageobj = new ManageSystem();
 
+        $this->writeLog('采集口袋故事专辑执行开始');
+
         $category_list = $category->get_list("`res_name`='kdgs' and `parent_id`>0");
 
         foreach($category_list as $k => $v) {
@@ -47,7 +49,10 @@ class cron_kdgsAlbum extends DaemonBase {
                         'add_time'    => date('Y-m-d H:i:s'),
                     ));
                     // 最新上架
-                    $manageobj->addRecommendNewOnlineDb($album_id, $age_type);
+                    if ($album_id) {
+                        $manageobj->addRecommendNewOnlineDb($album_id, $age_type);
+                    }
+
                     $story_url->insert(array(
                         'res_name' => 'album',
                         'res_id' => $album_id,
@@ -56,15 +61,27 @@ class cron_kdgsAlbum extends DaemonBase {
                         'source_file_name' => ltrim(strrchr($v2['cover'], '/'), '/'),
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
-                    echo $album_id;
-                    echo "<br />";
+                    if ($album_id) {
+                        $this->writeLog("{$album_id} 入库");
+                    } else {
+                        $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
+                    }
+                    
                 }
                 $page ++;
             }
         }
+        $this->writeLog('采集口袋故事专辑执行结束');
     }
 
-
-
+    protected function writeLog($content = '')
+    {
+        static $manageCollectionCronLog = null;
+        if (!$manageCollectionCronLog) {
+            $manageCollectionCronLog = new ManageCollectionCronLog();
+        }
+        $manageCollectionCronLog->insert(array('type' => 'kdgs_album', 'content' => $content));
+        
+    }
 }
 new cron_kdgsAlbum();

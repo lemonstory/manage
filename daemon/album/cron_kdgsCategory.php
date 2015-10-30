@@ -21,7 +21,7 @@ class cron_kdgsCategory extends DaemonBase {
         $kdgs = new Kdgs();
         $story_url = new StoryUrl();
         $current_time = date('Y-m-d H:i:s');
-
+        $this->writeLog('口袋故事执行开始');
         $parent_category_list = $kdgs->get_parent_category($this->home_url);
 
         foreach ($parent_category_list as $k => $v) {
@@ -48,8 +48,11 @@ class cron_kdgsCategory extends DaemonBase {
                     'source_file_name' => ltrim(strrchr($v['cover'], '/'), '/'),
                     'add_time' => date('Y-m-d H:i:s'),
                 ));
-                echo $category_id;
-                echo "<br />\n";
+                if ($category_id) {
+                    $this->writeLog("{$category_id} 入库");
+                } else {
+                    $this->writeLog('没有写入成功'.var_export($v, true));
+                }
             }
         }
         // 子类
@@ -80,13 +83,25 @@ class cron_kdgsCategory extends DaemonBase {
                         'source_file_name' => ltrim(strrchr($v2['cover'], '/'), '/'),
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
-                    echo "children：".$category_id;
-                    echo "<br />\n";
+                    if ($category_id) {
+                        $this->writeLog("{$category_id} 入库");
+                    } else {
+                        $this->writeLog('没有写入成功'.var_export($v, true));
+                    }
                 }
             }
         }
+        $this->writeLog('口袋故事执行结束');
     }
 
-
+    protected function writeLog($content = '')
+    {
+        static $manageCollectionCronLog = null;
+        if (!$manageCollectionCronLog) {
+            $manageCollectionCronLog = new ManageCollectionCronLog();
+        }
+        $manageCollectionCronLog->insert(array('type' => 'kdgs_category', 'content' => $content));
+        
+    }
 }
 new cron_kdgsCategory();

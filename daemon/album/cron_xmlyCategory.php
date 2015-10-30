@@ -18,6 +18,7 @@ class cron_xmlyCategory extends DaemonBase {
         $xmly = new Xmly();
         $story_url = new StoryUrl();
         $current_time = date('Y-m-d H:i:s');
+        $this->writeLog("采集喜马拉雅分类开始");
         // 分类
         $category_list = $xmly->get_category($this->home_url);
         foreach ($category_list as $k => $v) {
@@ -42,12 +43,24 @@ class cron_xmlyCategory extends DaemonBase {
                 'source_file_name' => ltrim(strrchr($v['cover'], '/'), '/'),
                 'add_time' => date('Y-m-d H:i:s'),
             ));
-            echo $category_id;
-            echo "<br />\n";
+            if ($category_id) {
+                $this->writeLog("{$category_id} 入库");
+            } else {
+                $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
+            }
         }
+        $this->writeLog("采集喜马拉雅分类结束");
     }
 
-
+    protected function writeLog($content = '')
+    {
+        static $manageCollectionCronLog = null;
+        if (!$manageCollectionCronLog) {
+            $manageCollectionCronLog = new ManageCollectionCronLog();
+        }
+        $manageCollectionCronLog->insert(array('type' => 'xmly_category', 'content' => $content));
+        
+    }
 
 }
 new cron_xmlyCategory();

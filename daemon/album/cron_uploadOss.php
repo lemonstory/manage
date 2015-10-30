@@ -1,9 +1,21 @@
 <?php
-
-include_once '../controller.php';
-class cron_uploadOss extends controller
+/**
+ * 资源上传到OSS
+ */
+include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
+class cron_uploadOss extends DaemonBase
 {
-    public function action() {
+    protected $home_url = 'http://m.idaddy.cn/mobile.php?etr=touch&mod=freeAudio&hidden=';
+    protected $processnum = 1;
+    protected function deal() {
+        $this->uploadOss();
+        exit;
+    }
+
+    protected function checkLogPath() {}
+
+
+    protected function uploadOss() {
         // // 更新专辑封面
         $album = new Album();
         $album_list = $album->get_list("cover=''", 1);
@@ -11,7 +23,7 @@ class cron_uploadOss extends controller
         foreach ($album_list as $k => $v) {
             $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
             if (is_string($r)) {
-                $album->update(array('cover' = $r), "`id`={$v['id']}");
+                $album->update(array('cover' => $r), "`id`={$v['id']}");
             }
         }
         var_dump($r);
@@ -22,7 +34,7 @@ class cron_uploadOss extends controller
         foreach ($story_list as $k => $v) {
             $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
             if (is_string($r)) {
-                $album->update(array('cover' = $r), "`id`={$v['id']}");
+                $story->update(array('cover' => $r), "`id`={$v['id']}");
             }
         }
         var_dump($r);
@@ -81,10 +93,12 @@ class cron_uploadOss extends controller
             return $res;
         } else {
             $res = $uploadobj->uploadAlbumImage($filename, $ext, $id);
-            $dest_url  = $aliossobj->getImageUrlNg($file);
+            if (isset($res['path'])) {
+                return $res['path'];
+            }
         }
 
-        return $dest_url;
+        return '';
 
     }
 }
