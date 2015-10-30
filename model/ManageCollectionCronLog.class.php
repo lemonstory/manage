@@ -1,7 +1,7 @@
 <?php
 class ManageCollectionCronLog extends ModelBase
 {
-    public $table = 'user_login_log';
+    public $table = 'collection_cron_log';
     
     /**
      * 插入记录
