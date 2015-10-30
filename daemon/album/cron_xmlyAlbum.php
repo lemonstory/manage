@@ -13,10 +13,11 @@ class cron_xmlyAlbum extends DaemonBase {
 	protected function checkLogPath() {}
 
 	protected function c_xmly_album() {
-        $category = new Category();
         $xmly = new Xmly();
-        $story_url = new StoryUrl();
         $album = new Album();
+        $category = new Category();
+        $story_url = new StoryUrl();
+        $manageobj = new ManageSystem();
         $this->writeLog("采集喜马拉雅专辑开始");
         $current_time = date('Y-m-d H:i:s');
         // 分类
@@ -44,6 +45,10 @@ class cron_xmlyAlbum extends DaemonBase {
                         'link_url'    => $v2['url'],
                         'add_time'    => date('Y-m-d H:i:s'),
                     ));
+                    // 最新上架
+                    if ($album_id) {
+                        $manageobj->addRecommendNewOnlineDb($album_id, 0);
+                    }
                     $story_url->insert(array(
                         'res_name' => 'album',
                         'res_id' => $album_id,
