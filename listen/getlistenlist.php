@@ -22,8 +22,15 @@ class getlistenlist extends controller
         $totalCount = 0;
         
         if (!empty($searchContent)) {
-            $column = $searchCondition;
-            $columnValue = $searchContent;
+            if ($searchCondition == 'uid') {
+                $uimobj = new UserImsi();
+                $uimid = $uimobj->getUimid($searchContent);
+                $column = $searchCondition = "uimid";
+                $columnValue = $searchContent = $uimid;
+            } else {
+                $column = $searchCondition;
+                $columnValue = $searchContent;
+            }
         } else {
             $column = $columnValue = '';
         }

@@ -1,0 +1,125 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">编辑用户信息</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/user/edituser.php" enctype="multipart/form-data">
+                        <fieldset>
+                            <legend>基本信息</legend>
+                            <div class="control-group">
+                                <label class="control-label">昵称<span class="required">*</span></label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="nickname" value="{$userinfo.nickname}">*
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">头像<span class="required">*</span></label>
+                                <div class="controls">
+                                    {if $userinfo.avatar}<img src="{$userinfo.avatar}" />{/if}
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="fileInput">上传头像</label>
+                                <div class="controls">
+                                    <input class="input-file uniform_on" id="fileInput" type="file" name="avatarfile">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">手机号</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="phonenumber" value="{$userinfo.phonenumber}">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            
+                            <legend>宝宝信息</legend>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">生日<span class="required">*</span></label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" id="date01" name="babybirthday" value="{$userinfo.birthday}">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">性别<span class="required">*</span></label>
+                                <div class="controls">
+                                    <select id="selectError" name="babygender">
+                                        <option value="">&nbsp;</option>
+                                        <option {if $userinfo.gender == "1"}selected{/if} value="1">男</option>
+                                        <option {if $userinfo.gender == "2"}selected{/if} value="2">女</option>
+                                    </select>
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            
+                            <legend>地址信息</legend>
+                            {foreach from=$addresslist item=addressvalue}
+                            <div class="control-group">
+                                <label class="control-label">姓名</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="addresslist[{$addressvalue.id}][name]" value="{$addressvalue.name}">
+                                    <p class="help-block"></p>
+                                </div>
+                                <label class="control-label">联系方式</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="addresslist[{$addressvalue.id}][phonenumber]" value="{$addressvalue.phonenumber}">
+                                    <p class="help-block"></p>
+                                </div>
+                                <label class="control-label">省</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="addresslist[{$addressvalue.id}][province]" value="{$addressvalue.province}">
+                                    <p class="help-block"></p>
+                                </div>
+                                <label class="control-label">市</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="addresslist[{$addressvalue.id}][city]" value="{$addressvalue.city}">
+                                    <p class="help-block"></p>
+                                </div>
+                                <label class="control-label">地区</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="addresslist[{$addressvalue.id}][area]" value="{$addressvalue.area}">
+                                    <p class="help-block"></p>
+                                </div>
+                                <label class="control-label">详细地址</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="addresslist[{$addressvalue.id}][address]" value="{$addressvalue.address}">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div><br /><br />
+                            {/foreach}
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                                <input type="hidden" name="uid" value="{$userinfo.uid}" />
+                                <input type="hidden" name="action" value="save" />
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+</div>
+
+<link href="/static/vendors/datepicker.css" rel="stylesheet" media="screen">
+<script src="/static/vendors/bootstrap-datepicker.js"></script>
+<script>
+{literal}
+$(function() {
+	$(".datepicker").datepicker();
+});
+{/literal}
+</script>
+{include file="include/footer.html"}

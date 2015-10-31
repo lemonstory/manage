@@ -80,9 +80,10 @@
                                 </td>
                                 <td>{$value.addtime}</td>
                                 <td id="option_{$value.uid}">
+                                    <a href="/user/edituser.php?uid={$value.uid}">编辑</a>&nbsp;
                                     {if $value.status eq 1}
                                     <!-- <a href="/user/frozenuser.php?frozenuid={$value.uid}">冻结</a>
-                                    &nbsp;|&nbsp; -->
+                                    &nbsp;-->
                                     <a href="/user/forbiddenuser.php?forbiddenuid={$value.uid}">封号</a>
                                     {/if}
 						            {if $value.status eq '-1'}
@@ -91,10 +92,10 @@
 						            {if $value.status eq '-2'}
 						            <a href="javascript:void(0);" id="{$value.uid}" class="unforbiddenbtn">解封</a>
 						            {/if}
-						            &nbsp;|&nbsp;
-						            <a href="#" target="_blank">查看评论</a>
-						            &nbsp;|&nbsp;
-						            <a href="#" target="_blank">查看收听</a>
+						            &nbsp;
+						            <a href="" target="_blank">评论</a>
+						            &nbsp;
+						            <a href="/listen/getlistenlist.php?searchCondition=uid&searchContent={$value.uid}" target="_blank">收听历史</a>
                                 </td>
                             </tr>
                             {/foreach}
