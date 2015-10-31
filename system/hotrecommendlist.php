@@ -12,7 +12,7 @@ class hotrecommendlist extends controller
         $searchContent = $this->getRequest('searchContent', '');
         if (empty($currentPage)) {
             $currentPage = 0;
-        } 
+        }
         if (empty($perPage)) {
             $perPage = 20;
         }
@@ -68,6 +68,7 @@ class hotrecommendlist extends controller
         $smartyObj->assign('searchContent', $searchContent);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('hotlist', $hotlist);
+		$smartyObj->assign('status', $status);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('hotrecommendside', "active");
         $smartyObj->assign("headerdata", $this->headerCommonData());

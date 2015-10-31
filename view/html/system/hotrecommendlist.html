@@ -27,8 +27,8 @@
                                 <div class="controls">
                                     <select id="selectError" name="status">
                                         <option value="0">全部</option>
-                                        <option {if $searchCondition=="1"}selected{/if} value="1">已上线</option>
-                                        <option {if $searchCondition=="2"}selected{/if} value="2">未上线</option>
+                                        <option {if $status=="1"}selected{/if} value="1">已上线</option>
+                                        <option {if $status=="2"}selected{/if} value="2">未上线</option>
                                     </select>
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
