@@ -58,12 +58,12 @@ class cron_uploadOss extends DaemonBase
 
         // 更新故事封面
         $story = new Story();
-        $story_list = $album->get_list("cover=''", 100);
+        $story_list = $story->get_list("cover=''", 100);
         foreach ($story_list as $k => $v) {
             $cover = $story->get_filed_value('s_cover', $v['s_cover'], 'cover');
             if ($cover) {
                 $story->update(array('cover' => $cover), "`id`={$v['id']}");
-                $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
+                $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
             } else {
                 $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
                 if (is_string($r)) {
