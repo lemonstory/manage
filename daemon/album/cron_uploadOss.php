@@ -104,6 +104,8 @@ class cron_uploadOss extends DaemonBase
      * type 1 专辑封面 2 故事封面 3 故事音频
      */
     private function middle_upload($url = '', $id = '', $type = ''){
+        // 控制上传频率
+        sleep(1);
 
         if (!$url || !$id || !$type) {
             return false;
