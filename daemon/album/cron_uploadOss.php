@@ -16,44 +16,84 @@ class cron_uploadOss extends DaemonBase
 
 
     protected function uploadOss() {
-        // // 更新专辑封面
+        // 更新分类封面
+        $category = new Category();
+        $category_list = $category->get_list("cover=''", '', 100);
+
+        foreach ($category_list as $k => $v) {
+            $cover = $category->get_filed_value('s_cover', $v['s_cover'], 'cover');
+            if ($cover) {
+                $category->update(array('cover' => $cover), "`id`={$v['id']}");
+                $this->writeLog("分类封面(重复) {$v['id']} => cover 更新成功");
+            } else {
+                $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
+                if (is_string($r)) {
+                    $category->update(array('cover' => $r), "`id`={$v['id']}");
+                    $this->writeLog("分类封面 {$v['id']} => cover 更新成功");
+                } else {
+                    $this->writeLog("分类封面 {$v['id']} => cover 更新失败");
+                }
+            }
+        }
+        // 更新专辑封面
         $album = new Album();
         $album_list = $album->get_list("cover=''", 100);
 
         foreach ($album_list as $k => $v) {
-            $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
-            if (is_string($r)) {
-                $album->update(array('cover' => $r), "`id`={$v['id']}");
-                $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
+            $cover = $album->get_filed_value('s_cover', $v['s_cover'], 'cover');
+            if ($cover) {
+                $album->update(array('cover' => $cover), "`id`={$v['id']}");
+                $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
             } else {
-                $this->writeLog("专辑封面 {$v['id']} => cover 更新失败");
+                $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
+                if (is_string($r)) {
+                    $album->update(array('cover' => $r), "`id`={$v['id']}");
+                    $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
+                } else {
+                    $this->writeLog("专辑封面 {$v['id']} => cover 更新失败");
+                }
             }
+            
         }
 
         // 更新故事封面
         $story = new Story();
         $story_list = $album->get_list("cover=''", 100);
         foreach ($story_list as $k => $v) {
-            $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
-            if (is_string($r)) {
-                $story->update(array('cover' => $r), "`id`={$v['id']}");
-                $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+            $cover = $story->get_filed_value('s_cover', $v['s_cover'], 'cover');
+            if ($cover) {
+                $story->update(array('cover' => $cover), "`id`={$v['id']}");
+                $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
             } else {
-                $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
+                $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
+                if (is_string($r)) {
+                    $story->update(array('cover' => $r), "`id`={$v['id']}");
+                    $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+                } else {
+                    $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
+                }
             }
+            
         }
 
         // 更新故事为本地地址
         $story = new Story();
         $story_list = $story->get_list("mediapath=''", 100);
         foreach ($story_list as $k => $v) {
-            $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
-            if (is_array($r) && $r) {
-                $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
-                $this->writeLog("故事 {$v['id']} => cover 更新成功");
+            $mediapath = $story->get_filed_value('source_audio_url', $v['source_audio_url'], 'mediapath');
+            if ($mediapath) {
+                $story->update(array('mediapath' => $mediapath), "`id`={$v['id']}");
+                $this->writeLog("故事(重复) {$v['id']} => cover 更新成功");
             } else {
-                $this->writeLog("故事 {$v['id']} => cover 更新失败");
+                $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
+                if (is_array($r) && $r) {
+                    $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
+                    $this->writeLog("故事 {$v['id']} => mediapath 更新成功");
+                } else {
+                    $this->writeLog("故事 {$v['id']} => mediapath 更新失败");
+                }
             }
+            
         }
 
     }
