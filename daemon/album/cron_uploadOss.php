@@ -124,7 +124,7 @@ class cron_uploadOss extends DaemonBase
 
         $savedir = $savedir.date("Y_m_d_{$type}_{$id}");
 
-        if(!in_array($ext, array('gif', 'jpg', 'jpeg', 'mp3', 'audio'))){
+        if(!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio'))){
             return false;
         }
 
