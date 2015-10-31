@@ -35,7 +35,7 @@ class index extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/story/index.php?perPage={$perPage}&";
+        $baseUri = "/album/storylist.php?perPage={$perPage}&";
         
     	
         $ssoList = array();
