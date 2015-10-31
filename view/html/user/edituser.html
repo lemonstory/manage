@@ -5,7 +5,7 @@
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">编辑用户信息</div>
+                <div class="muted pull-left"><a href="#" onclick="history.back(-1);return false;">返回列表</a></div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
@@ -15,7 +15,7 @@
                             <div class="control-group">
                                 <label class="control-label">昵称<span class="required">*</span></label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead" name="nickname" value="{$userinfo.nickname}">*
+                                    <input type="text" class="span6" id="typeahead" name="nickname" value="{$userinfo.nickname}">
                                     <p class="help-block"></p>
                                 </div>
                             </div>
