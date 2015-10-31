@@ -86,6 +86,7 @@
                                     {else}
                                     <a href="javascript:void(0);" id="op_album_recover_{$value.id}">恢复</a>
                                     {/if}
+                                    &nbsp;|&nbsp;<a href="javascript:void(0);" class="recomment_hot" id="op_recommend_hot_{$value.id}">加入热门推荐</a>
                                 </td>
                             </tr>
                             {/foreach}
@@ -162,6 +163,25 @@ $(function() {
                 }
             },'json');
         }
+    })
+    
+    $(".recomment_hot").on('click', function(){
+    	$(".modal-body").text("");
+        var data = {};
+        var op = $(this).attr('id');
+        data.albumid   = op.split('_')[3];
+        $.post('/system/savehotrecommend.php', data, function(json){
+        	if (json.code == 10000) {
+                $(".modal-body").text("加入成功");
+                $("#myModal").modal({show:true});
+                $("#modal_closebtn").click(function(){
+                    location.href=location.href;
+                });
+            } else {
+                $(".modal-body").text(json.desc);
+                $("#myModal").modal({show:true});
+            }
+        },'json')
     })
 });
 {/literal}

@@ -5,6 +5,8 @@ class addhotrecommend extends controller
 {
     public function action()
     {
+        die();
+        
         $albumid = $this->getRequest('albumid');
         if (empty($albumid)) {
             $this->showErrorJson(ErrorConf::paramError());

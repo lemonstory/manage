@@ -78,7 +78,7 @@ class cron_uploadOss extends DaemonBase
 
         // 更新故事为本地地址
         $story = new Story();
-        $story_list = $story->get_list("mediapath=''", 100);
+        $story_list = $story->get_list("mediapath=''", 500);
         foreach ($story_list as $k => $v) {
             $mediapath = $story->get_filed_value('source_audio_url', $v['source_audio_url'], 'mediapath');
             if ($mediapath) {
