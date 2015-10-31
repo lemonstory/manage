@@ -104,6 +104,10 @@ class cron_uploadOss extends DaemonBase
      * type 1 专辑封面 2 故事封面 3 故事音频
      */
     private function middle_upload($url = '', $id = '', $type = ''){
+        // 默认图片不上传
+        if (strstr($url, 'default/album.jpg')) {
+            return '';
+        }
         // 控制上传频率
         sleep(1);
 
