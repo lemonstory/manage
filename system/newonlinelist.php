@@ -65,6 +65,7 @@ class newonlinelist extends controller
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('searchCondition', $searchCondition);
         $smartyObj->assign('searchContent', $searchContent);
+        $smartyObj->assign('status', $status);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('newonlinelist', $newonlinelist);
         $smartyObj->assign('indexactive', "active");

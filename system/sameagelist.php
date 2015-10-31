@@ -65,6 +65,7 @@ class sameagelist extends controller
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('searchCondition', $searchCondition);
         $smartyObj->assign('searchContent', $searchContent);
+        $smartyObj->assign('status', $status);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('sameagelist', $sameagelist);
         $smartyObj->assign('indexactive', "active");
