@@ -58,9 +58,6 @@ class cron_kdgsStory extends DaemonBase {
                         'source_audio_url' => $v2['source_audio_url'],
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
-                    if ($story_id) {
-                        // MnsQueueManager::pushAlbumToSearchQueue($story_id);
-                    }
                     $story_url->insert(array(
                         'res_name'         => 'story',
                         'res_id'           => $story_id,
@@ -71,6 +68,7 @@ class cron_kdgsStory extends DaemonBase {
                     ));
                     if ($story_id) {
                         $update_num ++;
+                        MnsQueueManager::pushAlbumToSearchQueue($story_id);
                         $this->writeLog("{$story_id} 入库");
                     } else {
                         $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
