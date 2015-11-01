@@ -36,7 +36,15 @@ class cron_kdgsStory extends DaemonBase {
                     $v['age_type'] = $album->get_age_type($v['age_str']);
                     $album->update(array('age_type' => $v['age_type']), "`id`={$v['id']}");
                 }
+                // 获取口袋故事专辑列表
                 $story_list = $kdgs->get_album_story_list($v['link_url']);
+                // 如果故事数量没有更新 则不再查故事库
+                if (count($story_list) == $v['story_num']) {
+                    $this->writeLog("口袋故事专辑{$v['id']} 没有更新");
+                    continue;
+                }
+                $update_num = 0;
+                $album->update(array('story_num' => count($story_list)), "`id`={$v['id']}");
                 foreach($story_list as $k2 => $v2) {
                     $exists = $story->check_exists("`source_audio_url`='{$v2['source_audio_url']}'");
                     if ($exists) {
@@ -51,7 +59,7 @@ class cron_kdgsStory extends DaemonBase {
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
                     if ($story_id) {
-                        MnsQueueManager::pushAlbumToSearchQueue($story_id);
+                        // MnsQueueManager::pushAlbumToSearchQueue($story_id);
                     }
                     $story_url->insert(array(
                         'res_name'         => 'story',
@@ -62,11 +70,13 @@ class cron_kdgsStory extends DaemonBase {
                         'add_time'         => date('Y-m-d H:i:s'),
                     ));
                     if ($story_id) {
+                        $update_num ++;
                         $this->writeLog("{$story_id} 入库");
                     } else {
                         $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
                     }
                 }
+                $this->writeLog("口袋故事专辑 {$v['id']} 新增 {$update_num}");
             }
 
             $p++;

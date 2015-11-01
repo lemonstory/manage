@@ -108,6 +108,9 @@ class cron_uploadOss extends DaemonBase
         if (strstr($url, 'default/album.jpg')) {
             return '';
         }
+        if (strstr($url, 'default/sound.jpg')) {
+            return '';
+        }
         // 控制上传频率
         sleep(1);
 

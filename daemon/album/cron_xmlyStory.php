@@ -32,46 +32,57 @@ class cron_xmlyStory extends DaemonBase {
             foreach($album_list as $k => $v) {
 	        	$album_id = Http::sub_data($v['link_url'], 'album/');
 	        	$page = 1;
-	        	$story_list = $xmly->get_story_list($album_id, $page);
 
+	        	// 获取专辑全部故事
+	        	$story_list = array();
 	        	while (true) {
-	        		$story_list = $xmly->get_story_list($album_id, $page);
-	        		if (!$story_list) {
+	        		$tmp_story_list = $xmly->get_story_list($album_id, $page);
+	        		if (!$tmp_story_list) {
 	        			break;
+	        		} else {
+	        			$story_list = array_merge($story_list, $tmp_story_list);
 	        		}
-
-	                foreach ($story_list as $k2 => $v2) {
-	                	$exists = $story->check_exists("`source_audio_url`='{$v2['source_audio_url']}'");
-		                if ($exists) {
-		                    continue;
-		                }
-		                $story_id = $story->insert(array(
-		                    'album_id' => $v['id'],
-		                    'title' => addslashes($v2['title']),
-		                    'intro' => addslashes($v2['intro']),
-		                    's_cover' => $v2['s_cover'],
-		                    'source_audio_url' => $v2['source_audio_url'],
-		                    'add_time' => date('Y-m-d H:i:s'),
-		                ));
-		                if ($story_id) {
-		                    MnsQueueManager::pushAlbumToSearchQueue($story_id);
-		                }
-		                $story_url->insert(array(
-		                    'res_name'         => 'story',
-		                    'res_id'           => $story_id,
-		                    'field_name'       => 'cover',
-		                    'source_url'       => $v2['s_cover'],
-		                    'source_file_name' => ltrim(strrchr($v2['s_cover'], '/'), '/'),
-		                    'add_time'         => date('Y-m-d H:i:s'),
-		                ));
-		                if ($story_id) {
-	                        $this->writeLog("{$story_id} 入库");
-	                    } else {
-	                        $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
-	                    }
-	                }
 	                $page ++;
 	        	}
+	        	// 如果故事的数量和专辑里面的故事数量相等则不再更新
+	        	if (count($story_list) == $v['story_num']) {
+	        		$this->writeLog("喜马拉雅专辑{$v['id']} 没有更新");
+	        		continue;
+	        	}
+	        	$update_num = 0;
+	        	$album->update(array('story_num' => count($story_list)), "`id`={$v['id']}");
+	        	foreach ($story_list as $k2 => $v2) {
+                	$exists = $story->check_exists("`source_audio_url`='{$v2['source_audio_url']}'");
+	                if ($exists) {
+	                    continue;
+	                }
+	                $story_id = $story->insert(array(
+	                    'album_id' => $v['id'],
+	                    'title' => addslashes($v2['title']),
+	                    'intro' => addslashes($v2['intro']),
+	                    's_cover' => $v2['s_cover'],
+	                    'source_audio_url' => $v2['source_audio_url'],
+	                    'add_time' => date('Y-m-d H:i:s'),
+	                ));
+	                if ($story_id) {
+	                    // MnsQueueManager::pushAlbumToSearchQueue($story_id);
+	                }
+	                $story_url->insert(array(
+	                    'res_name'         => 'story',
+	                    'res_id'           => $story_id,
+	                    'field_name'       => 'cover',
+	                    'source_url'       => $v2['s_cover'],
+	                    'source_file_name' => ltrim(strrchr($v2['s_cover'], '/'), '/'),
+	                    'add_time'         => date('Y-m-d H:i:s'),
+	                ));
+	                if ($story_id) {
+	                	$update_num ++;
+                        $this->writeLog("{$story_id} 入库");
+                    } else {
+                        $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
+                    }
+                }
+                $this->writeLog("喜马拉雅专辑 {$v['id']} 新增 {$update_num}");
 	        }
             $p++;
         }
