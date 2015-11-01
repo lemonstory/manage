@@ -18,7 +18,7 @@ class cron_uploadOss extends DaemonBase
     protected function uploadOss() {
         // 更新分类封面
         $category = new Category();
-        $category_list = $category->get_list("cover=''", '', 100);
+        $category_list = $category->get_list("cover=''", '', 500);
 
         foreach ($category_list as $k => $v) {
             $cover = $category->get_filed_value('s_cover', $v['s_cover'], 'cover');
@@ -37,7 +37,7 @@ class cron_uploadOss extends DaemonBase
         }
         // 更新专辑封面
         $album = new Album();
-        $album_list = $album->get_list("cover=''", 100);
+        $album_list = $album->get_list("cover=''", 500);
 
         foreach ($album_list as $k => $v) {
             $cover = $album->get_filed_value('s_cover', $v['s_cover'], 'cover');
@@ -58,7 +58,7 @@ class cron_uploadOss extends DaemonBase
 
         // 更新故事封面
         $story = new Story();
-        $story_list = $story->get_list("cover=''", 100);
+        $story_list = $story->get_list("cover=''", 500);
         foreach ($story_list as $k => $v) {
             $cover = $story->get_filed_value('s_cover', $v['s_cover'], 'cover');
             if ($cover) {
