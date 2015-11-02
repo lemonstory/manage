@@ -23,6 +23,7 @@ class newonlinelist extends controller
         
     	$newonlinelist = array();
     	if (!empty($searchContent)) {
+    	    $column = $searchCondition;
             $columnValue = $searchContent;
         } else {
             $column = $columnValue = '';

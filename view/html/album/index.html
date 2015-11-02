@@ -86,7 +86,10 @@
                                     {else}
                                     <a href="javascript:void(0);" id="op_album_recover_{$value.id}">恢复</a>
                                     {/if}
-                                    &nbsp;|&nbsp;<a href="javascript:void(0);" class="recomment_hot" id="op_recommend_hot_{$value.id}">加入热门推荐</a>
+                                    <br />
+                                    <a href="javascript:void(0);" class="recomment_hot" id="op_recommend_hot_{$value.id}">热门推荐</a>
+                                    &nbsp;|&nbsp;<a href="/system/addnewonline.php?albumid={$value.id}">最新上架</a>
+                                    &nbsp;|&nbsp;<a href="/system/addsameage.php?albumid={$value.id}">同龄在听</a>
                                 </td>
                             </tr>
                             {/foreach}

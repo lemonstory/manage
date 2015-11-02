@@ -251,6 +251,31 @@ class ManageSystem extends ModelBase
 	}
 	
 	
+	public function addRecommendSameAgeDb($albumid, $agetype, $ordernum = 100)
+	{
+	    if (empty($albumid)) {
+	        $this->setError(ErrorConf::paramError());
+	        return false;
+	    }
+	    $check = $this->checkSameAgeIsExist($albumid);
+	    if ($check) {
+	        $this->setError(array('code'=>'100002','desc'=>'此专辑已经在同龄在听中存在'));
+	        return false;
+	    }
+	     
+	    $status = $this->RECOMMEND_STATUS_OFFLINE;
+	    $addtime = date("Y-m-d H:i:s");
+	    $db = DbConnecter::connectMysql('share_main');
+	    $sql = "INSERT INTO `recommend_same_age` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
+	    $st = $db->prepare($sql);
+	    $result = $st->execute(array($albumid, $agetype, $ordernum, $status, $addtime));
+	    if (empty($result)) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	
 	/**
 	 * 后台推荐列表、查询列表
 	 * @param unknown_type $dbinstance
@@ -394,6 +419,29 @@ class ManageSystem extends ModelBase
         }
         $db = DbConnecter::connectMysql('share_main');
         $sql = "SELECT * FROM `recommend_new_online` WHERE `albumid` = ?";
+        $st = $db->prepare($sql);
+        $st->execute(array($albumid));
+        $info = $st->fetch(PDO::FETCH_ASSOC);
+        if (empty($info)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    /**
+     * 检测指定专辑是否已经在同龄在听表中
+     * @param I $albumid
+     * @return boolean    true/false    存在/不存在
+     */
+    public function checkSameAgeIsExist($albumid)
+    {
+        if (empty($albumid)) {
+            $this->setError(ErrorConf::paramError());
+            return false;
+        }
+        $db = DbConnecter::connectMysql('share_main');
+        $sql = "SELECT * FROM `recommend_same_age` WHERE `albumid` = ?";
         $st = $db->prepare($sql);
         $st->execute(array($albumid));
         $info = $st->fetch(PDO::FETCH_ASSOC);

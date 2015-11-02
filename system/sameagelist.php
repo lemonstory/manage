@@ -23,6 +23,7 @@ class sameagelist extends controller
         $totalCount = 0;
         
     	if (!empty($searchContent)) {
+    	    $column = $searchCondition;
             $columnValue = $searchContent;
         } else {
             $column = $columnValue = '';

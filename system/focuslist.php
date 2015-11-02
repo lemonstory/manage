@@ -22,6 +22,7 @@ class focuslist extends controller
         
     	$focuslist = array();
     	if (!empty($searchContent)) {
+    	    $column = $searchCondition;
             $columnValue = $searchContent;
         } else {
             $column = $columnValue = '';

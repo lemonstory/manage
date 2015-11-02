@@ -22,6 +22,7 @@ class hotrecommendlist extends controller
         $totalCount = 0;
     	$hotlist = array();
     	if (!empty($searchContent)) {
+    	    $column = $searchCondition;
             $columnValue = $searchContent;
         } else {
             $column = $columnValue = '';
