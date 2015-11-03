@@ -138,6 +138,48 @@ class ManageListen extends ModelBase
         return $count;
     }
     
+    
+    /**
+     * 收听次数的用户排行榜
+     */
+    public function getRankUserListenListBySearch($uid = 0, $currentPage = 1, $perPage = 50)
+    {
+        if (empty($currentPage)) {
+            $currentPage = 1;
+        }
+        if ($currentPage <= 0) {
+            $currentPage = 1;
+        }
+        if (empty($perPage)) {
+            $perPage = 50;
+        }
+        if ($perPage <= 0) {
+            $perPage = 50;
+        }
+        $offset = ($currentPage - 1) * $perPage;
+        
+        $list = array();
+        $rankkey = RedisKey::getRankListenUserKey();
+        $redisobj = AliRedisConnecter::connRedis("rank");
+        if (empty($uid)) {
+            $list = $redisobj->zRevRange($rankkey, $offset, $perPage - 1, true);
+        } else {
+            $num = $redisobj->zScore($rankkey, $uid);
+            $list = array($uid => $num);
+        }
+        return $list;
+    }
+    public function getRankUserListenCountBySearch($uid = 0)
+    {
+        if (empty($uid)) {
+            $rankkey = RedisKey::getRankListenUserKey();
+            $redisobj = AliRedisConnecter::connRedis("rank");
+            $count = $redisobj->zSize($rankkey);
+        } else {
+            $count = 1;
+        }
+    }
+    
     public function updateSameAgeInfoByIds($ids, $data)
     {
     	$listenobj = new Listen();

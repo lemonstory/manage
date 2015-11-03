@@ -1,0 +1,104 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">学霸榜列表筛选</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/system/rankuserlistenlist.php">
+                        <fieldset>
+                            <legend>搜索查询</legend>
+                            <div class="control-group">
+                                <label class="control-label">条件</label>
+                                <div class="controls">
+                                    <select id="selectError" name="searchCondition">
+                                        <option value="">全部</option>
+                                        <option {if $searchCondition=="uid"}selected{/if} value="uid">用户UID</option>
+                                    </select>
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">内容</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
+                                    <p class="help-block">输入查询内容</p>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">学霸排行列表</div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>UID</th>
+						        <th>呢称</th>
+						        <th>头像</th>
+						        <th>账号状态</th>
+						        <th>收听总数</th>
+						        <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$rankuserlistenlist item=value}
+                            <tr>
+                                <td>{$value.uid}</td>
+                                <td>{$value.nickname}</td>
+                                <td><img src="{$value.avatar}" width="80" height="80" /></td>
+                                <td id="status_{$value.uid}">
+                                    {if $value.status eq '-3'}已删除
+                                    {elseif $value.status eq '-2'}已封号
+                                    {elseif $value.status eq '-1'}已冻结
+                                    {elseif $value.status eq 1}正常
+                                    {/if}
+                                </td>
+                                <td>{$value.addtime}</td>
+                                <td>{$value.num}</td>
+                                <td>
+                                    <a href="###" id="del_{$value.uid}">删除</a>
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+    
+    {$pageBanner}
+</div>
+
+
+<script>
+{literal}
+$(function() {
+	
+});
+{/literal}
+</script>
+{include file="include/footer.html"}
