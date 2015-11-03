@@ -9,7 +9,7 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" action="/story/story_edit.php">
+                    <form class="form-horizontal" action="/album/story_edit.php">
                         <input type="hidden" name="id" value="{$storyinfo.id}" />
                         <fieldset>
                             <legend>编辑故事</legend>
@@ -28,13 +28,13 @@
                             <div class="control-group">
                                 <label class="control-label" for="date01">时长</label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" name="author" value="{$storyinfo.times}">
+                                    <input type="text" class="input-xlarge datepicker" name="times" value="{$storyinfo.times}">
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="control-label" for="date01">文件大小</label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" name="author" value="{$storyinfo.file_size}">
+                                    <input type="text" class="input-xlarge datepicker" name="file_size" value="{$storyinfo.file_size}">
                                 </div>
                             </div>
                             <!-- <div class="control-group">
