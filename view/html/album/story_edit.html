@@ -73,7 +73,7 @@ $(function() {
         $(".help-inline").remove();
         e.preventDefault();
         $(".control-group").removeClass("error");
-        $.post('/story/story_edit.php', $(this).closest("form").serialize(), function(json){
+        $.post('/album/story_edit.php', $(this).closest("form").serialize(), function(json){
             console.log(json);
             if (json && json.code == 10000) {
                 alert('操作成功');
