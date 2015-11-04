@@ -56,7 +56,8 @@
                                 <th>id</th>
                                 <th width="100">用户ID</th>
                                 <th width="100">专辑ID</th>
-						        <th width="500">评论内容</th>
+						        <th width="400">评论内容</th>
+                                <th>星级</th>
 						        <th>添加时间</th>
 						        <th>状态</th>
 						        <th>操作</th>
@@ -71,9 +72,10 @@
                                 <td>
                                   <div id="comment_show_{$value.id}">{$value.content}</div>
                                   <div id="comment_edit_{$value.id}" style="display:none;">
-                                    <textarea id="comment_textarea_{$value.id}">{$value.content}</textarea>
+                                    <textarea id="op_comment__edit_content__{$value.id}">{$value.content}</textarea>
                                   </div>
                                 </td>
+                                <td><input type="text" id="op_comment__edit_star_level__{$value.id}" value="{$value.star_level}" style="width:20px;" /></td>
                                 <td>{$value.addtime}</td>
                                 <td>
                                     {if $value.status eq '0'}已删除
@@ -82,9 +84,9 @@
                                 </td>
                                 <td>
                                     {if $value.status eq 1}
-                                    <a href="javascript:void(0);" id="op_comment_delete_{$value.id}">删除</a>
+                                    <a href="javascript:void(0);" id="op_comment__delete__{$value.id}">删除</a>
                                     {else}
-                                    <a href="javascript:void(0);" id="op_comment_recover_{$value.id}">恢复</a>
+                                    <a href="javascript:void(0);" id="op_comment__recover__{$value.id}">恢复</a>
                                     {/if}
                                 </td>
                             </tr>
@@ -104,18 +106,12 @@
 <script>
 {literal}
 $(function() {
-    $("[id^='op_comment']").on('click', function(){
+    $("[id^='op_comment__delete'],[id^='op_comment__recover']").on('click', function(){
     	var data = {};
     	var op = $(this).attr('id');
-    	data.op_name = op.split('_')[2];
-    	data.op_id   = op.split('_')[3];
+    	data.op_name = op.split('__')[2];
+    	data.op_id   = op.split('__')[3];
 
-        if (data.op_name == 'edit') {
-            window.location.href = '/comment/comment_edit.php?id='+data.op_id;
-            return false;
-        }
-        console.log(data);
-    	
     	$.post('/comment/comment_op.php', data, function(json){
     		if (json && json.code == 10000) {
                 alert('操作成功');
@@ -131,17 +127,18 @@ $(function() {
       $(this).hide();
       $(this).next().show();
     })
-    $("[id^='comment_textarea_']").on('blur', function(){
-        var comment_data = {};
-        comment_data.op_name = 'edit_comment'
-        comment_data.op_id = $(this).attr('id').split('_')[2];
-        comment_data.value = $.trim($(this).val());
-        if (!comment_data.value) {
-            alert('请填写评论内容');
-            return false;
-        }
-
-        $.post('/comment/comment_op.php', comment_data, function(json){
+    $("[id^='op_comment__edit_']").on('blur', function(e){
+      var op = $(this).attr('id');
+      var data = {};
+      data.op_name = op.split('__')[1];
+      data.op_id = op.split('__')[2];
+      data.value = $(this).val();
+      if (data.op_name == 'edit_content') {
+        data.value   = $(this).val();
+      } else if (data.op_name == 'edit_star_level') {
+        data.value   = $(this).val();
+      }
+      $.post('/comment/comment_op.php', data, function(json){
             if (json && json.code == 10000) {
                 alert('操作成功');
                 window.location.reload();
@@ -149,7 +146,6 @@ $(function() {
                 alert(json);
             }
         },'json')
-
     })
     $("#list-filter").on('click', function(){
     	var url = window.location.href.split('?')[0];
