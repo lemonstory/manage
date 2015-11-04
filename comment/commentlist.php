@@ -40,7 +40,7 @@ class index extends controller
         $manageCommentObj = new ManageComment();
         $commentList = $manageCommentObj->getCommentList($where, $currentPage + 1, $perPage);
         if(empty($commentList)) {
-            $this->showErrorJson("专辑数据为空");
+            exit("评论数据为空");
         }
         $totalCount = $manageCommentObj->getCommentTotalCount($where);
         
