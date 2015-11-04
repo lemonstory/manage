@@ -109,8 +109,8 @@ $(function() {
     $("[id^='op_comment__delete'],[id^='op_comment__recover']").on('click', function(){
     	var data = {};
     	var op = $(this).attr('id');
-    	data.op_name = op.split('__')[2];
-    	data.op_id   = op.split('__')[3];
+    	data.op_name = op.split('__')[1];
+    	data.op_id   = op.split('__')[2];
 
     	$.post('/comment/comment_op.php', data, function(json){
     		if (json && json.code == 10000) {
