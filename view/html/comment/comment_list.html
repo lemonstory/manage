@@ -68,7 +68,12 @@
                                 <td>{$value.id}</td>
                                 <td>{$value.userid}</td>
                                 <td>{$value.albumid}</td>
-                                <td>{$value.content}</td>
+                                <td>
+                                  <div id="comment_show_{$value.id}">{$value.content}</div>
+                                  <div id="comment_edit_{$value.id}" style="display:none;">
+                                    <textarea id="comment_textarea_{$value.id}">{$value.content}</textarea>
+                                  </div>
+                                </td>
                                 <td>{$value.addtime}</td>
                                 <td>
                                     {if $value.status eq '0'}已删除
@@ -77,8 +82,7 @@
                                 </td>
                                 <td>
                                     {if $value.status eq 1}
-                                    <a href="javascript:void(0);" id="op_comment_edit_{$value.id}">编辑</a>
-                                    &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_comment_delete_{$value.id}">删除</a>
+                                    <a href="javascript:void(0);" id="op_comment_delete_{$value.id}">删除</a>
                                     {else}
                                     <a href="javascript:void(0);" id="op_comment_recover_{$value.id}">恢复</a>
                                     {/if}
@@ -120,6 +124,32 @@ $(function() {
                 alert(json);
             }
     	},'json')
+    })
+    $("[id^='comment_show_']").on('click', function(e){
+      $("[id^='comment_show_']").show();
+      $("[id^='comment_edit_']").hide();
+      $(this).hide();
+      $(this).next().show();
+    })
+    $("[id^='comment_textarea_']").on('blur', function(){
+        var comment_data = {};
+        comment_data.op_name = 'edit_comment'
+        comment_data.op_id = $(this).attr('id').split('_')[2];
+        comment_data.value = $.trim($(this).val());
+        if (!comment_data.value) {
+            alert('请填写评论内容');
+            return false;
+        }
+
+        $.post('/comment/comment_op.php', comment_data, function(json){
+            if (json && json.code == 10000) {
+                alert('操作成功');
+                window.location.reload();
+            } else {
+                alert(json);
+            }
+        },'json')
+
     })
     $("#list-filter").on('click', function(){
     	var url = window.location.href.split('?')[0];
