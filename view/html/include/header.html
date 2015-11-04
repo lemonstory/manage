@@ -64,7 +64,14 @@
                                 <li class="{$storyactive}"><a href="/album/storylist.php">故事管理</a></li>
                             </ul>
                         </li>
-                        <li class="{$commentlistactive}{$commentcollectionactive}{$tagactive}"><a href="/comment/commentlist.php">评论管理</a></li>
+                        <li class="{$commentlistactive}{$commentcollectionactive}{$tagactive}">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">评论管理 <b class="caret"></b></a>
+                            <ul class="dropdown-menu" id="menu1">
+                                <li class="{$commentlistactive}"><a href="/comment/commentlist.php">评论管理</a></li>
+                                <li class="{$commentcollectionactive}"><a href="/comment/collection.php">评论采集</a></li>
+                                <li class="{$tagactive}"><a href="/album/taglist.php">标签管理</a></li>
+                            </ul>
+                        </li>
                         <li class="{$analyticsactive}"><a href="/analytics/searchcontentlist.php">统计相关</a></li>
                         <li class="{$feedbackactive}"><a href="/user/feedback.php">用户反馈</a></li>
                     </ul>
