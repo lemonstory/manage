@@ -9,6 +9,7 @@ class collection extends controller
         $album       = new Album();
         $comment     = new Comment();
         $commenttask = new CommentTask();
+        $albumid     = (int)$this->getRequest('albumid', 0);
 
         if ($_POST) {
             $albumid    = (int)$this->getRequest('album_id', 0);
@@ -93,11 +94,16 @@ class collection extends controller
             return $this->showSuccJson('操作成功');
         }
 
-        $albumlist = $album->get_list("`id`>0");
+        $albuminfo = $album->get_album_info($albumid);
+
+        if (!$albuminfo) {
+            return '不存在的专辑';
+        }
 
         $smartyObj = $this->getSmartyObj();
-        $smartyObj->assign('albumlist', $albumlist);
+        // $smartyObj->assign('albumlist', $albumlist);
         $smartyObj->assign('commentcollectionactive', 'active');
+        $smartyObj->assign("albuminfo", $albuminfo);
         $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("comment/collection.html"); 
 

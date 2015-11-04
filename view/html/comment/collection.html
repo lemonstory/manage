@@ -11,17 +11,14 @@
             <div class="block-content collapse in">
                 <div class="span12">
                     <form class="form-horizontal" action="/comment/collection.php">
+                        <input type="hidden" name="album_id" value="{$albuminfo.id}">
                         <input type="hidden" name="id" value="{$albuminfo.id}" />
                         <fieldset>
                             <legend>评论采集</legend>
                             <div class="control-group">
 								<label class="control-label" for="select01">专辑名称</label>
 								<div class="controls">
-									<select id="select01" class="chzn-select" name="album_id">
-									    {foreach from=$albumlist item=value}
-										<option value="{$value.id}">{$value.title}</option>
-										{/foreach}
-									</select>
+									<input type="text" name="album_name" value="{$albuminfo.titile}">
 								</div>
 							</div>
                             <div class="control-group">
