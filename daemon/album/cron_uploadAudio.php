@@ -28,20 +28,13 @@ class cron_uploadAudio extends DaemonBase
         	if ($v['id']%2 == $num) {
         		continue;
         	}
-            $mediapath = $story->get_filed_value('source_audio_url', $v['source_audio_url'], 'mediapath');
-            if ($mediapath) {
-                $story->update(array('mediapath' => $mediapath), "`id`={$v['id']}");
-                $this->writeLog("故事(重复) {$v['id']} => cover 更新成功");
+            $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
+            if (is_array($r) && $r) {
+                $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
+                $this->writeLog("故事 {$v['id']} => mediapath 更新成功");
             } else {
-                $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
-                if (is_array($r) && $r) {
-                    $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
-                    $this->writeLog("故事 {$v['id']} => mediapath 更新成功");
-                } else {
-                    $this->writeLog("故事 {$v['id']} => mediapath 更新失败");
-                }
+                $this->writeLog("故事 {$v['id']} => mediapath 更新失败");
             }
-            
         }
 
     }
