@@ -24,7 +24,7 @@ class cron_uploadAudio extends DaemonBase
     	}
         // 更新故事为本地地址
         $story = new Story();
-        $story_list = $story->get_list("mediapath=''", 500);
+        $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 1000);
         foreach ($story_list as $k => $v) {
         	if ($v['id']%2 == $num) {
         		continue;
