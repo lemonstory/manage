@@ -39,7 +39,7 @@ class cron_uploadOss extends DaemonBase
         }
         // 更新专辑封面
         $album = new Album();
-        $album_list = $album->get_list("cover=''", 500);
+        $album_list = $album->get_list("cover='' and s_cover!=''", 500);
         if (!empty($album_list)) {
             // 存已经上传的缓存
             $image_cache = array();
@@ -118,7 +118,7 @@ class cron_uploadOss extends DaemonBase
 
         $savedir = $savedir.date("Y_m_d_{$type}_{$id}");
 
-        if(!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio'))){
+        if(!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio', 'bmp'))){
             if (strstr($url, 'mobile_large')) {
                 $ext = 'jpg';
             } else {
