@@ -19,68 +19,43 @@ class cron_uploadOss extends DaemonBase
         // 更新分类封面
         $category = new Category();
         $category_list = $category->get_list("cover=''", '', 500);
-
-        foreach ($category_list as $k => $v) {
-            // @huqq edit
-            //$cover = $category->get_filed_value('s_cover', $v['s_cover'], 'cover');
-            $cover = $v['cover'];
-            if ($cover) {
-                //$category->update(array('cover' => $cover), "`id`={$v['id']}");
-                $this->writeLog("分类封面(重复) {$v['id']} => cover 更新成功");
-            } else {
-                $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
-                if (is_string($r)) {
-                    $category->update(array('cover' => $r), "`id`={$v['id']}");
-                    $this->writeLog("分类封面 {$v['id']} => cover 更新成功");
+        if (!empty($category_list)) {
+            // 存已经上传的缓存
+            $image_cache = array();
+            foreach ($category_list as $k => $v) {
+                if (isset($image_cache[$v['s_cover']])) {
+                    $this->writeLog("分类封面(重复) {$v['id']} => cover 更新成功");
                 } else {
-                    $this->writeLog("分类封面 {$v['id']} => cover 更新失败");
+                    $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
+                    if (is_string($r)) {
+                        $category->update(array('cover' => $r), "`s_cover`={$v['s_cover']}");
+                        $image_cache[$v['s_cover']] = $r;
+                        $this->writeLog("分类封面 {$v['id']} => cover 更新成功");
+                    } else {
+                        $this->writeLog("分类封面 {$v['id']} => cover 更新失败");
+                    }
                 }
             }
         }
         // 更新专辑封面
         $album = new Album();
         $album_list = $album->get_list("cover=''", 500);
-
-        foreach ($album_list as $k => $v) {
-            // @huqq edit
-            //$cover = $album->get_filed_value('s_cover', $v['s_cover'], 'cover');
-            $cover = $v['cover'];
-            if ($cover) {
-                //$album->update(array('cover' => $cover), "`id`={$v['id']}");
-                $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
-            } else {
-                $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
-                if (is_string($r)) {
-                    $album->update(array('cover' => $r), "`id`={$v['id']}");
-                    $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
+        if (!empty($album_list)) {
+            // 存已经上传的缓存
+            $image_cache = array();
+            foreach ($album_list as $k => $v) {
+                if (isset($image_cache[$v['s_cover']])) {
+                    $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
                 } else {
-                    $this->writeLog("专辑封面 {$v['id']} => cover 更新失败");
-                }
-            }
-            
-        }
-
-        // 更新故事封面
-        $story = new Story();
-        $story_list = $story->get_list("cover=''", 500);
-        if (!empty($story_list)) {
-            foreach ($story_list as $k => $v) {
-                // @huqq edit
-                //$cover = $story->get_filed_value('s_cover', $v['s_cover'], 'cover');
-                $cover = $v['cover'];
-                if ($cover) {
-                    //$story->update(array('cover' => $cover), "`id`={$v['id']}");
-                    $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
-                } else {
-                    $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
+                    $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
                     if (is_string($r)) {
-                        $story->update(array('cover' => $r), "`id`={$v['id']}");
-                        $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+                        $album->update(array('cover' => $r), "`s_cover`={$v['s_cover']}");
+                        $image_cache[$v['s_cover']] = $r;
+                        $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
                     } else {
-                        $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
+                        $this->writeLog("专辑封面 {$v['id']} => cover 更新失败");
                     }
                 }
-            
             }
         }
 
@@ -144,7 +119,11 @@ class cron_uploadOss extends DaemonBase
         $savedir = $savedir.date("Y_m_d_{$type}_{$id}");
 
         if(!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio'))){
-            return false;
+            if (strstr($url, 'mobile_large')) {
+                $ext = 'jpg';
+            } else {
+                return false;
+            }
         }
 
         $full_file = $savedir.'.'.$ext;
