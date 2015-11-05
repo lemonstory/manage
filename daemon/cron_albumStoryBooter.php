@@ -16,7 +16,7 @@ class cron_albumStoryBooter extends DaemonBase {
 	{
 		$list = array(
 		        	'album/cron_uploadAudioOdd.php',
-		        	'cron_uploadAudioEven.php'
+		        	'album/cron_uploadAudioEven.php'
 				);
 		return $list;
 	}
