@@ -83,6 +83,29 @@ class cron_uploadOss extends DaemonBase
             
             }
         }
+
+        // 更新故事封面
+        $story = new Story();
+        $story_list = $story->get_list("cover=''", 500);
+        if (!empty($story_list)) {
+            // 存已经上传的缓存
+            $image_cache = array();
+            foreach ($story_list as $k => $v) {
+                if (isset($image_cache[$v['s_cover']])) {
+                    $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
+                } else {
+                    $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
+                    if (is_string($r)) {
+                        $story->update(array('cover' => $r), "`s_cover`={$v['s_cover']}");
+                        $image_cache[$v['s_cover']] = $r;
+                        $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+                    } else {
+                        $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
+                    }
+                }
+            
+            }
+        }
     }
 
     /**
