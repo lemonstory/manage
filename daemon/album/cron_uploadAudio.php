@@ -5,8 +5,7 @@
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_uploadAudio extends DaemonBase
 {
-    protected $home_url = 'http://m.idaddy.cn/mobile.php?etr=touch&mod=freeAudio&hidden=';
-    protected $processnum = 1;
+    protected $processnum = 2;
     protected function deal() {
         $this->uploadAudio();
         exit;
