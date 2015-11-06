@@ -60,6 +60,7 @@
                                 <th>id</th>
 						        <th>名称</th>
 						        <th>添加时间</th>
+						        <th>能否播放</th>
 						        <th>状态</th>
 						        <th>操作</th>
                             </tr>
@@ -70,6 +71,7 @@
                                 <td>{$value.id}</td>
                                 <td>{$value.title}</td>
                                 <td>{$value.add_time}</td>
+                                <td>{if $value.mediapath == ''}否{else}能{/if}</td>
                                 <td>
                                     {if $value.status eq '0'}已删除
                                     {elseif $value.status eq 1}正常
