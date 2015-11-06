@@ -71,7 +71,7 @@
                                 <td>{$value.id}</td>
                                 <td>{$value.title}</td>
                                 <td>{$value.add_time}</td>
-                                <td>{if $value.mediapath == ''}否{else}能{/if}</td>
+                                <td>{if $value.mediapath == ''}否{else}<a href="http://mf.xiaoningmeng.net/{$value.mediapath}" target="_blank">点击播放</a>{/if}</td>
                                 <td>
                                     {if $value.status eq '0'}已删除
                                     {elseif $value.status eq 1}正常
