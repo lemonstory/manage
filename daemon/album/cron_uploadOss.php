@@ -49,7 +49,7 @@ class cron_uploadOss extends DaemonBase
                 } else {
                     $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
                     if (is_string($r)) {
-                        $album->update(array('cover' => $r), "`s_cover`='{$v['s_cover']}'");
+                        $album->update(array('cover' => $r), "`s_cover`='{$v['s_cover']}' and `cover`!=''");
                         $image_cache[$v['s_cover']] = $r;
                         $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
                     } else {
@@ -71,7 +71,7 @@ class cron_uploadOss extends DaemonBase
                 } else {
                     $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
                     if (is_string($r)) {
-                        $story->update(array('cover' => $r), "`s_cover`='{$v['s_cover']}'");
+                        $story->update(array('cover' => $r), "`cover` != '' and `s_cover`='{$v['s_cover']}'");
                         $image_cache[$v['s_cover']] = $r;
                         $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
                     } else {
