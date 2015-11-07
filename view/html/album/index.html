@@ -64,8 +64,8 @@
                             {foreach from=$albumList item=value}
                             <tr>
                                 <td>{$value.id}</td>
-                                <td>{$value.title}</td>
-                                <td><img src="{$value.cover}" width="100" height="100" />
+                                <td><a href="javascript:void(0);" id="op_album_view_{$value.id}_title">{$value.title}</a></td>
+                                <td><a href="javascript:void(0);" id="op_album_view_{$value.id}_cover"><img src="{$value.cover}" width="100" height="100" /></a></td>
                                 <td><input type="text" name="view_order" class="form-control" op_id="{$value.id}" old_val="{$value.view_order}" value="{$value.view_order}" style="width: 60px;" /></td>
                                 <td>{$value.add_time}</td>
                                 <td>

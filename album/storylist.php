@@ -11,7 +11,7 @@ class index extends controller
         $storyid = (int)$this->getRequest('storyid', 0);
         $title   = $this->getRequest('title', '');
 
-        $search_filter = $where = array();
+        $storyList = $search_filter = $where = array();
 
         if (empty($currentPage)) {
             $currentPage = 0;
@@ -54,7 +54,7 @@ class index extends controller
                 if ($v['cover']) {
                     $storyList[$k]['cover'] = $aliossobj->getImageUrlNg($v['cover'], 200);
                 } else {
-                    $storyList[$k]['cover'] = $v['s_cover']
+                    $storyList[$k]['cover'] = $v['s_cover'];
                 }
             }
         }
