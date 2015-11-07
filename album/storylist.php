@@ -45,9 +45,20 @@ class index extends controller
         if ($where) {
             $where = implode(" AND ", $where);
         }
-        $storyList = $manageStoryObj->getStoryList($where, $currentPage + 1, $perPage);
 
         $totalCount = $manageStoryObj->getStoryTotalCount($where);
+        if ($totalCount) {
+            $aliossobj = new AliOss();
+            $storyList = $manageStoryObj->getStoryList($where, $currentPage + 1, $perPage);
+            foreach ($storyList as $k => $v) {
+                if ($v['cover']) {
+                    $storyList[$k]['cover'] = $aliossobj->getImageUrlNg($v['cover'], 200);
+                } else {
+                    $storyList[$k]['cover'] = $v['s_cover']
+                }
+            }
+        }
+        
         
         if ($totalCount > $perPage) {
             $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
