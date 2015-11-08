@@ -63,6 +63,7 @@ class hotrecommendlist extends controller
         
         
         $smartyObj = $this->getSmartyObj();
+        $smartyObj->assign('totalCount', $totalCount);
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('searchCondition', $searchCondition);
