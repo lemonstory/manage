@@ -94,7 +94,7 @@
                                     &nbsp;|&nbsp;<a href="/system/addsameage.php?albumid={$value.id}">同龄在听</a>
                                     <br />
                                     <a href="/comment/collection.php?albumid={$value.id}">评论采集</a>
-                                    &nbsp;|&nbsp;<a href="/comment/commentlist.php?albumid={$value.id}">查看评论</a>
+                                    &nbsp;|&nbsp;<a href="/comment/commentlist.php?albumid={$value.id}" target="_blank">查看评论</a>
                                 </td>
                             </tr>
                             {/foreach}
@@ -123,7 +123,7 @@ $(function() {
             window.location.href = '/album/album_edit.php?id='+data.op_id+'&gourl='+window.location.href;
             return false;
         } else if (data.op_name == 'view') {
-            window.location.href = '/album/storylist.php?albumid='+data.op_id;
+            window.open('/album/storylist.php?albumid='+data.op_id);
             return false;
         }
         console.log(data);
