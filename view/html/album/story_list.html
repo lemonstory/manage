@@ -73,7 +73,19 @@
                                 <td>{$value.title}</td>
                                 <img src="{$value.cover}" width="100" height="100" />
                                 <td>{$value.add_time}</td>
-                                <td>{if $value.mediapath == ''}否{else}<a href="http://mf.xiaoningmeng.net/{$value.mediapath}" target="_blank">点击播放</a>{/if}</td>
+                                <!-- 
+                                    TUDO:
+                                    有时间了在用jplayer处理一下 
+                                    http://jplayer.org/
+                                -->
+                                <td>
+                                    {if $value.mediapath == ''}
+                                        否
+                                    {else}
+                                        <audio src="http://mf.xiaoningmeng.net/{$value.mediapath}" controls="controls">Your browser does not support the audio element.</audio>
+                                        
+                                    {/if}
+                                </td>
                                 <td>
                                     {if $value.status eq '0'}已删除
                                     {elseif $value.status eq 1}正常
