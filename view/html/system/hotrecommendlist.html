@@ -78,8 +78,16 @@
                             {foreach from=$hotlist item=value}
                             <tr>
                                 <td>{$value.albumid}</td>
-                                <td>{$value.albuminfo.title}</td>
-                                <td><img src="{$value.albuminfo.cover}" width="100" height="100" /></td>
+                                <td>
+                                    <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">
+                                        {$value.albuminfo.title}
+                                    </a>
+                                </td>
+                                <td>
+                                     <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">
+                                        <img src="{$value.albuminfo.cover}" width="100" height="100" />
+                                    </a>                                 
+                                </td>
                                 <td><input type="text" name="order" class="form-control" op_id="{$value.albumid}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
                                 <td>{$value.addtime}</td>
                                 <td id="status_{$value.albumid}">
