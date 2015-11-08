@@ -117,7 +117,7 @@ $(function() {
         $(".modal-body").text("");
         if(confirm("确定要下线吗？")) {
             var albumid = $(this).attr("id");
-            $.post(setstatusurl, {albumid:albumid, status:2}, function(data){
+            $.post(setstatusurl, {type:'status', albumid:albumid, status:2}, function(data){
                 if(data.code == "10000") {
                     $(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
@@ -136,7 +136,7 @@ $(function() {
         $(".modal-body").text("");
         if(confirm("确定要上线吗？")) {
             var albumid = $(this).attr("id");
-            $.post(setstatusurl, {albumid:albumid, status:1}, function(data){
+            $.post(setstatusurl, {type:'status', albumid:albumid, status:1}, function(data){
                 if(data.code == "10000") {
                     $(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
