@@ -7,7 +7,7 @@ class index extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
-        $where = array();
+        $albumList = $where = array();
         
         if (empty($currentPage)) {
             $currentPage = 0;
@@ -38,8 +38,21 @@ class index extends controller
         if ($where) {
             $where = implode(" AND ", $where);
         }
-        $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
         $totalCount = $manageAlbumObj->getAlbumTotalCount($where);
+        if ($totalCount) {
+            $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
+        }
+
+        if (count($albumList)) {
+            $aliossobj = new AliOss();
+            foreach ($albumList as $k => $v) {
+                if ($v['cover']) {
+                    $albumList[$k]['cover'] = $aliossobj->getImageUrlNg($v['cover'], 200);
+                } else {
+                    $albumList[$k]['cover'] = $v['s_cover'];
+                }
+            }
+        }
         
         if ($totalCount > $perPage) {
             $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);

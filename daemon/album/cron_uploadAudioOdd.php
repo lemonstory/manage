@@ -1,11 +1,11 @@
 <?php
 /**
- * 资源上传到OSS
+ * 奇数上传音频进程
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_uploadAudio extends DaemonBase
 {
-    protected $processnum = 2;
+    protected $processnum = 1;
     protected function deal() {
         $this->uploadAudio();
         exit;
@@ -15,26 +15,20 @@ class cron_uploadAudio extends DaemonBase
 
 
     protected function uploadAudio() {
-    	if (isset($_SERVER['argv'][1])) {
-    		$num = $_SERVER['argv'][1]%2;
-    	}
-    	if (!isset($num)) {
-    		exit('param num error !');
-    	}
         // 更新故事为本地地址
         $story = new Story();
         $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 1000);
         foreach ($story_list as $k => $v) {
-        	if ($v['id']%2 == $num) {
-        		continue;
+        	if ($v['id']%2 == 1) {
+        		$r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
+                if (is_array($r) && $r) {
+                    $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
+                    $this->writeLog("故事 {$v['id']} => mediapath 更新成功");
+                } else {
+                    $this->writeLog("故事 {$v['id']} => mediapath 更新失败");
+                }
         	}
-            $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
-            if (is_array($r) && $r) {
-                $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
-                $this->writeLog("故事 {$v['id']} => mediapath 更新成功");
-            } else {
-                $this->writeLog("故事 {$v['id']} => mediapath 更新失败");
-            }
+            
         }
 
     }
