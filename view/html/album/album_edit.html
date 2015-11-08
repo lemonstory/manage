@@ -1,18 +1,18 @@
 {include file="include/header.html"}
-
+<script src="/static/vendors/jquery.form.min.js"></script>
 <div class="span9" id="content">
     <div class="row-fluid">
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">Form Example</div>
+                <div class="muted pull-left">专辑</div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" action="/album/album_edit.php">
+                    <form class="form-horizontal" enctype="multipart/form-data" method="post">
                         <input type="hidden" name="id" value="{$albuminfo.id}" />
                         <fieldset>
-                            <legend>编辑专辑</legend>
+                            <legend>{if ($albuminfo)}编辑{else}创建{/if}专辑</legend>
                             <div class="control-group">
                                 <label class="control-label" for="date01">专辑名称<span class="required">*</span></label>
                                 <div class="controls">
@@ -48,18 +48,14 @@
                                     <input type="text" class="input-xlarge datepicker" name="view_order" value="{$albuminfo.view_order}">
                                 </div>
                             </div>
-                            <!-- <div class="control-group">
-                                <label class="control-label">封面预览</label>
-                                <div class="controls">
-                                    <input type="indden" name="cover" value="" />
-                                </div>
-                            </div> -->
-                            <!-- <div class="control-group">
+                            <div class="control-group">
                                 <label class="control-label" for="fileInput">封面</label>
                                 <div class="controls">
-                                    <div class="uploader" id="uniform-fileInput"><input class="input-file uniform_on" id="fileInput" type="file"><span class="filename" style="-webkit-user-select: none;">No file selected</span><span class="action" style="-webkit-user-select: none;">Choose File</span></div>
+                                    <div class="uploader" id="uniform-fileInput">
+                                        <input class="input-file uniform_on" id="fileInput" type="file" name="cover">
+                                    </div>
                                 </div>
-                            </div> -->
+                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
                                 <button type="reset" class="btn">重置</button>
@@ -75,28 +71,52 @@
     
     {$pageBanner}
 </div>
-
+<iframe name="submit-iframe"></iframe>
 
 <script>
 {literal}
 $(function() {
+    function result(json)
+    {
+        if (json && json.code == 10000) {
+            alert('操作成功');
+            window.location.href = window.location.href.split('gourl=')[1];
+        } else {
+            var name = json.desc.split('-')[0];
+            var msg  = json.desc.split('-')[1];
+            var errObj = $("[name='"+name+"']");
+            errObj.closest(".control-group").addClass('error');
+            errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
+        }
+    }
+    var options = { 
+       // target:        '#output',   // target element(s) to be updated with server response 
+        // beforeSubmit:  result,  // pre-submit callback 
+        success:       result,  // post-submit callback
+        error:       result,  // post-submit callback
+        resetForm: false, 
+        dataType:  'json',
+ 
+        // other available options: 
+        url:       '/album/album_edit.php',         // override for form's 'action' attribute 
+        type:      'post'        // 'get' or 'post', override for form's 'method' attribute 
+        // dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+        //clearForm: true        // clear all form fields after successful submit 
+        //resetForm: true        // reset the form after successful submit 
+ 
+        // $.ajax options can be used here too, for example: 
+        //timeout:   3000 
+    }; 
+ 
     $("#submit_form").on('click', function(e){
         $(".help-inline").remove();
         e.preventDefault();
         $(".control-group").removeClass("error");
-        $.post('/album/album_edit.php', $(this).closest("form").serialize(), function(json){
-
-            if (json && json.code == 10000) {
-                alert('操作成功');
-                window.location.href = window.location.href.split('gourl=')[1];
-            } else {
-                var name = json.desc.split('-')[0];
-                var msg  = json.desc.split('-')[1];
-                var errObj = $("[name='"+name+"']");
-                errObj.closest(".control-group").addClass('error');
-                errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
-            }
-        },'json');
+        $("form").ajaxSubmit(options); 
+ 
+        // !!! Important !!! 
+        // always return false to prevent standard browser submit and page navigation 
+        return false; 
     })
 });
 {/literal}
