@@ -1,23 +1,23 @@
 <?php
 include_once '../controller.php';
 
-class index extends controller
+class story_edit extends controller
 {
     public function action()
     {
     	$story = new Story();
 
         if ($_POST) {
-        	$id         = (int)$this->getRequest('id');
+        	$storyid    = (int)$this->getRequest('id');
         	$title      = $this->getRequest('title');
         	$intro      = $this->getRequest('intro');
 
         	$newstoryinfo = $storyinfo  = array();
-        	if ($id) {
-        		$storyinfo = $story->get_story_info($id);
+        	if ($storyid) {
+        		$storyinfo = $story->get_story_info($storyid);
         	}
         	if (!$storyinfo) {
-        		return $this->showErrorJson(ErrorConf::storyTitleNotEmpty());
+        		return $this->showErrorJson(ErrorConf::storyInfoIsEmpty());
         	}
         	if (!$title) {
         		return $this->showErrorJson(ErrorConf::storyTitleNotEmpty());
@@ -30,7 +30,20 @@ class index extends controller
                 $newstoryinfo['intro'] = $intro;
             }
 
-            $story->update($newstoryinfo, "`id`={$id}");
+            $story->update($newstoryinfo, "`id`={$storyid}");
+
+            // 封面的更新
+            if (isset($_FILES['cover']) && $_FILES['cover']['name']) {
+                $uploadobj = new Upload();
+                $ext = getFileExtByMime($_FILES['cover']['type']);
+                if (!$ext) {
+                    return $this->showErrorJson(ErrorConf::StoryCoverExtError());
+                }
+                $res = $uploadobj->uploadAlbumImage($_FILES['cover']['tmp_name'], $ext, $storyid);
+                if (isset($res['path']) && $res['path']) {
+                    $story->update(array('cover' => $res['path']), "`id`={$storyid}");
+                }
+            }
 
             return $this->showSuccJson('操作成功');
         }
@@ -43,7 +56,7 @@ class index extends controller
         	$storyinfo = $story->get_story_info($storyid);
         }
         if (!$storyinfo) {
-        	echo '不存在的信息';exit;
+        	return $this->showErrorJson(ErrorConf::storyInfoIsEmpty());
         }
 
         $smartyObj = $this->getSmartyObj();
@@ -53,5 +66,5 @@ class index extends controller
 
     }
 }
-new index();
+new story_edit();
 ?>
