@@ -47,7 +47,8 @@ class album_edit extends controller
                     'age_type'   => $age_type,
                     'view_order' => $view_order,
                     'author'     => $author,
-                    'from'       => 'system'
+                    'from'       => 'system',
+                    'add_time'   => date('Y-m-d H:i:s')
                 ));
             }
 
