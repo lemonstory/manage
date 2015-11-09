@@ -14,6 +14,8 @@ class addnewonline extends controller
         if (empty($albuminfo)) {
             $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
         }
+        $aliobj = new AliOss();
+        $albuminfo['cover'] = $aliobj->getImageUrlNg($albuminfo['cover'], 100);
         
         $configvarobj = new ConfigVar();
         $agetypenamelist = $configvarobj->AGE_TYPE_NAME_LIST;

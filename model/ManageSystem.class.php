@@ -179,6 +179,66 @@ class ManageSystem extends ModelBase
 	    
 	}
 	
+	public function delHotRecommendByAlbumId($albumids)
+	{
+	    if (empty($albumids)) {
+	        return false;
+	    }
+	    if (!is_array($albumids)) {
+	        $albumids = array($albumids);
+	    }
+	    $albumids = implode(",", $albumids);
+	    
+	    $db = DbConnecter::connectMysql('share_main');
+	    $sql = "DELETE FROM `recommend_hot` WHERE `albumid` IN ({$albumids})";
+	    $st = $db->prepare($sql);
+	    $result = $st->execute();
+	    if (empty($result)) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	public function delNewOnlineByAlbumId($albumids)
+	{
+	    if (empty($albumids)) {
+	        return false;
+	    }
+	    if (!is_array($albumids)) {
+	        $albumids = array($albumids);
+	    }
+	    $albumids = implode(",", $albumids);
+	     
+	    $db = DbConnecter::connectMysql('share_main');
+	    $sql = "DELETE FROM `recommend_new_online` WHERE `albumid` IN ({$albumids})";
+	    $st = $db->prepare($sql);
+	    $result = $st->execute();
+	    if (empty($result)) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	public function delSameAgeByAlbumId($albumids)
+	{
+	    if (empty($albumids)) {
+	        return false;
+	    }
+	    if (!is_array($albumids)) {
+	        $albumids = array($albumids);
+	    }
+	    $albumids = implode(",", $albumids);
+	     
+	    $db = DbConnecter::connectMysql('share_main');
+	    $sql = "DELETE FROM `recommend_same_age` WHERE `albumid` IN ({$albumids})";
+	    $st = $db->prepare($sql);
+	    $result = $st->execute();
+	    if (empty($result)) {
+	        return false;
+	    }
+	    return true;
+	}
+	
 	
 	/**
 	 * 后台编辑推荐，热门专辑数据
