@@ -68,14 +68,7 @@
                                 <td>{$value.uid}</td>
                                 <td>{$value.nickname}</td>
                                 <td><img src="{$value.avatar}" width="80" height="80" /></td>
-                                <td id="status_{$value.uid}">
-                                    {if $value.status eq '-3'}已删除
-                                    {elseif $value.status eq '-2'}已封号
-                                    {elseif $value.status eq '-1'}已冻结
-                                    {elseif $value.status eq 1}正常
-                                    {/if}
-                                </td>
-                                <td>{$value.addtime}</td>
+                                <td id="status_{$value.uid}">{$value.status}</td>
                                 <td>{$value.num}</td>
                                 <td>
                                     <a href="###" id="del_{$value.uid}">删除</a>
