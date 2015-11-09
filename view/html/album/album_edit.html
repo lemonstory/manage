@@ -71,8 +71,6 @@
     
     {$pageBanner}
 </div>
-<iframe name="submit-iframe"></iframe>
-
 <script>
 {literal}
 $(function() {
@@ -80,7 +78,7 @@ $(function() {
     {
         if (json && json.code == 10000) {
             alert('操作成功');
-            window.location.href = window.location.href.split('gourl=')[1];
+            window.location.href = '/album/index.php';
         } else {
             var name = json.desc.split('-')[0];
             var msg  = json.desc.split('-')[1];
@@ -101,8 +99,8 @@ $(function() {
         url:       '/album/album_edit.php',         // override for form's 'action' attribute 
         type:      'post'        // 'get' or 'post', override for form's 'method' attribute 
         // dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
-        //clearForm: true        // clear all form fields after successful submit 
-        //resetForm: true        // reset the form after successful submit 
+        // clearForm: true        // clear all form fields after successful submit 
+        // resetForm: true        // reset the form after successful submit 
  
         // $.ajax options can be used here too, for example: 
         //timeout:   3000 
