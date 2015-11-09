@@ -49,9 +49,9 @@ class ManageSystem extends ModelBase
 		$where = "";
 		if (!empty($startalbumid)) {
 		    if ($direction == "up") {
-		        $where .= " `albumid` > '{$startalbumid}' AND";
-		    } else {
 		        $where .= " `albumid` < '{$startalbumid}' AND";
+		    } else {
+		        $where .= " `albumid` > '{$startalbumid}' AND";
 		    }
 		}
 		$where .= " `status` = '{$this->RECOMMEND_STATUS_ONLIINE}'";
@@ -90,9 +90,9 @@ class ManageSystem extends ModelBase
 		$where = "";
 		if (!empty($startalbumid)) {
 		    if ($direction == "up") {
-		        $where .= " `albumid` > '{$startalbumid}' AND";
-		    } else {
 		        $where .= " `albumid` < '{$startalbumid}' AND";
+		    } else {
+		        $where .= " `albumid` > '{$startalbumid}' AND";
 		    }
 		}
 		
