@@ -18,6 +18,7 @@
                                         <option value="">全部</option>
                                         <option {if $searchCondition=="albumid"}selected{/if} value="albumid">专辑ID</option>
                                         <option {if $searchCondition=="title"}selected{/if} value="title">专辑标题</option>
+                                        <option {if $searchCondition=="agetype"}selected{/if} value="agetype">专辑适合年龄段</option>
                                     </select>
                                 </div>
                             </div>
@@ -29,17 +30,28 @@
                                         <option {if $status=="1"}selected{/if} value="1">已上线</option>
                                         <option {if $status=="2"}selected{/if} value="2">未上线</option>
                                     </select>
-                                    <p class="help-block">请选择查询条件</p>
+                                    <p class="help-block"></p>
                                 </div>
                             </div>
                             
-                            <div class="control-group">
+                            <div class="control-group" id="agetypeselect" {if $searchCondition!='agetype'}style="display: none;"{/if}>
+                                <label class="control-label">适合年龄段</label>
+                                <div class="controls">
+                                    <select id="selectError" name="selectContent">
+                                        {foreach from=$agetypenamelist item=value key=key}
+                                        <option {if $selectContent==$key}selected{/if} value="{$key}">{$value}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group" id="contentinput" {if $searchCondition=='agetype'}style="display: none;"{/if}>
                                 <label class="control-label">内容</label>
                                 <div class="controls">
                                     <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
+                            
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">确定</button>
                             </div>
@@ -68,7 +80,7 @@
                                 <th>标题</th>
                                 <th>封面</th>
                                 <th>排序</th>
-                                <th>添加时间</th>
+                                <th>适合年龄段</th>
                                 <th>状态</th>
                                 <th>操作</th>
                             </tr>
@@ -89,7 +101,7 @@
                                     </a>                                 
                                 </td>
                                 <td><input type="text" name="order" class="form-control" op_id="{$value.albumid}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
-                                <td>{$value.addtime}</td>
+                                <td><a href="/system/newonlinelist.php?searchCondition=agetype&searchContent={$value.agetype}">{$value.agetypename}</a></td>
                                 <td id="status_{$value.albumid}">
                                     {if $value.status eq '1'}已上线
                                     {elseif $value.status eq '2'}未上线
@@ -205,6 +217,17 @@ $(function() {
                 }
             },'json');
         }
+    });
+    
+    $("select[name='searchCondition']").change(function(){
+    	var searchcondition = $(this).val();
+    	if(searchcondition == 'agetype') {
+    		$("#contentinput").hide();
+    		$("#agetypeselect").show();
+    	} else {
+    		$("#contentinput").show();
+            $("#agetypeselect").hide();
+    	}
     });
 });
 {/literal}
