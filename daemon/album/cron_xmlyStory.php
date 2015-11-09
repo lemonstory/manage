@@ -23,7 +23,7 @@ class cron_xmlyStory extends DaemonBase {
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`story_num` =0 and `from`='xmly'", " {$limit},{$per_page}");
+            $album_list = $album->get_list("`from`='xmly'", " {$limit},{$per_page}");
             if (!$album_list) {
                 break;
             }
