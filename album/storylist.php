@@ -26,18 +26,18 @@ class index extends controller
         if ($albumid) {
             $search_filter['albumid'] = $albumid;
             $where[] = " `album_id` = '{$albumid}' ";
-            $baseUri =  $baseUri +  "album_id={$albumid}&";
+            $baseUri =  $baseUri . "albumid={$albumid}&";
         }
 
         if ($storyid) {
             $search_filter['storyid'] = $storyid;
             $where[] = " `id` = '{$storyid}' ";
-            $baseUri =  $baseUri +  "storyid={$storyid}&";
+            $baseUri =  $baseUri . "storyid={$storyid}&";
         }
         if ($title) {
             $search_filter['title'] = $title;
             $where[] = " `title` like '%{$title}%' ";
-            $baseUri =  $baseUri +  "title={$title}&";
+            $baseUri =  $baseUri . "title={$title}&";
         }
         
         $ssoList = array();
