@@ -20,24 +20,26 @@ class index extends controller
             $perPage = 20;
         }
 
+        $pageBanner = "";
+        $baseUri = "/album/storylist.php?perPage={$perPage}&";
+
         if ($albumid) {
             $search_filter['albumid'] = $albumid;
             $where[] = " `album_id` = '{$albumid}' ";
+            $baseUri =  $baseUri +  "album_id={$albumid}&";
         }
 
         if ($storyid) {
             $search_filter['storyid'] = $storyid;
             $where[] = " `id` = '{$storyid}' ";
+            $baseUri =  $baseUri +  "storyid={$storyid}&";
         }
         if ($title) {
             $search_filter['title'] = $title;
             $where[] = " `title` like '%{$title}%' ";
+            $baseUri =  $baseUri +  "title={$title}&";
         }
         
-        $pageBanner = "";
-        $baseUri = "/album/storylist.php?perPage={$perPage}&";
-        
-    	
         $ssoList = array();
         $ssoObj = new Sso();
         
@@ -58,7 +60,6 @@ class index extends controller
                 }
             }
         }
-        
         
         if ($totalCount > $perPage) {
             $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
