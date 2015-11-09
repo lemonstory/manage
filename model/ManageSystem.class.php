@@ -57,7 +57,7 @@ class ManageSystem extends ModelBase
 		$where .= " `status` = '{$this->RECOMMEND_STATUS_ONLIINE}'";
 		
 		$db = DbConnecter::connectMysql('share_main');
-        $sql = "SELECT * FROM `recommend_hot` WHERE {$where} ORDER BY `ordernum` DESC LIMIT $len";
+        $sql = "SELECT * FROM `recommend_hot` WHERE {$where} ORDER BY `ordernum` ASC LIMIT $len";
         $st = $db->prepare($sql);
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -99,7 +99,7 @@ class ManageSystem extends ModelBase
 		$status = $this->RECOMMEND_STATUS_ONLIINE; // 已上线状态
 		$where .= "`status` = '{$status}'";
 		if (!empty($babyagetype)) {
-			$where .= " AND `agetype` = '{$babyagetype}'";
+			$where .= " AND (`agetype` = '{$babyagetype}' or `agetype` = '{$this->AGE_TYPE_All}')";
 		}
 		$db = DbConnecter::connectMysql('share_main');
 		$sql = "SELECT * FROM `recommend_new_online` WHERE {$where} ORDER BY `ordernum` DESC LIMIT $len";
