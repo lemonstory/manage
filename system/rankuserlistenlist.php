@@ -27,11 +27,11 @@ class rankuserlistenlist extends controller
             $uid = 0;
         }
         
+        $rankuserlistenlist = array();
         $managelistenobj = new ManageListen();
         $resultList = $managelistenobj->getRankUserListenListBySearch($uid, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $uids = array();
-            $userlist = array();
             foreach ($resultList as $uid => $num) {
                 $uids[] = $uid;
             }
@@ -39,9 +39,15 @@ class rankuserlistenlist extends controller
                 $uids = array_unique($uids);
                 $userobj = new User();
                 $userreslist = $userobj->getUserInfo($uids);
+                $aliossobj = new AliOss();
+                $configvarobj = new ConfigVar();
                 foreach ($userreslist as $value) {
                     $value['num'] = $resultList[$value['uid']];
-                    $userlist[] = $value;
+                    if (!empty($value['avatartime'])) {
+                        $value['avatar'] = $aliossobj->getAvatarUrl($value['uid'], $value['avatartime'], 80);
+                    }
+                    $value['status'] = $configvarobj->OPTION_STATUS_NAME[$value['status']];
+                    $rankuserlistenlist[] = $value;
                 }
             }
             

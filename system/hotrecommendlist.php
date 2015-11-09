@@ -18,7 +18,7 @@ class hotrecommendlist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/system/hotrecommentlist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/hotrecommendlist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $totalCount = 0;
     	$hotlist = array();
     	if (!empty($searchContent)) {

@@ -3,13 +3,6 @@ include_once '../controller.php';
 
 class setuserstatus extends controller
 {
-    /*
-     * 1     默认值：正常用户
-     * -1    冻结
-     * -2    封号
-     */
-    public $statusFields = array(-2, -1, 1);
-    
     public function action()
     {
         $loginuid = $this->getUid();
@@ -19,8 +12,10 @@ class setuserstatus extends controller
         $perPage = $this->getRequest('perPage', 50) + 0;
         $searchCondition = $this->getRequest('searchCondition', '');
         $searchContent = $this->getRequest('searchContent', '');
+        
         $url = "/user/getuserlist.php?p={$currentPage}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
-        if (empty($uid) || !in_array($status, $this->statusFields)) {
+        $configvarobj = new ConfigVar();
+        if (empty($uid) || !in_array($status, $configvarobj->OPTION_STATUS_LIST)) {
             $this->showErrorJson(ErrorConf::paramError());
         }
         
