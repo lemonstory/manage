@@ -1,6 +1,8 @@
 <?php
 class ManageAlbum extends ModelBase 
 {
+    public $CACHE_INSTANCE = 'cache';
+
     public function getAlbumList($where = array(), $currentPage = 1, $perPage = 50) 
     {
         if (empty($currentPage)) {
@@ -30,6 +32,31 @@ class ManageAlbum extends ModelBase
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
         return $list;
+    }
+
+    public function getAlbumInfo($albumId = 0, $filed = '')
+    {
+        if (!$albumId) {
+            return array();
+        }
+        
+        $where = "`id`={$albumId}";
+        $sql = "select * from album  where {$where} limit 1";
+
+        $db = DbConnecter::connectMysql('share_story');
+        $st = $db->query( $sql );
+        $st->setFetchMode(PDO::FETCH_ASSOC);
+        $r  = $st->fetchAll();
+        $r  = array_pop($r);
+        
+        if ($filed) {
+            if (isset($r[$filed])) {
+                return $r[$filed];
+            } else {
+                return '';
+            }
+        }
+        return $r;
     }
     
     public function getAlbumTotalCount($where = array())

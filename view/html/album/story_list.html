@@ -93,6 +93,8 @@
                                 </td>
                                 <td>
                                     {if $value.status eq 1}
+                                    <a href="javascript:void(0);" id="op_story_addalbum_{$value.id}">添加到专辑</a>
+                                    &nbsp;|&nbsp;
                                     <a href="javascript:void(0);" id="op_story_edit_{$value.id}">编辑</a>
                                     &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_story_delete_{$value.id}">删除</a>
                                     {else}
@@ -125,8 +127,29 @@ $(function() {
         if (data.op_name == 'edit') {
             window.location.href = '/album/story_edit.php?id='+data.op_id;
             return false;
+        } else if (data.op_name == 'addalbum') {
+            $(".modal-body").html(add_story_to_album_html);
+            $(".modal-title").html('添加到专辑');
+            $("#myModal").modal({show:true});
+            // 绑定 查询
+            $("#search_album_info").on('click', function(e){
+                e.preventDefault();
+                search_album_info($("[name='album_id']").val());
+            })
+            $("#submit_and_add_album").on('click', function(e){
+                e.preventDefault();
+                add_story_to_album(op_id, $("[name='album_id']").val());
+            },'json')
+            return false;
+        } else if (data.op_name == 'delete') {
+            if (!confirm('确定要执行删除操作吗？')) {
+                return false;
+            }
+        } else if (data.op_name == 'recover') {
+            if (!confirm('确定要执行恢复操作吗？')) {
+                return false;
+            }
         }
-        console.log(data);
     	
     	$.post('/album/story_op.php', data, function(json){
     		if (json && json.code == 10000) {
@@ -137,6 +160,7 @@ $(function() {
             }
     	},'json')
     })
+
     $("#list-filter").on('click', function(){
         var url = window.location.href.split('?')[0];
         var params = '';
@@ -150,6 +174,60 @@ $(function() {
         })
         window.location.href = url+'?'+params;
     })
+
+    function search_album_info(albumid)
+    {
+        $.post('/album/album_info.php', {'albumid':albumid}, function(json){
+            if (json && json.code == 10000) {
+                $("[name='album_title']").val(json.data.title);
+            } else {
+                alert(json.desc);
+            }
+        },'json');
+    }
+
+    function add_story_to_album(storyid, albumid)
+    {
+        if (!storyid || !albumid) {
+            return false;
+        }
+        $.post('/album/story_op.php', {'op_name':'add_story_to_album', 'albumid':albumid, 'storyid':storyid}, function(json){
+            debugger;
+            if (json && json.code == 10000) {
+                $(".modal-body").text('操作成功');
+                $(".modal-title").html('提示');
+                $("#myModal").modal({show:true});
+            } else {
+                $(".modal-body").text(json.desc);
+                $(".modal-title").html('提示');
+                $("#myModal").modal({show:true});
+            }
+        },'json');
+    }
+
+
+    var add_story_to_album_html = '<form class="form-horizontal" enctype="multipart/form-data" method="post">\
+    <input type="hidden" name="" value="">\
+    <fieldset>\
+        <div class="control-group">\
+            <label class="control-label" for="date01">专辑ID<span class="required">*</span></label>\
+            <div class="controls">\
+                <input type="text" class="input-xlarge datepicker" name="album_id" value="" autocomplete="off">&nbsp;&nbsp;\
+                <a href="javascript:void(0);" class="btn btn-default" id="search_album_info">查询</a>\
+            </div>\
+        </div>\
+        <div class="control-group">\
+            <label class="control-label" for="date01">专辑名称</label>\
+            <div class="controls">\
+                <input type="text" class="input-xlarge datepicker" name="album_title" value="" readonly="true">\
+            </div>\
+        </div>\
+        <div class="form-actions">\
+            <button type="submit" class="btn btn-primary" id="submit_and_add_album">提交</button>\
+            <button type="reset" class="btn">重置</button>\
+        </div>\
+    </fieldset>\
+</form>';
 });
 {/literal}
 </script>

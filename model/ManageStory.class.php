@@ -31,6 +31,31 @@ class ManageStory extends ModelBase
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
         return $list;
     }
+
+    public function getStoryInfo($storyId = 0, $filed = '')
+    {
+        if (!$storyId) {
+            return array();
+        }
+        
+        $where = "`id`={$storyId}";
+        $sql = "select * from album  where {$where} limit 1";
+
+        $db = DbConnecter::connectMysql('share_story');
+        $st = $db->query( $sql );
+        $st->setFetchMode(PDO::FETCH_ASSOC);
+        $r  = $st->fetchAll();
+        $r  = array_pop($r);
+        
+        if ($filed) {
+            if (isset($r[$filed])) {
+                return $r[$filed];
+            } else {
+                return '';
+            }
+        }
+        return $r;
+    }
     
     public function getStoryTotalCount($where = array())
     {
