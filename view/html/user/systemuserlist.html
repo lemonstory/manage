@@ -74,7 +74,7 @@
                             <tr>
                                 <td>{$value.uid}</td>
                                 <td>{$value.userinfo.nickname}</td>
-                                <td>{$value.userinfo.avatar}</td>
+                                <td><img src="{$value.userinfo.avatar}" /></td>
                                 <td>{if $value.status == 1}已激活{else if $value.status == 2}未激活{/if}</td>
                                 <td>
                                     {if $value.status == 1}

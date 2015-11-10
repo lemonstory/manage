@@ -45,7 +45,7 @@ class systemuserlist extends controller
             
             foreach ($resultlist as $value) {
                 $userinfo = $userlist[$value['uid']];
-                $userinfo['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $userinfo['avatartime'], 100);
+                $userinfo['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $userinfo['avatartime'], 80);
                 $value['userinfo'] = $userinfo;
                 $list[] = $value;
             }
