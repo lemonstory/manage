@@ -1,6 +1,10 @@
 <?php
 class ManageSystem extends ModelBase
 {
+    public $FOCUS_LINKTYPE_HTTP = 'http';
+    public $FOCUS_LINKTYPE_ALBUM = 'album';
+    public $FOCUS_LINKTYPE_LIST = array('http', 'album');
+    
 	/**
 	 * 首页获取焦点图列表
 	 * @param I $len
@@ -121,22 +125,25 @@ class ManageSystem extends ModelBase
 	/**
 	 * 后台添加焦点图
 	 * @param S $picid
+	 * @param S $linktype    链接跳转方式：http/album
 	 * @param S $linkurl
 	 * @return boolean
 	 */
-	public function addFocusDb($picid, $linkurl)
+	public function addFocusDb($picid, $linktype, $linkurl, $ordernum)
 	{
-		if (empty($picid) || empty($linkurl)) {
+		if (empty($picid) || empty($linktype) || empty($linkurl) || !in_array($linktype, $this->FOCUS_LINKTYPE_LIST)) {
 			return false;
 		}
 		
-		$status = 0;
+		$status = $this->RECOMMEND_STATUS_OFFLINE;
 		$addtime = date("Y-m-d H:i:s");
-		$ordernum = $picid + 100;
+	    if (empty($ordernum)) {
+		    $ordernum = $picid + 100;
+	    }
 		$db = DbConnecter::connectMysql('share_manage');
-        $sql = "INSERT INTO `focus` (`picid`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `focus` (`picid`, `linktype`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
-        $result = $st->execute(array($picid, $linkurl, $ordernum, $status, $addtime));
+        $result = $st->execute(array($picid, $linktype, $linkurl, $ordernum, $status, $addtime));
         if (empty($result)) {
             return false;
         }
@@ -152,6 +159,9 @@ class ManageSystem extends ModelBase
 	    $setstr = "";
 	    if (!empty($data['picid'])) {
 	        $setstr .= "`picid` = '{$data['picid']}',";
+	    }
+	    if (!empty($data['linktype']) && in_array($data['linktype'], $this->FOCUS_LINKTYPE_LIST)) {
+	        $setstr .= "`linktype` = '{$data['linktype']}',";
 	    }
 	    if (!empty($data['linkurl'])) {
 	        $setstr .= "`linkurl` = '{$data['linkurl']}',";
@@ -174,9 +184,24 @@ class ManageSystem extends ModelBase
 	    return true;
 	}
 	
-	public function delFocusDb()
+	public function delFocusDb($focusids)
 	{
-	    
+	    if (empty($focusids)) {
+	        return false;
+	    }
+	    if (!is_array($focusids)) {
+	        $focusids = array($focusids);
+	    }
+	    $focusids = implode(",", $focusids);
+	     
+	    $db = DbConnecter::connectMysql('share_manage');
+	    $sql = "DELETE FROM `focus` WHERE `id` IN ({$focusids})";
+	    $st = $db->prepare($sql);
+	    $result = $st->execute();
+	    if (empty($result)) {
+	        return false;
+	    }
+	    return true;
 	}
 	
 	public function delHotRecommendByAlbumId($albumids)
@@ -373,7 +398,11 @@ class ManageSystem extends ModelBase
             }
         }
         
-        $sql .= " ORDER BY `status` ASC, `ordernum` ASC, `albumid` ASC LIMIT {$offset}, {$perPage}";
+        if ($tablename == 'focus') {
+            $sql .= " ORDER BY `status` ASC, `ordernum` ASC, `id` ASC LIMIT {$offset}, {$perPage}";
+        } else {
+            $sql .= " ORDER BY `status` ASC, `ordernum` ASC, `albumid` ASC LIMIT {$offset}, {$perPage}";
+        }
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);

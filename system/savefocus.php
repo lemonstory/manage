@@ -5,11 +5,11 @@ class savefocus extends controller
 {
     public function action()
     {
-        var_dump($_FILES['focuspic']);
         $focusid = $this->getRequest("focusid");
+        $linktype = $this->getRequest("linktype");
         $linkurl = $this->getRequest("linkurl");
         $ordernum = $this->getRequest("ordernum");
-        if (empty($_FILES['focuspic']) || empty($linkurl) || empty($ordernum)) {
+        if (empty($_FILES['focuspic']) || empty($linktype) || empty($linkurl)) {
             $this->showErrorJson(ErrorConf::paramError());
         }
         
@@ -20,7 +20,7 @@ class savefocus extends controller
             $picid = $manageobj->getMaxPicId();
             $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $picid);
             if (!empty($path)) {
-                $manageobj->addFocusDb($picid, $linkurl);
+                $manageobj->addFocusDb($picid, $linktype, $linkurl, $ordernum);
             }
         } else {
             // edit
@@ -36,14 +36,20 @@ class savefocus extends controller
             if (!empty($linkurl)) {
                 $data['linkurl'] = $linkurl;
             }
+            if (!empty($linktype)) {
+                $data['linktype'] = $linktype;
+            }
             if (!empty($ordernum)) {
                 $data['ordernum'] = $ordernum;
             }
-            $data['status'] = 0;
+            
+            $configvarobj = new ConfigVar();
+            $data['status'] = $configvarobj->RECOMMEND_STATUS_OFFLINE;
             $manageobj->updateFocusInfo($focusid, $data);
         }
         
-        $this->showSuccJson();
+        //$this->showSuccJson();
+        $this->redirect("/system/focuslist.php");
     }
 }
 new savefocus();
