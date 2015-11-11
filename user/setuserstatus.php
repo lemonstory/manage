@@ -13,7 +13,6 @@ class setuserstatus extends controller
         $searchCondition = $this->getRequest('searchCondition', '');
         $searchContent = $this->getRequest('searchContent', '');
         
-        $url = "/user/getuserlist.php?p={$currentPage}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $configvarobj = new ConfigVar();
         if (empty($uid) || !in_array($status, $configvarobj->OPTION_STATUS_LIST)) {
             $this->showErrorJson(ErrorConf::paramError());
@@ -28,7 +27,7 @@ class setuserstatus extends controller
         $data = array('uid' => $userInfo['uid']);
         
         if ($userInfo['status'] == $status) {
-            $this->redirect($url);
+            $this->showErrorJson(array("code" => "10100", "desc" => "状态未发生变化"));
         }
         
         $setData = array('status' => $status);
