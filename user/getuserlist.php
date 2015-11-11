@@ -58,10 +58,14 @@ class getuserlist extends controller
             }
         }
         
+        $configvarobj = new ConfigVar();
+        $statusnamelist = $configvarobj->OPTION_STATUS_NAME;
+        
         $aliOssObj = new AliOss();
         $dealUserList = array();
         foreach ($userList as $value) {
-            $value['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 100);
+            $value['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 80);
+            $value['statusname'] = $statusnamelist[$value['status']];
             //$value['phone'] = substr($ssoList[$value['uid']]['phonenumber'], 2);
             $dealUserList[] = $value;
         }

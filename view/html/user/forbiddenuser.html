@@ -5,27 +5,34 @@
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">封号用户</div>
+                <div class="muted pull-left"><a href="#" onclick="history.back(-1);return false;">返回</a></div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/user/forbiddenuser.php">
+                    <form class="form-horizontal">
                         <fieldset>
                             <legend>封号用户</legend>
                             <div class="control-group">
-                                <label class="control-label">用户信息</label>
-                                <div class="controls">
-                                    {$userinfo.nickname}<br /><img alt="" src="{$userinfo.avatar}" />
-                                </div>
+                                <label class="control-label">用户昵称</label>
+                                <div class="controls"><span class="input-xlarge uneditable-input">{$userinfo.nickname}</span></div>
+                                <p class="help-block"></p>
                             </div>
+                            
                             <div class="control-group">
-                                <label class="control-label">原因</label>
+                                <label class="control-label">用户头像</label>
+                                <div class="controls"><img alt="" src="{$userinfo.avatar}" /></div>
+                                <p class="help-block"></p>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">封号原因</label>
                                 <div class="controls">
                                     {foreach from=$reasons key=reasonid item=reason}
                                     <label class="radio-inline">
-                                      <input type="radio" name="reason" id="inlineRadio1" value="{$reasonid}"> {$reason}
+                                      <input type="radio" name="reason" value="{$reasonid}"> {$reason}
                                     </label>
                                     {/foreach}
+                                    <p class="help-block"></p>
                                 </div>
                             </div>
                             
@@ -33,11 +40,13 @@
                                 <label class="control-label">其他原因</label>
                                 <div class="controls">
                                     <input type="text" class="span6" id="admininput" name="admininput" value="">
+                                    <p class="help-block"></p>
                                 </div>
                             </div>
                             <input type="hidden" name="forbiddenuid" value="{$userinfo.uid}">
+                            <input type="hidden" id="refer" name="refer" value="{$refer}" />
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">提交</button>
+                                <button type="button" class="btn btn-primary">提交</button>
                             </div>
                         </fieldset>
                     </form>
@@ -51,7 +60,28 @@
  
 {literal}
 <script>
-$(document).ready(function(){
+$(function() {
+	$(".btn-primary").click(function(){
+        $(".modal-body").text("");
+        var forbiddenuid = $("input[name='forbiddenuid']").val();
+        var refer = $("#refer").val();
+        var reason = $("input[name='reason']:checked").val();
+        var admininput = $("input[name='admininput']").val();
+        var url = "/user/forbiddenuser.php";
+        $.post(url, {forbiddenuid:forbiddenuid, reason:reason, admininput:admininput}, function(data){
+            if(data.code == '10000') {
+                $(".modal-body").text("操作成功");
+                $("#myModal").modal({show:true});
+                $("#modal_closebtn").click(function(){
+                    location.href = refer;
+                });
+            } else {
+                $(".modal-body").text(data.desc);
+                $("#myModal").modal({show:true});
+                return false;
+            }
+        }, "json");
+    });
 });
 </script>
 {/literal}

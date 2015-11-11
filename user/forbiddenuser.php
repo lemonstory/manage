@@ -19,12 +19,20 @@ class forbiddenuseraction extends controller
             $this->showSuccJson();
         }
         $userinfo = current($userObj->getUserInfo($forbiddenuid));
-        $userinfo['avatar'] = $ossObj->getAvatarUrl($forbiddenuid, @$userinfo['avatartime'], 100);
+        $userinfo['avatar'] = $ossObj->getAvatarUrl($forbiddenuid, @$userinfo['avatartime'], 80);
         $frozenreasons = $forbiddenObj->FORBIDDENUSER_REASONS;
+        
+        $refer = "";
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $refer = $_SERVER['HTTP_REFERER'];
+        }
         
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('userinfo', $userinfo);
         $smartyObj->assign('reasons', $frozenreasons);
+        $smartyObj->assign('refer', $refer);
+        $smartyObj->assign('useractive', "active");
+        $smartyObj->assign('getuserlistside', "active");
         $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("user/forbiddenuser.html");
     }

@@ -11,7 +11,6 @@
                 <div class="span12">
                     <form class="form-horizontal" method="post" action="/user/getuserlist.php">
                         <fieldset>
-                            <legend>搜索查询</legend>
                             <div class="control-group">
                                 <label class="control-label">条件</label>
                                 <div class="controls">
@@ -20,7 +19,7 @@
                                         <option {if $searchCondition=="uid"}selected{/if} value="uid">用户UID</option>
                                         <!-- <option {if $searchCondition=="nickname"}selected{/if} value="nickname">名称</option> -->
                                     </select>
-                                    <p class="help-block">请选择查询条件</p>
+                                    <p class="help-block"></p>
                                 </div>
                             </div>
                             
@@ -28,7 +27,7 @@
                                 <label class="control-label">内容</label>
                                 <div class="controls">
                                     <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
-                                    <p class="help-block">输入查询内容</p>
+                                    <p class="help-block"></p>
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -71,29 +70,18 @@
                                 <td>{$value.nickname}</td>
                                 <td><img src="{$value.avatar}" width="80" height="80" /></td>
                                 <td>{$value.phonenumber}</td>
-                                <td id="status_{$value.uid}">
-                                    {if $value.status eq '-3'}已删除
-                                    {elseif $value.status eq '-2'}已封号
-                                    {elseif $value.status eq '-1'}已冻结
-                                    {elseif $value.status eq 1}正常
-                                    {/if}
-                                </td>
+                                <td id="status_{$value.uid}">{$value.statusname}</td>
                                 <td>{$value.addtime}</td>
                                 <td id="option_{$value.uid}">
                                     <a href="/user/edituser.php?uid={$value.uid}">编辑</a>&nbsp;
                                     {if $value.status eq 1}
-                                    <!-- <a href="/user/frozenuser.php?frozenuid={$value.uid}">冻结</a>
-                                    &nbsp;-->
                                     <a href="/user/forbiddenuser.php?forbiddenuid={$value.uid}">封号</a>
                                     {/if}
-						            {if $value.status eq '-1'}
-						            <!-- <a href="javascript:void(0);" id="{$value.uid}" class="unfrozenbtn" href="/user/setuserstatus.php?uid={$value.uid}&status=1&p={$p}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}">解冻</a> -->
-						            {/if}
-						            {if $value.status eq '-2'}
+						            {if $value.status eq '3'}
 						            <a href="javascript:void(0);" id="{$value.uid}" class="unforbiddenbtn">解封</a>
 						            {/if}
 						            &nbsp;
-						            <a href="" target="_blank">评论</a>
+						            <a href="/comment/commentlist.php?uid={$value.uid}" target="_blank">评论内容</a>
 						            &nbsp;
 						            <a href="/listen/getlistenlist.php?searchCondition=uid&searchContent={$value.uid}" target="_blank">收听历史</a>
                                 </td>
@@ -123,8 +111,9 @@ $(function() {
                 if(data.code == "10000") {
                 	$(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
-                    $("#status_"+uid).text("正常");
-                    $("#option_"+uid).html("<a href='/user/forbiddenuser.php?forbiddenuid="+uid+"'>封号</a>");
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
                 } else {
                     $(".modal-body").text(data.desc);
                     $("#myModal").modal({show:true});
