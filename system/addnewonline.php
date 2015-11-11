@@ -40,8 +40,8 @@ class addnewonline extends controller
         $smartyObj->assign('agetype', $agetype);
         $smartyObj->assign("agetypenamelist", $agetypenamelist);
         $smartyObj->assign('refer', $refer);
-        $smartyObj->assign('newonlinelist', $newonlinelist);
         $smartyObj->assign('indexactive', "active");
+        $smartyObj->assign('newonlineside', "active");
         $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("system/addnewonline.html"); 
     }
