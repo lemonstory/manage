@@ -5,32 +5,37 @@
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left"><a href="#" onclick="history.back(-1);return false;">返回专辑列表</a></div>
+                <div class="muted pull-left"><a href="#" onclick="history.back(-1);return false;">返回</a></div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
                     <form class="form-horizontal" >
                         <fieldset>
-                            <legend>加入最新上架</legend>
+                            <legend>推荐最新上架</legend>
                             <div class="control-group">
                                 <label class="control-label">专辑名称</label>
                                 <div class="controls">{$albuminfo.title}</div>
                             </div>
+                            
                             <div class="control-group">
                                 <label class="control-label">专辑封面</label>
                                 <div class="controls"><img src="{$albuminfo.cover}" /></div>
                             </div>
+                            
                             <div class="control-group">
-                                <label class="control-label">适合年龄段</label>
+                                <label class="control-label">【最新上架】适合年龄段</label>
                                 <div class="controls">
                                     <select id="selectError" name="agetype">
                                         {foreach from=$agetypenamelist item=value key=key}
-                                        <option {if $albuminfo.age_type==$key}selected{/if} value="{$key}">{$value}</option>
+                                        <option {if $agetype==$key}selected{/if} value="{$key}">{$value}</option>
                                         {/foreach}
                                     </select>
+                                    <p class="help-block">此处不会更改故事辑的适合年龄，只作为最新上架推荐年龄段</p>
                                 </div>
                             </div>
+                            
                             <input type="hidden" id="albumid" name="albumid" value="{$albuminfo.id}" />
+                            <input type="hidden" id="action" name="action" value="{$action}" />
                             <input type="hidden" id="refer" name="refer" value="{$refer}" />
                             <div class="form-actions">
                                 <button type="button" class="btn btn-primary">确定</button>
@@ -51,11 +56,12 @@
 $(function() {
 	$(".btn-primary").click(function(){
         $(".modal-body").text("");
+        var action = $("#action").val();
         var albumid = $("#albumid").val();
         var refer = $("#refer").val();
         var agetype = $("select[name='agetype']").val();
         var url = "/system/savenewonline.php";
-        $.post(url, {albumid:albumid, agetype:agetype}, function(data){
+        $.post(url, {action:action, albumid:albumid, agetype:agetype}, function(data){
             if(data.code == '10000') {
             	$(".modal-body").text("操作成功");
                 $("#myModal").modal({show:true});

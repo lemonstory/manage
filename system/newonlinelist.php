@@ -19,7 +19,7 @@ class newonlinelist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/system/newonlinelist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/newonlinelist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}&selectContent={$selectContent}";
         $totalCount = 0;
         
     	$newonlinelist = array();

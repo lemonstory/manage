@@ -353,6 +353,22 @@ class ManageSystem extends ModelBase
 	}
 	
 	
+	public function getRecommendInfoByFilter($dbinstance, $tablename, $where)
+	{
+	    $db = DbConnecter::connectMysql($dbinstance);
+	    $sql = "SELECT * FROM `{$tablename}`";
+	    if (!empty($where)) {
+	        $sql .= " WHERE {$where}";
+	    }
+	    $st = $db->prepare($sql);
+	    $st->execute();
+	    $info = $st->fetch(PDO::FETCH_ASSOC);
+	    if (empty($info)) {
+	        return array();
+	    }
+	    return $info;
+	}
+	
 	/**
 	 * 后台推荐列表、查询列表
 	 * @param unknown_type $dbinstance

@@ -39,16 +39,17 @@
                                 <div class="controls">
                                     <select id="selectError" name="selectContent">
                                         {foreach from=$agetypenamelist item=value key=key}
-                                        <option {if $selectContent==$key}selected{/if} value="{$key}">{$value}</option>
+                                        <option {if $selectContent==$key}selected{/if} class="select_value" value="{$key}">{$value}</option>
                                         {/foreach}
                                     </select>
                                 </div>
                             </div>
+                            
                             <div class="control-group" id="contentinput" {if $searchCondition=='agetype'}style="display: none;"{/if}>
                                 <label class="control-label">内容</label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
-                                    <p class="help-block">输入查询内容</p>
+                                    <input type="text" class="span6" name="searchContent" value="{$searchContent}">
+                                    <p class="help-block"></p>
                                 </div>
                             </div>
                             
@@ -80,7 +81,7 @@
                                 <th>标题</th>
                                 <th>封面</th>
                                 <th>排序</th>
-                                <th>适合年龄段</th>
+                                <th>推荐年龄段</th>
                                 <th>状态</th>
                                 <th>操作</th>
                             </tr>
@@ -101,13 +102,14 @@
                                     </a>                                 
                                 </td>
                                 <td><input type="text" name="order" class="form-control" op_id="{$value.albumid}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
-                                <td><a href="/system/newonlinelist.php?searchCondition=agetype&searchContent={$value.agetype}">{$value.agetypename}</a></td>
+                                <td><a href="/system/newonlinelist.php?searchCondition=agetype&selectContent={$value.agetype}">{$value.agetypename}</a></td>
                                 <td id="status_{$value.albumid}">
                                     {if $value.status eq '1'}已上线
                                     {elseif $value.status eq '2'}未上线
                                     {/if}
                                 </td>
                                 <td>
+                                    <a href="/system/addnewonline.php?albumid={$value.albumid}&action=edit">编辑</a>&nbsp;
                                     {if $value.status eq 1}
                                     <a href="javascript:void(0);" id="{$value.albumid}" class="offline">下线</a>
                                     {/if}
@@ -224,9 +226,11 @@ $(function() {
     	if(searchcondition == 'agetype') {
     		$("#contentinput").hide();
     		$("#agetypeselect").show();
+    		$("input[name='searchContent']").val("");
     	} else {
     		$("#contentinput").show();
             $("#agetypeselect").hide();
+            $(".select_value").removeAttr("selected");
     	}
     });
 });

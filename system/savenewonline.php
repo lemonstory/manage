@@ -5,6 +5,7 @@ class savenewonline extends controller
 {
     public function action()
     {
+        $action = $this->getRequest('action');
         $albumid = $this->getRequest('albumid');
         $agetype = $this->getRequest('agetype');
         if (empty($albumid)) {
@@ -18,7 +19,12 @@ class savenewonline extends controller
         }
         
         $manageobj = new ManageSystem();
-        $res = $manageobj->addRecommendNewOnlineDb($albumid, $agetype);
+        if (empty($action)) {
+            $res = $manageobj->addRecommendNewOnlineDb($albumid, $agetype);
+        } else {
+            $data = array("agetype" => $agetype);
+            $res = $manageobj->updateRecommendInfoByIds("share_main", "recommend_new_online", $albumid, $data);
+        }
         if ($res == false) {
             $this->showErrorJson($manageobj->getError());
         }

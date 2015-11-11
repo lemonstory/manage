@@ -5,6 +5,7 @@ class savesameage extends controller
 {
     public function action()
     {
+        $action = $this->getRequest('action');
         $albumid = $this->getRequest('albumid');
         $agetype = $this->getRequest('agetype');
         if (empty($albumid)) {
@@ -18,7 +19,14 @@ class savesameage extends controller
         }
         
         $manageobj = new ManageSystem();
-        $res = $manageobj->addRecommendSameAgeDb($albumid, $agetype);
+        if (empty($action)) {
+            // add
+            $res = $manageobj->addRecommendSameAgeDb($albumid, $agetype);
+        } else {
+            // edit
+            $data = array("agetype" => $agetype);
+            $res = $manageobj->updateRecommendInfoByIds("share_main", "recommend_same_age", $albumid, $data);
+        }
         if ($res == false) {
             $this->showErrorJson($manageobj->getError());
         }

@@ -10,6 +10,7 @@ class sameagelist extends controller
         $status = $this->getRequest('status', 0);
         $searchCondition = $this->getRequest('searchCondition', 'babyagetype');
         $searchContent = $this->getRequest('searchContent', '');
+        $selectContent = $this->getRequest('selectContent', 0);
         if (empty($currentPage)) {
             $currentPage = 0;
         } 
@@ -18,16 +19,22 @@ class sameagelist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/system/sameagelist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/sameagelist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}&selectContent={$selectContent}";
         $sameagelist = array();
         $totalCount = 0;
         
-    	if (!empty($searchContent)) {
-    	    $column = $searchCondition;
+        if (!empty($searchContent) && empty($selectContent)) {
+            $column = $searchCondition;
             $columnValue = $searchContent;
+        } elseif (!empty($selectContent) && empty($searchContent)) {
+            $column = $searchCondition;
+            $columnValue = $selectContent;
         } else {
             $column = $columnValue = '';
         }
+        $configvarobj = new ConfigVar();
+        $agetypenamelist = $configvarobj->AGE_TYPE_NAME_LIST;
+        
         $managelistenobj = new ManageListen();
         $resultList = $managelistenobj->getSameAgeListByColumnSearch($column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
@@ -53,6 +60,7 @@ class sameagelist extends controller
                     $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100);
                 }
                 $value['albuminfo'] = $albuminfo;
+                $value['agetypename'] = $agetypenamelist[$value['agetype']];
                 $sameagelist[] = $value;
             }
             $totalCount = $managelistenobj->getSameAgeCountByColumnSearch($column, $columnValue, $status);
@@ -67,8 +75,10 @@ class sameagelist extends controller
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('searchCondition', $searchCondition);
         $smartyObj->assign('searchContent', $searchContent);
+        $smartyObj->assign('selectContent', $selectContent);
         $smartyObj->assign('status', $status);
         $smartyObj->assign('pageBanner', $pageBanner);
+        $smartyObj->assign("agetypenamelist", $agetypenamelist);
         $smartyObj->assign('sameagelist', $sameagelist);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('sameageside', "active");
