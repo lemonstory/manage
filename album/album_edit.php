@@ -60,7 +60,15 @@ class album_edit extends controller
                 if (!$ext) {
                     return $this->showErrorJson(ErrorConf::albumCoverExtError());
                 }
-                $res = $uploadobj->uploadAlbumImage($_FILES['cover']['tmp_name'], $ext, $albumid);
+                $savedir = $uploadobj->getAlbumImageTmpDir();
+                $full_filename = $savedir.date("Y_m_d_1_{$albumid}").'.'.$ext;
+                if (file_exists($full_filename)) {
+                    @unlink($full_filename);
+                }
+
+                move_uploaded_file($_FILES['cover']['tmp_name'], $full_filename);
+
+                $res = $uploadobj->uploadAlbumImage($full_filename, $ext, $albumid);
                 if (isset($res['path']) && $res['path']) {
                     $album->update(array('cover' => $res['path']), "`id`={$albumid}");
                 }
