@@ -54,7 +54,7 @@ class index extends controller
             $storyList = $manageStoryObj->getStoryList($where, $currentPage + 1, $perPage);
             foreach ($storyList as $k => $v) {
                 if ($v['cover']) {
-                    $storyList[$k]['cover'] = $aliossobj->getImageUrlNg($v['cover'], 200);
+                    $storyList[$k]['cover'] = $aliossobj->getImageUrlNg($v['cover'], 200, $v['cover_time']);
                 } else {
                     $storyList[$k]['cover'] = $v['s_cover'];
                 }

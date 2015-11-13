@@ -59,7 +59,7 @@ class getdownloadlist extends controller
                 
                 $albuminfo = $albumlist[$albumid];
                 if (!empty($albuminfo['cover'])) {
-                    $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100);
+                    $albuminfo['cover'] = $aliossobj->getImageUrlNg($albuminfo['cover'], 100, $albuminfo['cover_time']);
                 }
                 $value['albuminfo'] = $albuminfo;
                 

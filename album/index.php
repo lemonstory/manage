@@ -47,7 +47,7 @@ class index extends controller
             $aliossobj = new AliOss();
             foreach ($albumList as $k => $v) {
                 if ($v['cover']) {
-                    $albumList[$k]['cover'] = $aliossobj->getImageUrlNg($v['cover'], 200);
+                    $albumList[$k]['cover'] = $aliossobj->getImageUrlNg($v['cover'], 200, $v['cover_time']);
                 } else {
                     $albumList[$k]['cover'] = $v['s_cover'];
                 }
