@@ -24,14 +24,14 @@ class ManageSystem extends ModelBase
         return $list;
 	}
 	
-	public function getMaxPicId() {
+	/* public function getMaxPicId() {
 	    $db = DbConnecter::connectMysql("share_manage");
 	    $sql = "select max(picid) from `focus` ";
 	    $st = $db->prepare($sql);
 	    $st->execute();
 	    $picid = $st->fetch(PDO::FETCH_COLUMN) + 1;
 	    return $picid;
-	}
+	} */
 	
 	
 	/**
@@ -155,8 +155,10 @@ class ManageSystem extends ModelBase
 	        return false;
 	    }
 	    
-	    $nowtime = time();
-	    $setstr = "`covertime` = '{$nowtime}',";
+	    $setstr = "";
+	    if (!empty($data['covertime'])) {
+	        $setstr .= "`covertime` = '{$data['covertime']}',";
+	    }
 	    if (!empty($data['picid'])) {
 	        $setstr .= "`picid` = '{$data['picid']}',";
 	    }

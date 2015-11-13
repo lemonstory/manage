@@ -17,20 +17,18 @@ class savefocus extends controller
         $uploadobj = new Upload();
         if (empty($focusid)) {
         	// add
-            $picid = $manageobj->getMaxPicId();
-            $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $picid);
+            $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $focusid);
             if (!empty($path)) {
-                $manageobj->addFocusDb($picid, $linktype, $linkurl, $ordernum);
+                $manageobj->addFocusDb($linktype, $linkurl, $ordernum);
             }
         } else {
             // edit
             $data = array();
             if (!empty($_FILES['focuspic'])) {
-                $picid = $manageobj->getMaxPicId();
-                $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $picid);
+                $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $focusid);
                 if (!empty($path)) {
                     // 更新picid
-                    $data['picid'] = $picid;
+                    $data['covertime'] = time();
                 }
             }
             if (!empty($linkurl)) {
@@ -48,7 +46,6 @@ class savefocus extends controller
             $manageobj->updateFocusInfo($focusid, $data);
         }
         
-        //$this->showSuccJson();
         $this->redirect("/system/focuslist.php");
     }
 }

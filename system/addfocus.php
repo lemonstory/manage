@@ -13,7 +13,7 @@ class addfocus extends controller
         	$focusinfo = $manageobj->getFocusInfo($focusid);
         	if (!empty($focusinfo)) {
         	    $aliossobj = new AliOss;
-        	    $focusinfo['cover'] = $aliossobj->getFocusUrl($focusinfo['id'], $value['covertime'], 1);
+        	    $focusinfo['cover'] = $aliossobj->getFocusUrl($focusinfo['id'], $focusinfo['covertime'], 1);
         	}
         }
         
