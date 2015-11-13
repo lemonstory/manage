@@ -6,6 +6,7 @@ include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_uploadAlbumCover extends DaemonBase
 {
     protected $processnum = 1;
+    protected $isWhile 	  = false;		//启动后运行一次deal还是循环运行
     protected function deal() {
         $this->uploadAlbumCover();
         exit;
