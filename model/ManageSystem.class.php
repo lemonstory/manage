@@ -124,26 +124,25 @@ class ManageSystem extends ModelBase
 	
 	/**
 	 * 后台添加焦点图
-	 * @param S $picid
 	 * @param S $linktype    链接跳转方式：http/album
 	 * @param S $linkurl
 	 * @return boolean
 	 */
-	public function addFocusDb($picid, $linktype, $linkurl, $ordernum)
+	public function addFocusDb($linktype, $linkurl, $ordernum)
 	{
-		if (empty($picid) || empty($linktype) || empty($linkurl) || !in_array($linktype, $this->FOCUS_LINKTYPE_LIST)) {
+		if (empty($linktype) || empty($linkurl) || !in_array($linktype, $this->FOCUS_LINKTYPE_LIST)) {
 			return false;
 		}
 		
 		$status = $this->RECOMMEND_STATUS_OFFLINE;
 		$addtime = date("Y-m-d H:i:s");
 	    if (empty($ordernum)) {
-		    $ordernum = $picid + 100;
+		    $ordernum = 100;
 	    }
 		$db = DbConnecter::connectMysql('share_manage');
-        $sql = "INSERT INTO `focus` (`picid`, `linktype`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `focus` (`covertime`, `linktype`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
-        $result = $st->execute(array($picid, $linktype, $linkurl, $ordernum, $status, $addtime));
+        $result = $st->execute(array(time(), $linktype, $linkurl, $ordernum, $status, $addtime));
         if (empty($result)) {
             return false;
         }
@@ -156,7 +155,8 @@ class ManageSystem extends ModelBase
 	        return false;
 	    }
 	    
-	    $setstr = "";
+	    $nowtime = time();
+	    $setstr = "`covertime` = '{$nowtime}',";
 	    if (!empty($data['picid'])) {
 	        $setstr .= "`picid` = '{$data['picid']}',";
 	    }

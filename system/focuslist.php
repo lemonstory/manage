@@ -32,7 +32,7 @@ class focuslist extends controller
         if (!empty($resultList)) {
             $aliossobj = new AliOss();
             foreach ($resultList as $value) {
-                $value['cover'] = $aliossobj->getFocusUrl($value['picid'], 1);
+                $value['cover'] = $aliossobj->getFocusUrl($value['picid'], $value['covertime'], 1);
                 $focuslist[] = $value;
             }
             
