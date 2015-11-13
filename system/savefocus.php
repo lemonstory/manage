@@ -17,7 +17,7 @@ class savefocus extends controller
         $uploadobj = new Upload();
         if (empty($focusid)) {
         	// add
-            $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $focusid);
+            $path = $uploadobj->uploadFocusImageByPost($_FILES['focuspic'], $focusid);
             if (!empty($path)) {
                 $manageobj->addFocusDb($linktype, $linkurl, $ordernum);
             }
@@ -25,7 +25,7 @@ class savefocus extends controller
             // edit
             $data = array();
             if (!empty($_FILES['focuspic'])) {
-                $path = $uploadobj->uploadFocusImage($_FILES['focuspic'], $focusid);
+                $path = $uploadobj->uploadFocusImageByPost($_FILES['focuspic'], $focusid);
                 if (!empty($path)) {
                     // 更新picid
                     $data['covertime'] = time();

@@ -27,7 +27,7 @@ class edituser extends controller
                 }
                 if(!empty($_FILES['avatarfile']['size'])) {
                     $uploadobj = new Upload();
-                    $uploadobj->uploadAvatarImage($_FILES['avatarfile'], $uid);
+                    $uploadobj->uploadAvatarImageByPost($_FILES['avatarfile'], $uid);
                     $data['avatartime'] = time();
                 }
                 if (!empty($phonenumber)) {
