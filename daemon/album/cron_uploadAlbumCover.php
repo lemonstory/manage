@@ -24,15 +24,15 @@ class cron_uploadAlbumCover extends DaemonBase
     	$perpage = 1000;
     	$limit = ($page - 1) * $perpage;
         // 更新故事封面
-        $album     = new Album();
+        $category  = new Category();
         $aliossobj = new AliOss();
         
-        $album_list = $album->get_list("id > 0", "{$limit}, {$perpage}");
+        $category_list = $category->get_list("id > 0", '', "{$limit}, {$perpage}");
 
-        foreach ($album_list as $k => $v) {
+        foreach ($category_list as $k => $v) {
         	if ($v['cover']) {
         		$from = $v['cover'];
-		        $to = "album/".$v['cover'];
+		        $to = "category/".$v['cover'];
 		        $aliossobj->copyImageOss($from, $to);
         	}
         	
