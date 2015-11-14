@@ -48,29 +48,18 @@ class album_edit extends controller
                     'view_order' => $view_order,
                     'author'     => $author,
                     'from'       => 'system',
+                    'covertime'  => time(),
                     'add_time'   => date('Y-m-d H:i:s')
                 ));
             }
 
-            // 封面的更新
-            if (isset($_FILES['cover']) && $_FILES['cover']['name']) {
-                $uploadobj = new Upload();
-                $aliossobj = new AliOss();
-                $ext = getFileExtByMime($_FILES['cover']['type']);
-                if (!$ext) {
-                    return $this->showErrorJson(ErrorConf::albumCoverExtError());
-                }
-                $savedir = $uploadobj->getAlbumImageTmpDir();
-                $full_filename = $savedir.date("Y_m_d_1_{$albumid}").'.'.$ext;
-                if (file_exists($full_filename)) {
-                    @unlink($full_filename);
-                }
-
-                move_uploaded_file($_FILES['cover']['tmp_name'], $full_filename);
-
-                $res = $uploadobj->uploadAlbumImage($full_filename, $ext, $albumid);
-                if (isset($res['path']) && $res['path']) {
-                    $album->update(array('cover' => $res['path']), "`id`={$albumid}");
+            // 封面处理
+            if (!empty($_FILES['cover'])) {
+                $path = $uploadobj->uploadAlbumImageByPost($_FILES['focuspic'], $focusid);
+                if (!empty($path)) {
+                    // 更新covertime
+                    $data['covertime'] = time();
+                    $data['cover'] = $path;
                 }
             }
 
