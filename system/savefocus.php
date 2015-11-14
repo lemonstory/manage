@@ -17,9 +17,9 @@ class savefocus extends controller
         $uploadobj = new Upload();
         if (empty($focusid)) {
         	// add
-            $path = $uploadobj->uploadFocusImageByPost($_FILES['focuspic'], $focusid);
-            if (!empty($path)) {
-                $manageobj->addFocusDb($linktype, $linkurl, $ordernum);
+            $focusid = $manageobj->addFocusDb($linktype, $linkurl, $ordernum);
+            if (!empty($focusid)) {
+                $uploadobj->uploadFocusImageByPost($_FILES['focuspic'], $focusid);
             }
         } else {
             // edit

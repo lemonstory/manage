@@ -146,7 +146,7 @@ class ManageSystem extends ModelBase
         if (empty($result)) {
             return false;
         }
-        return true;
+        return $db->lastInsertId();
 	}
 	
 	public function updateFocusInfo($focusid, $data)
