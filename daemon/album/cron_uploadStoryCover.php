@@ -19,30 +19,34 @@ class cron_uploadStoryCover extends DaemonBase
     	$page = 1;
     	$perpage = 1000;
         // 更新故事封面
-        $story     = new Story();
-        $aliossobj = new AliOss();
+        $db = DbConnecter::connectMysql('share_story');
+        $story      = new Story();
+        $aliossobj  = new AliOss();
+        $alioss_sdk = new alioss_sdk();
 
-        while (true) {
-        	$limit = ($page - 1) * $perpage;
+    	$sql = "SELECT id,`cover` as count FROM `story` WHERE `id` >=74962 and `cover` !='' GROUP BY `cover` ";
+        $st = $db->query( $sql );
+        $st->setFetchMode(PDO::FETCH_ASSOC);
+        $story_list = $st->fetchAll();
 
-        	$story_list = $story->get_list("id > 0", "{$limit}, {$perpage}");
-        	if (!$story_list) {
-        		break;
+        $obj = new alioss_sdk();
+        $bucket = $alioss_sdk->OSS_BUCKET_IMAGE;
+
+        foreach ($story_list as $k => $v) {
+        	if ($v['cover']) {
+        		$from = $v['cover'];
+		        $to = "story/".$v['cover'];
+
+                $response = $alioss_sdk->copy_object($bucket, $from, $bucket, $to);
+
+                if ($response->status==200){
+                    $this->writeLog("{$v['id']} 复制成功");
+                } else {
+                    $this->writeLog("{$v['id']} 复制失败");
+                }
         	}
-
-	        foreach ($story_list as $k => $v) {
-	        	if ($v['cover']) {
-	        		$from = $v['cover'];
-			        $to = "story/".$v['cover'];
-			        $aliossobj->copyImageOss($from, $to);
-	        	}
-	        }
-
-	        echo "{$limit}, {$perpage}\n";
-        	$page++;
         }
-        
-
+    
         return true;
     }
 
@@ -53,7 +57,7 @@ class cron_uploadStoryCover extends DaemonBase
         if (!$manageCollectionCronLog) {
             $manageCollectionCronLog = new ManageCollectionCronLog();
         }
-        $manageCollectionCronLog->insert(array('type' => 'upload_oss', 'content' => $content));
+        $manageCollectionCronLog->insert(array('type' => 'copy_story_cover', 'content' => $content));
         
     }
 }
