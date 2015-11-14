@@ -26,7 +26,7 @@ class cron_uploadOss extends DaemonBase
                 if (isset($image_cache[$v['s_cover']])) {
                     $this->writeLog("分类封面(重复) {$v['id']} => cover 更新成功");
                 } else {
-                    $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
+                    $r = $this->middle_upload($v['s_cover'], $v['id'], 4);
                     if (is_string($r)) {
                         $category->update(array('cover' => $r), "`s_cover`='{$v['s_cover']}'");
                         $image_cache[$v['s_cover']] = $r;
@@ -86,7 +86,7 @@ class cron_uploadOss extends DaemonBase
     /**
      * 功能：php完美实现下载远程图片保存到本地
      * 将本地文件上传到oss,删除本地文件
-     * type 1 专辑封面 2 故事封面 3 故事音频
+     * type 1 专辑封面 2 故事封面 3 故事音频 4 故事封面
      */
     private function middle_upload($url = '', $id = '', $type = ''){
         // 默认图片不上传
@@ -140,9 +140,12 @@ class cron_uploadOss extends DaemonBase
             if ($type == 1) {
                 // 专辑
                 $res = $uploadobj->uploadAlbumImage($filename, $ext, $id);
-            } else {
+            } else if ($type == 2) {
                 // 故事
                 $res = $uploadobj->uploadStoryImage($filename, $ext, $id);
+            } else if ($type == 3) {
+                // 分类
+                $res = $uploadobj->uploadCategoryImage($filename, $ext, $id);
             }
             if (isset($res['path'])) {
                 return $res['path'];
