@@ -157,7 +157,7 @@ $(function() {
     $(".delete").click(function(){
         $(".modal-body").text("");
         if(confirm("确定要删除吗？")) {
-            var focusid = $(this).attr("focusid");
+            var focusid = $(this).attr("id");
             var delurl = "/system/delfocus.php";
             $.post(delurl, {focusid:focusid}, function(data){
                 if(data.code == "10000") {
