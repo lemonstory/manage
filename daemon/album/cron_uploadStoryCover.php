@@ -24,7 +24,7 @@ class cron_uploadStoryCover extends DaemonBase
         $aliossobj  = new AliOss();
         $alioss_sdk = new alioss_sdk();
 
-    	$sql = "SELECT id,`cover` as count FROM `story` WHERE `id` >=74962 and `cover` !='' GROUP BY `cover` ";
+    	$sql = "SELECT id,`cover` FROM `story` WHERE `id` >=74962 and `cover` !='' GROUP BY `cover` ";
         $st = $db->query( $sql );
         $st->setFetchMode(PDO::FETCH_ASSOC);
         $story_list = $st->fetchAll();
