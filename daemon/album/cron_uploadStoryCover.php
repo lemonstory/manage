@@ -29,8 +29,7 @@ class cron_uploadStoryCover extends DaemonBase
         $st->setFetchMode(PDO::FETCH_ASSOC);
         $story_list = $st->fetchAll();
 
-        $obj = new alioss_sdk();
-        $bucket = $alioss_sdk->OSS_BUCKET_IMAGE;
+        $bucket = $aliossobj->OSS_BUCKET_IMAGE;
 
         foreach ($story_list as $k => $v) {
         	if ($v['cover']) {
