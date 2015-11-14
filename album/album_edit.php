@@ -54,15 +54,15 @@ class album_edit extends controller
             }
 
             // 封面处理
-            if (!empty($_FILES['cover'])) {
-                $uploadobj = new Upload();
-                $path = $uploadobj->uploadAlbumImageByPost($_FILES['focuspic'], $focusid);
-                if (!empty($path)) {
-                    // 更新covertime
-                    $data['covertime'] = time();
-                    $data['cover'] = $path;
-                }
-            }
+            // if (!empty($_FILES['cover'])) {
+            //     $uploadobj = new Upload();
+            //     $path = $uploadobj->uploadAlbumImageByPost($_FILES['cover'], $focusid);
+            //     if (!empty($path)) {
+            //         // 更新covertime
+            //         $data['covertime'] = time();
+            //         $data['cover'] = $path;
+            //     }
+            // }
 
             return $this->showSuccJson('操作成功');
         }
