@@ -19,8 +19,8 @@ class addsameage extends controller
         $configvarobj = new ConfigVar();
         $agetypenamelist = $configvarobj->AGE_TYPE_NAME_LIST;
         
-        $aliobj = new AliOss();
-        $albuminfo['cover'] = $aliobj->getImageUrlNg($albuminfo['cover'], 100, $albuminfo['cover_time']);
+        $aliossobj = new AliOss();
+        $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 100, $albuminfo['cover_time']);
         if (empty($action)) {
             $agetype = $albuminfo['age_type'];
         } else {
