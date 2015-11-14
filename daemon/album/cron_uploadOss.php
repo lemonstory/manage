@@ -137,7 +137,13 @@ class cron_uploadOss extends DaemonBase
             $res = $uploadobj->uploadStoryMedia($filename, $ext, $id);
             return $res;
         } else {
-            $res = $uploadobj->uploadAlbumImage($filename, $ext, $id);
+            if ($type == 1) {
+                // 专辑
+                $res = $uploadobj->uploadAlbumImage($filename, $ext, $id);
+            } else {
+                // 故事
+                $res = $uploadobj->uploadStoryImage($filename, $ext, $id);
+            }
             if (isset($res['path'])) {
                 return $res['path'];
             }
