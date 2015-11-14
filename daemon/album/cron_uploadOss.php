@@ -143,7 +143,7 @@ class cron_uploadOss extends DaemonBase
             } else if ($type == 2) {
                 // 故事
                 $res = $uploadobj->uploadStoryImage($filename, $ext, $id);
-            } else if ($type == 3) {
+            } else if ($type == 4) {
                 // 分类
                 $res = $uploadobj->uploadCategoryImage($filename, $ext, $id);
             }
