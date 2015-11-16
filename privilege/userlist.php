@@ -20,10 +20,28 @@ class userlist extends controller
         $baseUri = "/privilege/userlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         
         $pObj = new ManagePrivilege();
-        $userlist = $pObj->getUserList();
+        $reslist = $pObj->getUserList();
+        
+        $adminlist = array();
+        if (!empty($adminlist)) {
+            $uids = array();
+            foreach($reslist as $value) {
+                $uids[] = $value['uid'];
+            }
+            
+            $userObj = new User();
+            $userlist = $userObj->getUserInfo($uids);
+            
+            foreach($reslist as $value) {
+                $userinfo = $userlist[$value['uid']];
+                $userinfo['name'] = $value['name'];
+                $adminlist[] = $userinfo;
+            }
+        }
+        
         
         $smartyobj = $this->getSmartyObj();
-        $smartyobj->assign('userlist', $userlist);
+        $smartyobj->assign('adminlist', $adminlist);
         $smartyobj->assign('privilege', "active");
         $smartyobj->assign('userlistside', "active");
         $smartyobj->assign("headerdata", $this->headerCommonData());
