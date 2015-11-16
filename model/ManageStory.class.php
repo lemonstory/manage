@@ -38,7 +38,7 @@ class ManageStory extends ModelBase
         }
         
         $where = "`id`={$storyId}";
-        $sql = "select * from album  where {$where} limit 1";
+        $sql = "select * from story  where {$where} limit 1";
 
         $db = DbConnecter::connectMysql('share_story');
         $st = $db->query( $sql );
