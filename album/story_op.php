@@ -24,17 +24,13 @@ class story_op extends controller
             $story->update(array('status' => 1), "`id`={$op_id}");
         } else if ($op_name == 'add_story_to_album') {
         	$albumid = (int)$this->getRequest('albumid', '');
-        	$manageAlbum = new ManageAlbum();
+        	$ManageAlbum = new ManageAlbum();
         	$albuminfo = $manageAlbum->getAlbumInfo($albumid);
         	if (empty($albuminfo)) {
         		return $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
         	}
-        	// 
-        	unset($storyinfo['id']);
-        	$storyinfo['album_id'] = $albuminfo['id'];
-        	$storyinfo['add_time'] = date('Y-m-d H:i:s');
-        	$storyinfo['update_time'] = date('Y-m-d H:i:s');
-        	// $story->insert($storyinfo);
+            $story = new Story();
+            $story->update(array('album_id' => $albumid), "`id`={$op_id}");
         }
         return $this->showSuccJson('操作成功');
 
