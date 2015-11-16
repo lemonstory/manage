@@ -1,12 +1,51 @@
 {include file="include/header.html"}
 <div class="span9" id="content">
     <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">添加管理员</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/privilege/useradd.php">
+                        <fieldset>
+                            <div class="control-group">
+                                <label class="control-label">用户UID</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="uid" value="">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">真实姓名</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="name" value="">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">添加</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+
+
+    <div class="row-fluid">
         <div>
             <!-- block -->
             <div class="block">
                 <div class="navbar navbar-inner block-header">
                     <div class="muted pull-left">管理员列表</div>
-                    <div class="pull-right"><span class="badge badge-info"><a href="/privilege/useradd.php">添加管理员</a></span></div>
+                    <div class="pull-right"><span class="badge badge-info"></span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
