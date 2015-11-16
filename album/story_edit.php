@@ -32,25 +32,16 @@ class story_edit extends controller
 
             $story->update($newstoryinfo, "`id`={$storyid}");
             
-            // 封面的更新
-            if (isset($_FILES['cover']) && $_FILES['cover']['name']) {
+            // 封面处理
+            if (!empty($_FILES['cover'])) {
                 $uploadobj = new Upload();
-                $aliossobj = new AliOss();
-                $ext = getFileExtByMime($_FILES['cover']['type']);
-                if (!$ext) {
-                    return $this->showErrorJson(ErrorConf::storyCoverExtError());
-                }
-                $savedir = $uploadobj->getAlbumImageTmpDir();
-                $full_filename = $savedir.date("Y_m_d_2_{$storyid}").'.'.$ext;
-                if (file_exists($full_filename)) {
-                    @unlink($full_filename);
-                }
-
-                move_uploaded_file($_FILES['cover']['tmp_name'], $full_filename);
-
-                $res = $uploadobj->uploadAlbumImage($full_filename, $ext, $storyid);
-                if (isset($res['path']) && $res['path']) {
-                    $story->update(array('cover' => $res['path']), "`id`={$storyid}");
+                $path = $uploadobj->uploadStoryImageByPost($_FILES['cover'], $storyid);
+                if (!empty($path)) {
+                    // 更新cover_time
+                    $story->update(array(
+                        'cover_time' => time(),
+                        'cover'      => str_replace("album/", '', $path),
+                    ), "`id`={$storyid}");
                 }
             }
 
