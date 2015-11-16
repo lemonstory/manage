@@ -95,7 +95,12 @@
                                 </td>
                                 <td>
                                     {if $value.status eq 1}
+                                    {if $value.album_id}
+                                    <a href="javascript:void(0);" id="op_story_removealbum_{$value.id}">移出此专辑</a>
+                                    {else}
                                     <a href="javascript:void(0);" id="op_story_addalbum_{$value.id}">添加到专辑</a>
+                                    {/if}
+                                    
                                     &nbsp;|&nbsp;
                                     <a href="javascript:void(0);" id="op_story_edit_{$value.id}">编辑</a>
                                     &nbsp;|&nbsp;<a href="javascript:void(0);" id="op_story_delete_{$value.id}">删除</a>
@@ -149,6 +154,10 @@ $(function() {
             }
         } else if (data.op_name == 'recover') {
             if (!confirm('确定要执行恢复操作吗？')) {
+                return false;
+            }
+        } else if (data.op_name == 'removealbum') {
+            if (!confirm('确定要执行移除专辑操作吗？')) {
                 return false;
             }
         }

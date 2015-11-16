@@ -31,6 +31,9 @@ class story_op extends controller
         	}
             $story = new Story();
             $story->update(array('album_id' => $albumid), "`id`={$op_id}");
+        } else if ($op_name == 'removealbum') {
+            $story = new Story();
+            $story->update(array('album_id' => 0), "`id`={$op_id}");
         }
         return $this->showSuccJson('操作成功');
 
