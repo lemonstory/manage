@@ -61,7 +61,7 @@ class album_edit extends controller
                     // 更新cover_time
                     $album->update(array(
                         'cover_time' => time(),
-                        'cover'      => $path,
+                        'cover'      => str_replace("album/", '', $path),
                     ), "`id`={$albumid}");
                 }
             }
