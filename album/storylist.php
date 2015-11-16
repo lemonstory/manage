@@ -51,12 +51,20 @@ class index extends controller
         $totalCount = $manageStoryObj->getStoryTotalCount($where);
         if ($totalCount) {
             $aliossobj = new AliOss();
+            $album     = new Album();
             $storyList = $manageStoryObj->getStoryList($where, $currentPage + 1, $perPage);
             foreach ($storyList as $k => $v) {
                 if ($v['cover']) {
                     $storyList[$k]['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_STORY, $v['cover'], 100, $v['cover_time']);
                 } else {
                     $storyList[$k]['cover'] = $v['s_cover'];
+                }
+                // 专辑信息
+                if ($v['album_id']) {
+                    $albuminfo = $album->get_album_info($v['album_id']);
+                    if ($albuminfo) {
+                        $albumList[$k]['albumtitle'] = $albuminfo['title'];
+                    }
                 }
             }
         }
