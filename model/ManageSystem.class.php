@@ -17,7 +17,7 @@ class ManageSystem extends ModelBase
 		}
 		
 		$db = DbConnecter::connectMysql('share_manage');
-        $sql = "SELECT * FROM `focus` WHERE `status` = '{$this->RECOMMEND_STATUS_ONLIINE}' ORDER BY `ordernum` DESC LIMIT $len";
+        $sql = "SELECT * FROM `focus` WHERE `status` = '{$this->RECOMMEND_STATUS_ONLIINE}' ORDER BY `ordernum` LIMIT $len";
         $st = $db->prepare($sql);
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
