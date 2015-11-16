@@ -30,7 +30,7 @@ class album_edit extends controller
         	if (!$intro) {
 				return $this->showErrorJson(ErrorConf::albumIntroNotEmpty());
         	} else {
-                $newalbuminfo['intro'] = $intro;
+                $newalbuminfo['intro'] = addslashes($intro);
             }
             if (strlen($view_order) == 0) {
                 return $this->showErrorJson(ErrorConf::albumViewOrderNotEmpty());

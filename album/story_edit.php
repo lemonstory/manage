@@ -27,7 +27,7 @@ class story_edit extends controller
         	if (!$intro) {
 				return $this->showErrorJson(ErrorConf::storyIntroNotEmpty());
         	} else {
-                $newstoryinfo['intro'] = $intro;
+                $newstoryinfo['intro'] = addslashes($intro);
             }
 
             $story->update($newstoryinfo, "`id`={$storyid}");
