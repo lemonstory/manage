@@ -23,7 +23,7 @@ class userlist extends controller
         $reslist = $pObj->getUserList();
         
         $adminlist = array();
-        if (!empty($adminlist)) {
+        if (!empty($reslist)) {
             $uids = array();
             foreach($reslist as $value) {
                 $uids[] = $value['uid'];

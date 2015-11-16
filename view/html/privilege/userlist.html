@@ -22,10 +22,10 @@
                         <tbody>
                             {foreach from=$adminlist item=value}
 						    <tr>
-						        <td>{$ui.uid}</td>
-						        <td>{$ui.nickname}</td>
-						        <td>{$ui.name}</td>
-						        <td>{$ui.addtime}</td>
+						        <td>{$value.uid}</td>
+						        <td>{$value.nickname}</td>
+						        <td>{$value.name}</td>
+						        <td>{$value.addtime}</td>
 						        <td>
 						            <a href="/privilege/usergroup.php?uid={$value.uid}">所属组</a>
 						            <a class="delete" id="{$value.uid}" href="javascript:void(0);">删除</a>
@@ -49,11 +49,11 @@ $(function() {
     var opturl = "/privilege/userdelete.php";
     $(".delete").click(function(){
         $(".modal-body").text("");
-        if(confirm("确定解封吗？")) {
+        if(confirm("确定删除吗？")) {
             var uid = $(this).attr("id");
             $.post(opturl, {uid:uid}, function(data){
                 if(data.code == "10000") {
-                    $(".modal-body").text("操作成功");
+                    $(".modal-body").text("删除成功");
                     $("#myModal").modal({show:true});
                     $("#modal_closebtn").click(function(){
                         location.href=location.href;
