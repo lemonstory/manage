@@ -65,22 +65,47 @@
 <script>
 {literal}
 $(function() {
+    function result(json)
+    {
+        if (json && json.code == 10000) {
+            alert('操作成功');
+            window.location.href = '/album/index.php';
+        } else {
+            var name = json.desc.split('-')[0];
+            var msg  = json.desc.split('-')[1];
+            var errObj = $("[name='"+name+"']");
+            errObj.closest(".control-group").addClass('error');
+            errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
+        }
+    }
+    var options = { 
+       // target:        '#output',   // target element(s) to be updated with server response 
+        // beforeSubmit:  result,  // pre-submit callback 
+        success:       result,  // post-submit callback
+        error:       result,  // post-submit callback
+        resetForm: false, 
+        dataType:  'json',
+ 
+        // other available options: 
+        url:       '/album/story_edit.php',         // override for form's 'action' attribute 
+        type:      'post'        // 'get' or 'post', override for form's 'method' attribute 
+        // dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+        // clearForm: true        // clear all form fields after successful submit 
+        // resetForm: true        // reset the form after successful submit 
+ 
+        // $.ajax options can be used here too, for example: 
+        //timeout:   3000 
+    }; 
+ 
     $("#submit_form").on('click', function(e){
         $(".help-inline").remove();
         e.preventDefault();
         $(".control-group").removeClass("error");
-        $.post('/album/story_edit.php', $(this).closest("form").serialize(), function(json){
-            console.log(json);
-            if (json && json.code == 10000) {
-                alert('操作成功');
-            } else {
-                var name = json.desc.split('-')[0];
-                var msg  = json.desc.split('-')[1];
-                var errObj = $("[name='"+name+"']");
-                errObj.closest(".control-group").addClass('error');
-                errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
-            }
-        },'json');
+        $("form").ajaxSubmit(options); 
+ 
+        // !!! Important !!! 
+        // always return false to prevent standard browser submit and page navigation 
+        return false; 
     })
 });
 {/literal}
