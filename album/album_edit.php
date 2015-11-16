@@ -48,7 +48,7 @@ class album_edit extends controller
                     'view_order' => $view_order,
                     'author'     => $author,
                     'from'       => 'system',
-                    'covertime'  => time(),
+                    'cover_time' => time(),
                     'add_time'   => date('Y-m-d H:i:s')
                 ));
             }
@@ -58,10 +58,10 @@ class album_edit extends controller
                 $uploadobj = new Upload();
                 $path = $uploadobj->uploadAlbumImageByPost($_FILES['cover'], $albumid);
                 if (!empty($path)) {
-                    // 更新covertime
+                    // 更新cover_time
                     $album->update(array(
-                        'covertime' => time(),
-                        'cover'     => $path,
+                        'cover_time' => time(),
+                        'cover'      => $path,
                     ), "`id`={$albumid}");
                 }
             }
