@@ -69,7 +69,7 @@ $(function() {
     {
         if (json && json.code == 10000) {
             alert('操作成功');
-            window.location.href = '/album/index.php';
+            window.location.href = '/album/storylist.php';
         } else {
             var name = json.desc.split('-')[0];
             var msg  = json.desc.split('-')[1];
