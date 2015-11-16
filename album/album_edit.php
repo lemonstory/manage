@@ -59,7 +59,7 @@ class album_edit extends controller
                 $path = $uploadobj->uploadAlbumImageByPost($_FILES['cover'], $albumid);
                 if (!empty($path)) {
                     // 更新covertime
-                    $album->update(array('covertime' => time(), "`id`={$albumid}");
+                    $album->update(array('covertime' => time()), "`id`={$albumid}");
                 }
             }
 
