@@ -63,7 +63,7 @@ class index extends controller
                 if ($v['album_id']) {
                     $albuminfo = $album->get_album_info($v['album_id']);
                     if ($albuminfo) {
-                        $albumList[$k]['albumtitle'] = $albuminfo['title'];
+                        $storyList[$k]['albumtitle'] = $albuminfo['title'];
                     }
                 }
             }
