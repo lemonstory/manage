@@ -181,7 +181,7 @@ $(function() {
         var form_element = $(this).closest("form").find('.auto_submit');
         $.each(form_element, function(k,v){
             var k = $(v).attr('name');
-            var v = $(v).attr('value');
+            var v = $(v).val();
             params += k + '='+v+'&'
             
         })
