@@ -74,7 +74,7 @@ class cron_xmlyStory extends DaemonBase {
 	                ));
 	                if ($story_id) {
 	                	$update_num ++;
-	                	MnsQueueManager::pushAlbumToSearchQueue($story_id);
+	                	//MnsQueueManager::pushAlbumToSearchQueue($story_id);
                         $this->writeLog("{$story_id} 入库");
                     } else {
                         $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));

@@ -17,12 +17,13 @@ class cron_uploadAudio extends DaemonBase
     protected function uploadAudio() {
         // 更新故事为本地地址
         $story = new Story();
-        $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 100);
+        $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 10);
         foreach ($story_list as $k => $v) {
         	if ($v['id']%2 == 1) {
         		$r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
                 if (is_array($r) && $r) {
                     $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
+                    MnsQueueManager::pushAlbumToSearchQueue($v['id']);
                     $this->writeLog("故事 {$v['id']} => mediapath 更新成功");
                 } else {
                     $this->writeLog("故事 {$v['id']} => mediapath 更新失败");

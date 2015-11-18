@@ -27,9 +27,9 @@ class cron_kdgsStory extends DaemonBase {
 		$limit = ($page - 1) * $perpage;
 		$story = new Story();
 		$story_list = $story->get_list("`id`>2600 and `id` <= 55555", "{$limit}, {$perpage}", '', "ORDER BY id ASC");
-		foreach ($story_list as $k => $v) {
+		/* foreach ($story_list as $k => $v) {
 			MnsQueueManager::pushAlbumToSearchQueue($v['id']);
-		}
+		} */
 		$this->writeLog("push album {$page} {$limit}, {$perpage}");
 		echo "push album {$page} {$limit}, {$perpage}\n";
     }
