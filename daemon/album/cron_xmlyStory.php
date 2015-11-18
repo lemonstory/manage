@@ -30,29 +30,27 @@ class cron_xmlyStory extends DaemonBase {
             $time = time();
             $this->writeLog("采集喜马拉雅故事  {$limit},{$per_page}");
             foreach($album_list as $k => $v) {
+
 	        	$album_id = Http::sub_data($v['link_url'], 'album/');
-	        	$page = 1;
 
 	        	// 获取专辑全部故事
 	        	$story_list = array();
-	        	while (true) {
-	        		$tmp_story_list = $xmly->get_story_list($album_id, $page);
-	        		if (!$tmp_story_list) {
-	        			break;
-	        		} else {
-	        			$story_list = array_merge($story_list, $tmp_story_list);
-	        		}
-	                $page ++;
-	        	}
+
+        		$story_url_list = $xmly->get_story_url_list($album_id);
+        		$story_num = count($story_url_list);
+	        
 	        	// 如果故事的数量和专辑里面的故事数量相等则不再更新
-	        	if (count($story_list) == $v['story_num']) {
+	        	if (count($story_url_list) == $v['story_num']) {
 	        		$this->writeLog("喜马拉雅专辑{$v['id']} 没有更新");
 	        		continue;
 	        	}
 	        	$update_num = 0;
-	        	$album->update(array('story_num' => count($story_list)), "`id`={$v['id']}");
-	        	foreach ($story_list as $k2 => $v2) {
-                	$exists = $story->check_exists("`source_audio_url`='{$v2['source_audio_url']}'");
+	        	foreach ($story_url_list as $k2 => $v2) {
+	        		$v2 = $xmly->get_story_info($v2);
+	        		if (!$v2) {
+	        			continue;
+	        		}
+                	$exists = $story->check_exists("`album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
 	                if ($exists) {
 	                    continue;
 	                }
@@ -81,6 +79,7 @@ class cron_xmlyStory extends DaemonBase {
                     }
                 }
                 $this->writeLog("喜马拉雅专辑 {$v['id']} 新增 {$update_num}");
+                $album->update_story_num($v['id']);
 	        }
             $p++;
         }
@@ -89,6 +88,9 @@ class cron_xmlyStory extends DaemonBase {
 
     protected function writeLog($content = '')
     {
+    	echo $content;
+    	echo "\n";
+    	return true;
         static $manageCollectionCronLog = null;
         if (!$manageCollectionCronLog) {
             $manageCollectionCronLog = new ManageCollectionCronLog();

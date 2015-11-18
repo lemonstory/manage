@@ -44,9 +44,8 @@ class cron_kdgsStory extends DaemonBase {
                     continue;
                 }
                 $update_num = 0;
-                $album->update(array('story_num' => count($story_list)), "`id`={$v['id']}");
                 foreach($story_list as $k2 => $v2) {
-                    $exists = $story->check_exists("`source_audio_url`='{$v2['source_audio_url']}'");
+                    $exists = $story->check_exists("`album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
                     if ($exists) {
                         continue;
                     }
@@ -75,6 +74,7 @@ class cron_kdgsStory extends DaemonBase {
                     }
                 }
                 $this->writeLog("口袋故事专辑 {$v['id']} 新增 {$update_num}");
+                $album->update_story_num($v['id']);
             }
 
             $p++;
