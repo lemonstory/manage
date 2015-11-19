@@ -68,19 +68,26 @@ class cron_uploadOss extends DaemonBase
             // 存已经上传的缓存
             $image_cache = array();
             foreach ($story_list as $k => $v) {
-                if (isset($image_cache[$v['s_cover']])) {
-                    $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
+                if (strstr($v['s_cover'], 'default/sound.jpg')) {
+                    $cover = Http::sub_data($v['s_cover'], '', '?');
+                    $story->update(array('s_cover' => $cover, ''));
+                    $this->writeLog("故事封面 {$v['id']} => cover 默认图片");
                 } else {
-                    $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
-                    if (is_string($r)) {
-                        $r = str_replace("story/", "", $r);
-                        $story->update(array('cover' => $r, 'cover_time' => time()), "`cover` = '' and `s_cover`='{$v['s_cover']}'");
-                        $image_cache[$v['s_cover']] = $r;
-                        $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+                    if (isset($image_cache[$v['s_cover']])) {
+                    $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
                     } else {
-                        $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
+                        $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
+                        if (is_string($r)) {
+                            $r = str_replace("story/", "", $r);
+                            $story->update(array('cover' => $r, 'cover_time' => time()), "`cover` = '' and `s_cover`='{$v['s_cover']}'");
+                            $image_cache[$v['s_cover']] = $r;
+                            $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+                        } else {
+                            $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
+                        }
                     }
                 }
+                
             
             }
         }
