@@ -5,11 +5,13 @@ class groupdel extends controller
 {
     public function action()
     {
-        $id = $this->getRequest('id');
+        $groupid = $this->getRequest('groupid');
+        if (empty($groupid)) {
+            $this->showErrorJson(ErrorConf::paramError());
+        }
         $pObj = new ManagePrivilege();
-        $ret = $pObj->deleteGroup($id);
-        header('Location:/privilege/grouplist.php');
-        exit;
+        $ret = $pObj->deleteGroup($groupid);
+        $this->showSuccJson();
     }
 }
 new groupdel();

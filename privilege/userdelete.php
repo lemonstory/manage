@@ -7,12 +7,12 @@ class userdelete extends controller
     {
         $uid = $this->getRequest('uid');
         if (empty($uid) ){
-            header('Location:/privilege/userlist.php');
+            $this->showErrorJson(ErrorConf::paramError());
         }
+        
         $pObj = new ManagePrivilege();
         $ret = $pObj->deleteUser($uid);
-        header('Location:/privilege/userlist.php');
-        exit;
+        $this->showSuccJson();
     }
 }
 new userdelete();
