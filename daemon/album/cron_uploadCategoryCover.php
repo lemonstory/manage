@@ -50,7 +50,7 @@ class cron_uploadCategoryCover extends DaemonBase
         if (!$manageCollectionCronLog) {
             $manageCollectionCronLog = new ManageCollectionCronLog();
         }
-        $manageCollectionCronLog->insert(array('type' => 'upload_oss', 'content' => $content));
+        $manageCollectionCronLog->insert(array('type' => 'copy_category_cover', 'content' => $content));
         
     }
 }
