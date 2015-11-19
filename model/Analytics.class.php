@@ -3,208 +3,228 @@ class Analytics extends ModelBase
 {
     public $DB_INSTANCE = 'share_analytics';
     
-	//插入 countavg
-	public function putcountavg($timeline, $colname, $pn, $tn)
+	
+	/**
+	 * 记录所有统计类型的平均数
+	 * @param S $timeline    计算的日期，如某天的统计结果"20151101" 或 某小时的统计结果"2015110120"
+	 * @param S $colname     数据类型：如收藏favavg
+	 * @param I $pn          计算的uid人数
+	 * @param I $tn          计算的数据总量
+	 * @return boolean
+	 */
+	public function putCountAvg($timeline, $colname, $pn, $tn)
 	{
 		$avgcount = round($tn/$pn,2);
 		
 		$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-		$sql = "SELECT count(1) as flag from countavg where timeline=?;";
+		$sql = "SELECT count(1) as flag from `countavg` where `timeline` = ?";
 		$st = $db->prepare($sql);
 		$st->execute(array($timeline));
     	$list = $st->fetch(PDO::FETCH_ASSOC);
     	if ($list['flag']<1)
     	{
-    		$sql = "insert into countavg(timeline,$colname) values(?,?)";
+    		$sql = "insert into `countavg` (`timeline`,`{$colname}`) values(?, ?)";
     		$st = $db->prepare($sql);
-    		$flag = $st->execute(array($timeline,$avgcount));
+    		$flag = $st->execute(array($timeline, $avgcount));
     	}else {
-    		$sql = "update countavg set $colname=? where timeline=?";
+    		$sql = "update `countavg` set `{$colname}` = ? where `timeline` = ?";
     		$st = $db->prepare($sql);
-    		$flag = $st->execute(array($avgcount,$timeline));
+    		$flag = $st->execute(array($avgcount, $timeline));
     	}
     	return $flag;
 	}
 	
 	
-	//插入 countfav
-	public function putanalyticsfav($timeline, $personnum, $favnum)
+	/**
+	 * 记录当前该小时的收藏人数、收藏总量
+	 * @param S $timeline     指定日期，天或小时
+	 * @param I $personnum    收藏人数
+	 * @param I $favnum       收藏量
+	 * @return boolean
+	 */
+	public function putAnalyticsFavHour($timeline, $personnum, $favnum)
 	{
-		if($timeline==0 || $timeline=="")
+		if(empty($timeline))
 		{
 			return false;
 		}
-		if($personnum==0 || $favnum==0)
+		if(empty($personnum) || empty($favnum))
 		{
 			return false;
 		}
 		$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-		$sql = "replace into countfav values(?,?,?);";
+		$sql = "replace into `countfav` (`timeline`, `personnum`, `favnum`) values (?, ?, ?)";
 		$st = $db->prepare($sql);
-		$flag = $st->execute(array($timeline,$personnum,$favnum));
-     	$this->putcountavg($timeline,'favavg',$personnum,$favnum);
+		$flag = $st->execute(array($timeline, $personnum, $favnum));
+     	$this->putCountAvg($timeline, 'favavg', $personnum, $favnum);
     	return $flag;
 	}
 	
 	
-	//插入 dayfav
-	public function putanalyticsfavday($timeline, $personnum, $favnum)
+	/**
+	 * 记录当天的收藏人数、收藏总量
+	 * @param S $timeline
+	 * @param I $personnum
+	 * @param I $favnum
+	 * @return boolean
+	 */
+	public function putAnalyticsFavDay($timeline, $personnum, $favnum)
 	{
-		if($timeline==0 || $timeline=="")
+	    if(empty($timeline))
 		{
 			return false;
 		}
-		if($personnum==0 || $favnum==0)
+		if(empty($personnum) || empty($favnum))
 		{
 			return false;
 		}
 		$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-		$sql = "replace into dayfav values(?,?,?);";
+		$sql = "replace into `dayfav` (`timeline`, `personnum`, `totalnum`) values(?, ?, ?)";
 		$st = $db->prepare($sql);
-		$flag = $st->execute(array($timeline,$personnum,$favnum));
+		$flag = $st->execute(array($timeline, $personnum, $favnum));
 		return $flag;
 	}
 	
 	
 	//插入 countlisten
-	public function putanalyticslisten($timeline, $personnum, $listennum)
+	public function putAnalyticsListenHour($timeline, $personnum, $listennum)
 	{
-	    if($timeline==0 || $timeline=="")
-	    {
-	        return false;
-	    }
-	    if($personnum==0 || $listennum==0)
-	    {
-	        return false;
-	    }
+	    if(empty($timeline))
+		{
+			return false;
+		}
+		if(empty($personnum) || empty($listennum))
+		{
+			return false;
+		}
 	    $db = DbConnecter::connectMysql($this->DB_INSTANCE);
-	    $sql = "replace into countlisten values(?,?,?);";
+	    $sql = "replace into `countlisten` (`timeline`, `personnum`, `listennum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
-	    $flag = $st->execute(array($timeline,$personnum,$listennum));
-	    $this->putcountavg($timeline,'listenavg',$personnum,$listennum);
+	    $flag = $st->execute(array($timeline, $personnum, $listennum));
+	    $this->putCountAvg($timeline, 'listenavg', $personnum, $listennum);
 	    return $flag;
 	}
 	
 	
 	//插入 daylisten
-	public function putanalyticslistenday($timeline, $personnum, $listennum)
+	public function putAnalyticsListenDay($timeline, $personnum, $listennum)
 	{
-	    if($timeline==0 || $timeline=="")
-	    {
-	        return false;
-	    }
-	    if($personnum==0 || $listennum==0)
-	    {
-	        return false;
-	    }
+	    if(empty($timeline))
+		{
+			return false;
+		}
+		if(empty($personnum) || empty($listennum))
+		{
+			return false;
+		}
 	    $db = DbConnecter::connectMysql($this->DB_INSTANCE);
-	    $sql = "replace into daylisten values(?,?,?);";
+	    $sql = "replace into `daylisten` (`timeline`, `personnum`, `totalnum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
-	    $flag = $st->execute(array($timeline,$personnum,$listennum));
+	    $flag = $st->execute(array($timeline, $personnum, $listennum));
 	    return $flag;
 	}
 	
 	
 	//插入 countdown
-	public function putanalyticsdown($timeline, $personnum, $downnum)
+	public function putAnalyticsDownHour($timeline, $personnum, $downnum)
 	{
-	    if($timeline==0 || $timeline=="")
-	    {
-	        return false;
-	    }
-	    if($personnum==0 || $downnum==0)
-	    {
-	        return false;
-	    }
+	    if(empty($timeline))
+		{
+			return false;
+		}
+		if(empty($personnum) || empty($downnum))
+		{
+			return false;
+		}
 	    $db = DbConnecter::connectMysql($this->DB_INSTANCE);
-	    $sql = "replace into countdown values(?,?,?);";
+	    $sql = "replace into `countdown` (`timeline`, `personnum`, `downnum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
-	    $flag = $st->execute(array($timeline,$personnum,$downnum));
-	    $this->putcountavg($timeline,'downavg',$personnum,$downnum);
+	    $flag = $st->execute(array($timeline, $personnum, $downnum));
+	    $this->putCountAvg($timeline, 'downavg', $personnum, $downnum);
 	    return $flag;
 	}
 	
 	
 	//插入 daydown
-	public function putanalyticsdownday($timeline, $personnum, $downnum)
+	public function putAnalyticsDownDay($timeline, $personnum, $downnum)
 	{
-	    if($timeline==0 || $timeline=="")
-	    {
-	        return false;
-	    }
-	    if($personnum==0 || $downnum==0)
-	    {
-	        return false;
-	    }
+	    if(empty($timeline))
+		{
+			return false;
+		}
+		if(empty($personnum) || empty($downnum))
+		{
+			return false;
+		}
 	    $db = DbConnecter::connectMysql($this->DB_INSTANCE);
-	    $sql = "replace into daydown values(?,?,?);";
+	    $sql = "replace into `daydown` (`timeline`, `personnum`, `totalnum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
-	    $flag = $st->execute(array($timeline,$personnum,$downnum));
+	    $flag = $st->execute(array($timeline, $personnum, $downnum));
 	    return $flag;
 	}
 	
 	
 	//插入 countcomment
-	public function putanalyticscomment($timeline, $personnum, $commentnum)
+	public function putAnalyticsCommentHour($timeline, $personnum, $commentnum)
 	{
-		if($timeline==0 || $timeline=="")
+	    if(empty($timeline))
 		{
 			return false;
 		}
-		if($personnum==0 || $commentnum==0)
+		if(empty($personnum) || empty($commentnum))
 		{
 			return false;
 		}
 		$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-		$sql = "replace into countcomment values(?,?,?);";
+		$sql = "replace into `countcomment` (`timeline`, `personnum`, `commentnum`) values(?, ?, ?)";
 		$st = $db->prepare($sql);
-		$flag = $st->execute(array($timeline,$personnum,$commentnum));
-		$this->putcountavg($timeline,'commentavg',$personnum,$commentnum);
+		$flag = $st->execute(array($timeline, $personnum, $commentnum));
+		$this->putCountAvg($timeline, 'commentavg', $personnum, $commentnum);
 		return $flag;
 	}
 	
 	
 	//插入 daycomment
-	public function putanalyticscommentday($timeline, $personnum, $commentnum, $actionalbumnum)
+	public function putAnalyticsCommentDay($timeline, $personnum, $commentnum, $actionalbumnum)
 	{
-		if($timeline==0 || $timeline=="")
+	    if(empty($timeline))
 		{
 			return false;
 		}
-		if($personnum==0 || $commentnum==0 || $actionalbumnum==0)
+		if(empty($personnum) || empty($listennum) || empty($actionalbumnum))
 		{
 			return false;
 		}
 		$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-		$sql = "replace into daycomment values(?,?,?,?);";
+		$sql = "replace into `daycomment` (`timeline`, `personnum`, `totalnum`, `actionalbumnum`) values(?, ?, ?, ?, ?)";
 		$st = $db->prepare($sql);
-		$flag = $st->execute(array($timeline,$personnum,$commentnum,$actionalbumnum));
+		$flag = $st->execute(array($timeline, $personnum, $commentnum, $actionalbumnum));
 		return $flag;
 	}
 	
 	
 	//插入 countpassport
-	public function putanalyticspassport($timeline, $personnum)
+	public function putAnalyticsPassportHour($timeline, $personnum)
 	{
-		if($timeline==0 || $timeline=="")
+	    if(empty($timeline))
 		{
 			return false;
 		}
-		if($personnum==0)
+		if(empty($personnum))
 		{
 			return false;
 		}
 		$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-		$sql = "replace into countreg values(?,?);";
+		$sql = "replace into `countreg` (`timeline`, `personnum`) values(?, ?)";
 		$st = $db->prepare($sql);
-		$flag = $st->execute(array($timeline,$personnum));
-		$this->putcountavg($timeline,'regavg',$personnum,$personnum);
+		$flag = $st->execute(array($timeline, $personnum));
+		$this->putCountAvg($timeline, 'regavg', $personnum, $personnum);
 		return $flag;
 	}
 	
 	
 	//获取发布量统计数据
-    public function getanalyticscount($showtype, $stime='', $etime='')
+    public function getAnalyticsCount($showtype, $stime='', $etime='')
     {
         if (empty($showtype)) {
             return array();
@@ -241,7 +261,7 @@ class Analytics extends ModelBase
     
     
     //获取两个单日对比数据
-    public function getanalyticscountrast($showtype, $stime, $etime)
+    public function getAnalyticsCountRast($showtype, $stime, $etime)
     {
     	$list = array();
     	$db = DbConnecter::connectMysql($this->DB_INSTANCE);
@@ -271,19 +291,6 @@ class Analytics extends ModelBase
     	$list = $st->fetchAll(PDO::FETCH_ASSOC);
     	return $list;
     }
-    
-    
-    //获取关注数量
-    /* public function getfollowdata($stime,$etime)
-    {
-    	$sql = "select  timeline as tl, totalnum as tn, fansnum as pn, follownum as fn  from dayfollowdata where timeline>=? and timeline<=?;";
-    	$list = array();
-    	$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-    	$st = $db->prepare($sql);
-    	$st->execute(array($stime,$etime));
-    	$list = $st->fetchAll(PDO::FETCH_ASSOC);
-    	return $list;
-    } */
 
 }
 ?>

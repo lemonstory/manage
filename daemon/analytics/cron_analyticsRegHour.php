@@ -14,7 +14,7 @@ class cron_analyticsRegNum extends DaemonBase {
 
 		$timeline = date('YmdH',$todocounttime);
 		$personnum = $list['pn'];
-	    $flag = $analytics->putanalyticspassport($timeline, $personnum);
+	    $flag = $analytics->putAnalyticsPassportHour($timeline, $personnum);
 		echo "$day passport update flag:$flag";
 	}
 

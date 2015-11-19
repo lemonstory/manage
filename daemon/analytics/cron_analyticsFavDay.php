@@ -17,7 +17,7 @@ class cron_analyticsFavDay extends DaemonBase {
 		$timeline = date('Ymd',$todocounttime);
 		$personnum = $list['pn'];
 		$favnum = $list['tn'];
-	    $flag = $analytics->putanalyticsfavday($timeline, $personnum, $favnum);
+	    $flag = $analytics->putAnalyticsFavDay($timeline, $personnum, $favnum);
 		echo "$day fav day update flag:$flag \n";
 	}
 

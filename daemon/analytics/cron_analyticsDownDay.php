@@ -5,8 +5,8 @@ class cron_analyticsDownDay extends DaemonBase {
 	protected function deal() {
 		$analytics = new Analytics();
 		$db = DbConnecter::connectMysql('share_main');
-		$todocounttime = time()-720;
-		$day = date('Y-m-d',$todocounttime);
+		$todocounttime = time() - 720;
+		$day = date('Y-m-d', $todocounttime);
 		
 		$sql = "select count(distinct(uid)) as pn,count(1) as tn from user_download where addtime like ? limit 1;";
 		$st = $db->prepare($sql);
@@ -14,10 +14,10 @@ class cron_analyticsDownDay extends DaemonBase {
 		$list = $st->fetch(PDO::FETCH_ASSOC);
 	
 		
-		$timeline = date('Ymd',$todocounttime);
+		$timeline = date('Ymd', $todocounttime);
 		$personnum = $list['pn'];
 		$downnum = $list['tn'];
-	    $flag = $analytics->putanalyticsdownday($timeline, $personnum, $downnum);
+	    $flag = $analytics->putAnalyticsDownDay($timeline, $personnum, $downnum);
 		echo "$day down day update flag:$flag \n";
 	}
 
