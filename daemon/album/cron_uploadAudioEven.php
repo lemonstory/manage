@@ -17,7 +17,7 @@ class cron_uploadAudio extends DaemonBase
     protected function uploadAudio() {
         // 更新故事为本地地址
         $story = new Story();
-        $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 10);
+        $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 50);
         foreach ($story_list as $k => $v) {
         	if ($v['id']%2 == 0) {
         		$r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
