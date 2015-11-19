@@ -13,14 +13,16 @@
                         <fieldset>
                             <legend>添加权限</legend>
                             <div class="control-group">
-                                <label class="control-label">动作标记</label>
+                                <label class="control-label">标记名称</label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead" name="action">
+                                    <input type="text" class="span6" id="typeahead" placeholder="module.action" name="action">
+                                    <p class="help-block">格式：module + .符号 + action</p>
+                                    <p class="help-block">如用户列表：user.getuserlist</p>
                                 </div>
                             </div>
                             
                             <div class="control-group">
-                                <label class="control-label">动作描述</label>
+                                <label class="control-label">标记描述</label>
                                 <div class="controls">
                                     <input type="text" class="span6" id="typeahead" name="desc">
                                 </div>
@@ -43,15 +45,15 @@
             <div class="block">
                 <div class="navbar navbar-inner block-header">
                     <div class="muted pull-left">权限列表</div>
-                    <div class="pull-right"><span class="badge badge-info">1,234</span></div>
+                    <div class="pull-right"><span class="badge badge-info"></span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>权限ID</th>
-						        <th>权限标志</th>
-						        <th>权限描述</th>
+						        <th>标记名称</th>
+						        <th>标记描述</th>
 						        <th>添加时间</th>
 						        <th>操作</th>
                             </tr>
@@ -64,7 +66,7 @@
 						        <td>{$privilege.desc}</td>
 						        <td>{$privilege.addtime}</td>
 						        <td>
-						            <a href="/privilege/delete.php?id={$privilege.id}">删除</a>
+						            <a class="delete" id="{$privilege.id}" href="javascript:void(0);">删除</a>
 						        </td> 
 						    </tr>
 						    {/foreach}
@@ -78,5 +80,31 @@
     
     {$pageBanner}
 </div>
+
+<script>
+{literal}
+$(function() {
+    var opturl = "/privilege/delete.php";
+    $(".delete").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定删除吗？")) {
+            var pid = $(this).attr("id");
+            $.post(opturl, {pid:pid}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("删除成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
+});
+{/literal}
+</script>
 
 {include file="include/footer.html"}

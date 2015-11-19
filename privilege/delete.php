@@ -5,11 +5,13 @@ class delPrivilege extends controller
 {
     public function action()
     {
-        $pid = $this->getRequest('id');
+        $pid = $this->getRequest('pid');
+        if (empty($pid)) {
+            $this->showErrorJson(ErrorConf::paramError());
+        }
         $pObj = new ManagePrivilege();
         $pObj->deletePrivilege($pid);
-        header('Location:/privilege/list.php');
-        exit;
+        $this->showSuccJson();
     }
 }
 new delPrivilege();
