@@ -70,7 +70,7 @@ class cron_uploadOss extends DaemonBase
             foreach ($story_list as $k => $v) {
                 if (strstr($v['s_cover'], 'default/sound.jpg')) {
                     $cover = Http::sub_data($v['s_cover'], '', '?');
-                    $story->update(array('s_cover' => $cover, "`cover` = '' and `s_cover`='{$v['s_cover']}'"));
+                    $story->update(array('s_cover' => $cover, "`id` = {$v['id']}"));
                     $this->writeLog("故事封面 {$v['id']} => cover 默认图片");
                 } else {
                     if (isset($image_cache[$v['s_cover']])) {
