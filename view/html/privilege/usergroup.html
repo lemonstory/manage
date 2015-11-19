@@ -6,7 +6,7 @@
             <div class="block">
                 <div class="navbar navbar-inner block-header">
                     <div class="muted pull-left">{$userinfo.name} 的所属组</div>
-                    <div class="pull-right"><span class="badge badge-info">1,234</span></div>
+                    <div class="pull-right"><span class="badge badge-info"></span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
@@ -17,16 +17,11 @@
 						        <th>组描述</th>
 						        <th>添加时间</th>
 						        <th>操作</th>
-                                <th>管理员uid</th>
-                                <th>管理员昵称</th>
-                                <th>管理员真实姓名</th>
-                                <th>添加时间</th>
-                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             {foreach from=$groups item=group}
-						    <tr id="{$group.id}" class="{if $group.member}bg-info{/if}">
+						    <tr id="{$group.id}" class="{if $group.member}info{/if}">
 						        <td>{$group.id}</td>
 						        <td>{$group.name}</td>
 						        <td>{$group.desc}</td>
