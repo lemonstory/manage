@@ -71,8 +71,7 @@
                                 <li class="{$tagactive}"><a href="/comment/taglist.php">标签管理</a></li>
                             </ul>
                         </li>
-                        <li class="{$analyticsactive}"><a href="/analytics/searchcontentlist.php">统计相关</a></li>
-                        <li class="{$feedbackactive}"><a href="/user/feedback.php">用户反馈</a></li>
+                        <li class="{$analyticsactive}"><a href="/analytics/searchcontentlist.php">统计管理</a></li>
                     </ul>
                 </div>
                 <!--/.nav-collapse -->
@@ -93,7 +92,7 @@
 			         {elseif $privilege}
 				         <li class="{$userlistside}"><a href="/privilege/userlist.php"><i class="icon-chevron-right"></i>管理员</a></li>
 				         <li class="{$grouplistside}"><a href="/privilege/grouplist.php"><i class="icon-chevron-right"></i>管理组</a></li>
-				         <li class="{$listside}"><a href="/privilege/list.php"><i class="icon-chevron-right"></i>权限控制</a></li>
+				         <li class="{$listside}"><a href="/privilege/list.php"><i class="icon-chevron-right"></i>标记列表</a></li>
 			         {elseif $useractive}
 			             <li class="{$getuserlistside}"><a href="/user/getuserlist.php"><i class="icon-chevron-right"></i>用户列表</a></li>
 			             <li class="{$getfavlistside}"><a href="/fav/getfavlist.php"><i class="icon-chevron-right"></i>收藏列表</a></li>
@@ -103,6 +102,7 @@
 			             <li class="{$userimsiactionlogside}"><a href="/user/userimsiactionlog.php"><i class="icon-chevron-right"></i>用户与设备行为日志</a></li>
 			             <li class="{$userloginlogside}"><a href="/user/userloginlog.php"><i class="icon-chevron-right"></i>用户登录日志</a></li>
 			             <li class="{$systemuserlistside}"><a href="/user/systemuserlist.php"><i class="icon-chevron-right"></i>系统僵尸用户列表</a></li>
+			             <li class="{$feedbackactive}"><a href="/user/feedback.php"><i class="icon-chevron-right"></i>用户反馈</a></li>
 			         {elseif ($albumactive || $storyactive)}
 				         <li class="{$albumactive}"><a href="/album/index.php"><i class="icon-chevron-right"></i>专辑列表</a></li>
 				         <li class="{$storyactive}"><a href="/album/storylist.php"><i class="icon-chevron-right"></i>故事列表</a></li>

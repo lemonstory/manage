@@ -82,6 +82,7 @@ class index extends controller
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('feedbackList', $feedbackList);
         $smartyObj->assign('feedbackactive', "active");
+        $smartyObj->assign('useractive', "active");
         $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("user/feedbacklist.html"); 
     }
