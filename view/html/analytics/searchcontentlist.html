@@ -107,7 +107,7 @@ $(function() {
         $(".modal-body").text("");
         if(confirm("确定取消热门吗？")) {
             var id = $(this).attr("id");
-            $.post(delurl, {id:id, status:2}, function(data){
+            $.post(seturl, {id:id, status:2}, function(data){
                 if(data.code == "10000") {
                     $(".modal-body").text("取消热门成功");
                     $("#myModal").modal({show:true});
@@ -126,7 +126,7 @@ $(function() {
         $(".modal-body").text("");
         if(confirm("确定加入热门吗？")) {
             var id = $(this).attr("id");
-            $.post(delurl, {id:id, status:1}, function(data){
+            $.post(seturl, {id:id, status:1}, function(data){
                 if(data.code == "10000") {
                     $(".modal-body").text("加入热门成功");
                     $("#myModal").modal({show:true});

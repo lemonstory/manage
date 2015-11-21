@@ -30,7 +30,7 @@ class ManageSearch extends ModelBase
         $sql = "SELECT * FROM `{$this->SEARCH_CONTENT_TABLE_NAME}`";
         if (!empty($column)) {
             if ($column == 'searchcontent') {
-                $sql .= " WHERE `{$column}` like '%$value'%";
+                $sql .= " WHERE `{$column}` like '%{$value}%'";
             } else {
                 $sql .= " WHERE `{$column}` = '$value'";
             }
