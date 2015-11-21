@@ -10,7 +10,7 @@
                 <div class="span12">
                     <form class="form-horizontal" method="post" action="/analytics/searchcontentlist.php">
                         <fieldset>
-                            <legend>搜索查询</legend>
+                            <legend></legend>
                             <div class="control-group">
                                 <label class="control-label">条件</label>
                                 <div class="controls">
@@ -79,10 +79,10 @@
                                 <td>{if $value.status == 1}是{else if $value.status == 2}不是{/if}</td>
                                 <td>
                                     {if $value.status == 1}
-                                    <a href="">取消热门</a>
+                                    <a href="javascript:void(0);" id="{$value.id}" class="offline">取消热门</a>
                                     &nbsp;
                                     {elseif $value.status == 2}
-                                    <a href="">加入热门</a>
+                                    <a href="javascript:void(0);" id="{$value.id}" class="online">加入热门</a>
                                     {/if}
                                 </td>
                             </tr>
@@ -102,7 +102,44 @@
 <script>
 {literal}
 $(function() {
-	
+	var seturl = "/analytics/setsearchcontentstatus.php";
+    $(".offline").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定取消热门吗？")) {
+            var id = $(this).attr("id");
+            $.post(delurl, {id:id, status:2}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("取消热门成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href = location.href;
+                    });
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
+    
+    $(".online").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定加入热门吗？")) {
+            var id = $(this).attr("id");
+            $.post(delurl, {id:id, status:1}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("加入热门成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href = location.href;
+                    });
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
 });
 {/literal}
 </script>
