@@ -71,7 +71,7 @@
                                 <td id="status_{$value.uid}">{$value.status}</td>
                                 <td>{$value.num}</td>
                                 <td>
-                                    <a href="###" id="del_{$value.uid}">删除</a>
+                                    <a href="javascript:void(0);" id="{$value.uid}" class="delete">删除</a>
                                 </td>
                             </tr>
                             {/foreach}
@@ -90,7 +90,25 @@
 <script>
 {literal}
 $(function() {
-	
+	var delurl = "/system/delrankuserlisten.php";
+    $(".delete").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定删除吗？")) {
+            var uid = $(this).attr("id");
+            $.post(delurl, {uid:uid}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("删除成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href = location.href;
+                    });
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
 });
 {/literal}
 </script>

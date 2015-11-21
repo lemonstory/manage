@@ -24,15 +24,6 @@ class ManageSystem extends ModelBase
         return $list;
 	}
 	
-	/* public function getMaxPicId() {
-	    $db = DbConnecter::connectMysql("share_manage");
-	    $sql = "select max(picid) from `focus` ";
-	    $st = $db->prepare($sql);
-	    $st->execute();
-	    $picid = $st->fetch(PDO::FETCH_COLUMN) + 1;
-	    return $picid;
-	} */
-	
 	
 	/**
 	 * 首页获取热门推荐列表
@@ -264,6 +255,17 @@ class ManageSystem extends ModelBase
 	        return false;
 	    }
 	    return true;
+	}
+	
+	
+	public function delRankListenUser($uid)
+	{
+	    if (empty($uid)) {
+	        return false;
+	    }
+	    $rankkey = RedisKey::getRankListenUserKey();
+	    $redisobj = AliRedisConnecter::connRedis("rank");
+	    return $redisobj->zDelete($rankkey, $uid);
 	}
 	
 	
