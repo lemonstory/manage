@@ -63,7 +63,7 @@ class cron_uploadOss extends DaemonBase
 
         // 更新故事封面
         $story = new Story();
-        $story_list = $story->get_list("cover='' and `s_cover` !='http://s1.xmcdn.com/wap/css/img/default/sound.jpg'", 500);
+        $story_list = $story->get_list("cover='' and `s_cover` !='http://s1.xmcdn.com/wap/css/img/default/sound.jpg' and `status` = 1", 500);
         if (!empty($story_list)) {
             // 存已经上传的缓存
             $image_cache = array();
