@@ -11,6 +11,7 @@ class index extends controller
         $status   = (int)$this->getRequest('status', 1);
         $keywords = $this->getRequest('keywords', '');
         $reply    = (int)$this->getRequest('reply', -1);
+        $uid      = (int)$this->getRequest('uid', 0);
 
         $replylist = $search_filter = $where = array();
 
@@ -32,6 +33,9 @@ class index extends controller
             
         } else {
             $where[] = "`replyid` = 0";
+        }
+        if ($uid) {
+            $where[] = "`uid` = {$uid}";
         }
 
         if ($keywords) {

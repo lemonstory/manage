@@ -13,6 +13,13 @@
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
+                                <label class="control-label">用户ID</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="uid" value="{$search_filter.albumid}">
+                                    <p class="help-block">输入用户UID</p>
+                                </div>
+                            </div>
+                            <div class="control-group">
                                 <label class="control-label">关键字</label>
                                 <div class="controls">
                                     <input type="text" class="span6 auto_submit" name="keywords" value="{$search_filter.keywords}">
