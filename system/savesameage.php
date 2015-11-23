@@ -25,7 +25,7 @@ class savesameage extends controller
         } else {
             // edit
             $data = array("agetype" => $agetype);
-            $res = $manageobj->updateRecommendInfoByIds("share_main", "recommend_same_age", $albumid, $data);
+            $res = $manageobj->updateSameAgeInfoByIds($albumid, $data);
         }
         if ($res == false) {
             $this->showErrorJson($manageobj->getError());

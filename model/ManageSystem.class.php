@@ -5,11 +5,18 @@ class ManageSystem extends ModelBase
     public $FOCUS_LINKTYPE_ALBUM = 'album';
     public $FOCUS_LINKTYPE_LIST = array('http', 'album');
     
+    public $MAIN_DB_INSTANCE = 'share_main';
+    public $MANAGE_DB_INSTANCE = 'share_manage';
+    public $RECOMMEND_HOT_TABLE_NAME = 'recommend_hot';
+    public $RECOMMEND_SAME_AGE_TABLE_NAME = 'recommend_same_age';
+    public $RECOMMEND_NEW_ONLINE_TABLE_NAME = 'recommend_new_online';
+    public $FOCUS_TABLE_NAME = 'focus';
+    
 	
 	public function getFocusInfo($focusid) 
 	{
-	    $db = DbConnecter::connectMysql('share_manage');
-	    $sql = "SELECT * FROM `focus` WHERE `id` = ?";
+	    $db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
+	    $sql = "SELECT * FROM `{$this->FOCUS_TABLE_NAME}` WHERE `id` = ?";
 	    $st = $db->prepare($sql);
 	    $st->execute(array($focusid));
 	    $info = $st->fetch(PDO::FETCH_ASSOC);
@@ -36,8 +43,8 @@ class ManageSystem extends ModelBase
 	    if (empty($ordernum)) {
 		    $ordernum = 100;
 	    }
-		$db = DbConnecter::connectMysql('share_manage');
-        $sql = "INSERT INTO `focus` (`covertime`, `linktype`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
+		$db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
+        $sql = "INSERT INTO `{$this->FOCUS_TABLE_NAME}` (`covertime`, `linktype`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
         $result = $st->execute(array(time(), $linktype, $linkurl, $ordernum, $status, $addtime));
         if (empty($result)) {
@@ -73,13 +80,17 @@ class ManageSystem extends ModelBase
 	    }
 	    $setstr = rtrim($setstr, ",");
 	    
-	    $db = DbConnecter::connectMysql('share_manage');
-	    $sql = "UPDATE `focus` SET {$setstr} WHERE `id` = '{$focusid}'";
+	    $db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
+	    $sql = "UPDATE `{$this->FOCUS_TABLE_NAME}` SET {$setstr} WHERE `id` = '{$focusid}'";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
 	    if (empty($result)) {
 	        return false;
 	    }
+	    
+	    // 清除列表cache
+	    $cacheobj = new CacheWrapper();
+	    $cacheobj->deleteNSCache($this->FOCUS_TABLE_NAME);
 	    return true;
 	}
 	
@@ -93,13 +104,17 @@ class ManageSystem extends ModelBase
 	    }
 	    $focusids = implode(",", $focusids);
 	     
-	    $db = DbConnecter::connectMysql('share_manage');
-	    $sql = "DELETE FROM `focus` WHERE `id` IN ({$focusids})";
+	    $db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
+	    $sql = "DELETE FROM `{$this->FOCUS_TABLE_NAME}` WHERE `id` IN ({$focusids})";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
 	    if (empty($result)) {
 	        return false;
 	    }
+	    
+	    // 清除列表cache
+	    $cacheobj = new CacheWrapper();
+	    $cacheobj->deleteNSCache($this->FOCUS_TABLE_NAME);
 	    return true;
 	}
 	
@@ -113,13 +128,17 @@ class ManageSystem extends ModelBase
 	    }
 	    $albumids = implode(",", $albumids);
 	    
-	    $db = DbConnecter::connectMysql('share_main');
-	    $sql = "DELETE FROM `recommend_hot` WHERE `albumid` IN ({$albumids})";
+	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $sql = "DELETE FROM `{$this->RECOMMEND_HOT_TABLE_NAME}` WHERE `albumid` IN ({$albumids})";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
 	    if (empty($result)) {
 	        return false;
 	    }
+	    
+	    // 清除列表cache
+	    $cacheobj = new CacheWrapper();
+	    $cacheobj->deleteNSCache($this->RECOMMEND_HOT_TABLE_NAME);
 	    return true;
 	}
 	
@@ -133,13 +152,17 @@ class ManageSystem extends ModelBase
 	    }
 	    $albumids = implode(",", $albumids);
 	     
-	    $db = DbConnecter::connectMysql('share_main');
-	    $sql = "DELETE FROM `recommend_new_online` WHERE `albumid` IN ({$albumids})";
+	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $sql = "DELETE FROM `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` WHERE `albumid` IN ({$albumids})";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
 	    if (empty($result)) {
 	        return false;
 	    }
+	    
+	    // 清除列表cache
+	    $cacheobj = new CacheWrapper();
+	    $cacheobj->deleteNSCache($this->RECOMMEND_NEW_ONLINE_TABLE_NAME);
 	    return true;
 	}
 	
@@ -153,13 +176,17 @@ class ManageSystem extends ModelBase
 	    }
 	    $albumids = implode(",", $albumids);
 	     
-	    $db = DbConnecter::connectMysql('share_main');
-	    $sql = "DELETE FROM `recommend_same_age` WHERE `albumid` IN ({$albumids})";
+	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $sql = "DELETE FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` WHERE `albumid` IN ({$albumids})";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
 	    if (empty($result)) {
 	        return false;
 	    }
+	    
+	    // 清除列表cache
+	    $cacheobj = new CacheWrapper();
+	    $cacheobj->deleteNSCache($this->RECOMMEND_SAME_AGE_TABLE_NAME);
 	    return true;
 	}
 	
@@ -195,8 +222,8 @@ class ManageSystem extends ModelBase
 		
 		$status = $this->RECOMMEND_STATUS_OFFLINE;
 		$addtime = date("Y-m-d H:i:s");
-		$db = DbConnecter::connectMysql('share_main');
-        $sql = "INSERT INTO `recommend_hot` (`albumid`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?)";
+		$db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "INSERT INTO `{$this->RECOMMEND_HOT_TABLE_NAME}` (`albumid`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?)";
         $st = $db->prepare($sql);
         $result = $st->execute(array($albumid, $ordernum, $status, $addtime));
         if (empty($result)) {
@@ -227,8 +254,8 @@ class ManageSystem extends ModelBase
 	    
 	    $status = $this->RECOMMEND_STATUS_OFFLINE;
 	    $addtime = date("Y-m-d H:i:s");
-	    $db = DbConnecter::connectMysql('share_main');
-	    $sql = "INSERT INTO `recommend_new_online` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
+	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $sql = "INSERT INTO `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute(array($albumid, $agetype, $ordernum, $status, $addtime));
 	    if (empty($result)) {
@@ -252,8 +279,8 @@ class ManageSystem extends ModelBase
 	     
 	    $status = $this->RECOMMEND_STATUS_OFFLINE;
 	    $addtime = date("Y-m-d H:i:s");
-	    $db = DbConnecter::connectMysql('share_main');
-	    $sql = "INSERT INTO `recommend_same_age` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
+	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $sql = "INSERT INTO `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute(array($albumid, $agetype, $ordernum, $status, $addtime));
 	    if (empty($result)) {
@@ -281,13 +308,13 @@ class ManageSystem extends ModelBase
 	
 	/**
 	 * 后台推荐列表、查询列表
-	 * @param unknown_type $dbinstance
-	 * @param unknown_type $tablename
-	 * @param unknown_type $column
-	 * @param unknown_type $value
-	 * @param unknown_type $currentPage
-	 * @param unknown_type $perPage
-	 * @return Ambiguous
+	 * @param S $dbinstance
+	 * @param S $tablename
+	 * @param S $column
+	 * @param S $value
+	 * @param I $currentPage
+	 * @param I $perPage
+	 * @return array
 	 */
 	public function getRecommendListByColumnSearch($dbinstance, $tablename, $column = '', $value = '', $status = 0, $currentPage = 1, $perPage = 50)
     {
@@ -362,7 +389,75 @@ class ManageSystem extends ModelBase
         return $count;
     }
     
-    public function updateRecommendInfoByIds($dbinstance, $tablename, $ids, $data)
+    
+    // 批量更新相关推荐列表的状态和排序
+    public function updateHotRecommendInfoByIds($ids, $data)
+    {
+        if (empty($ids) || empty($data)) {
+            return false;
+        }
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+        $idStr = "";
+        foreach ($ids as $id) {
+            $idStr .= $id . ",";
+        }
+        $idStr = rtrim($idStr, ",");
+    
+        $setstr = "";
+        foreach ($data as $key => $value) {
+            $setstr .= "`{$key}` = '{$value}',";
+        }
+        $setstr = rtrim($setstr, ",");
+    
+        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "UPDATE `{$this->RECOMMEND_HOT_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
+        $st = $db->prepare($sql);
+        $result = $st->execute();
+    
+        // 清除列表cache
+        $cacheobj = new CacheWrapper();
+        $cacheobj->deleteNSCache($this->RECOMMEND_HOT_TABLE_NAME);
+        return $result;
+    }
+    
+    
+    // 批量更新相关推荐列表的状态和排序
+    public function updateNewOnlineInfoByIds($ids, $data)
+    {
+        if (empty($ids) || empty($data)) {
+            return false;
+        }
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+        $idStr = "";
+        foreach ($ids as $id) {
+            $idStr .= $id . ",";
+        }
+        $idStr = rtrim($idStr, ",");
+    
+        $setstr = "";
+        foreach ($data as $key => $value) {
+            $setstr .= "`{$key}` = '{$value}',";
+        }
+        $setstr = rtrim($setstr, ",");
+    
+        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "UPDATE `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
+        $st = $db->prepare($sql);
+        $result = $st->execute();
+    
+        // 清除列表cache
+        $cacheobj = new CacheWrapper();
+        $cacheobj->deleteNSCache($this->RECOMMEND_NEW_ONLINE_TABLE_NAME);
+        return $result;
+    }
+    
+    
+    // 批量更新相关推荐列表的状态和排序
+    public function updateSameAgeInfoByIds($ids, $data)
     {
         if (empty($ids) || empty($data)) {
             return false;
@@ -381,11 +476,15 @@ class ManageSystem extends ModelBase
             $setstr .= "`{$key}` = '{$value}',";
         }
         $setstr = rtrim($setstr, ",");
-    
-        $db = DbConnecter::connectMysql($dbinstance);
-        $sql = "UPDATE `{$tablename}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
+        
+        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "UPDATE `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
         $st = $db->prepare($sql);
         $result = $st->execute();
+        
+        // 清除列表cache
+        $cacheobj = new CacheWrapper();
+        $cacheobj->deleteNSCache($this->RECOMMEND_SAME_AGE_TABLE_NAME);
         return $result;
     }
     
@@ -401,8 +500,8 @@ class ManageSystem extends ModelBase
             $this->setError(ErrorConf::paramError());
             return false;
         }
-        $db = DbConnecter::connectMysql('share_main');
-        $sql = "SELECT * FROM `recommend_hot` WHERE `albumid` = ?";
+        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "SELECT * FROM `{$this->RECOMMEND_HOT_TABLE_NAME}` WHERE `albumid` = ?";
         $st = $db->prepare($sql);
         $st->execute(array($albumid));
         $info = $st->fetch(PDO::FETCH_ASSOC);
@@ -424,8 +523,8 @@ class ManageSystem extends ModelBase
             $this->setError(ErrorConf::paramError());
             return false;
         }
-        $db = DbConnecter::connectMysql('share_main');
-        $sql = "SELECT * FROM `recommend_new_online` WHERE `albumid` = ?";
+        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "SELECT * FROM `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` WHERE `albumid` = ?";
         $st = $db->prepare($sql);
         $st->execute(array($albumid));
         $info = $st->fetch(PDO::FETCH_ASSOC);
@@ -447,8 +546,8 @@ class ManageSystem extends ModelBase
             $this->setError(ErrorConf::paramError());
             return false;
         }
-        $db = DbConnecter::connectMysql('share_main');
-        $sql = "SELECT * FROM `recommend_same_age` WHERE `albumid` = ?";
+        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "SELECT * FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` WHERE `albumid` = ?";
         $st = $db->prepare($sql);
         $st->execute(array($albumid));
         $info = $st->fetch(PDO::FETCH_ASSOC);

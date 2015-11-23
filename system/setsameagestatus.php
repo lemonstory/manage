@@ -27,10 +27,10 @@ class setsameagestatus extends controller
                 $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
             }
             
-            $managelistenobj = new ManageListen();
-            $result = $managelistenobj->updateSameAgeInfoByIds($albumid, $updata);
+            $manageobj = new ManageSystem();
+            $result = $manageobj->updateSameAgeInfoByIds($albumid, $updata);
             if(empty($result)) {
-                $this->showErrorJson($managelistenobj->getError());
+                $this->showErrorJson($manageobj->getError());
             }
         }
         

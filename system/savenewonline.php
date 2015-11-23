@@ -23,7 +23,7 @@ class savenewonline extends controller
             $res = $manageobj->addRecommendNewOnlineDb($albumid, $agetype);
         } else {
             $data = array("agetype" => $agetype);
-            $res = $manageobj->updateRecommendInfoByIds("share_main", "recommend_new_online", $albumid, $data);
+            $res = $manageobj->updateNewOnlineInfoByIds($albumid, $data);
         }
         if ($res == false) {
             $this->showErrorJson($manageobj->getError());

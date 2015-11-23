@@ -1,7 +1,7 @@
 <?php
 include_once '../controller.php';
 
-class sethotrecommendstatus extends controller
+class setnewonlinestatus extends controller
 {
     public function action()
     {
@@ -28,7 +28,7 @@ class sethotrecommendstatus extends controller
             }
             
             $managesysobj = new ManageSystem();
-            $result = $managesysobj->updateRecommendInfoByIds('share_main', 'recommend_new_online', $albumid, $updata);
+            $result = $managesysobj->updateNewOnlineInfoByIds($albumid, $updata);
             if(empty($result)) {
                 $this->showErrorJson($managesysobj->getError());
             }
@@ -37,4 +37,4 @@ class sethotrecommendstatus extends controller
         $this->showSuccJson();
     }
 }
-new sethotrecommendstatus();
+new setnewonlinestatus();

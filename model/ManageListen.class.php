@@ -179,32 +179,4 @@ class ManageListen extends ModelBase
             $count = 1;
         }
     }
-    
-    public function updateSameAgeInfoByIds($ids, $data)
-    {
-    	$listenobj = new Listen();
-        if (empty($ids) || empty($data)) {
-            return false;
-        }
-        if (!is_array($ids)) {
-            $ids = array($ids);
-        }
-        $idStr = "";
-        foreach ($ids as $id) {
-            $idStr .= $id . ",";
-        }
-        $idStr = rtrim($idStr, ",");
-    
-        $setstr = "";
-        foreach ($data as $key => $value) {
-            $setstr .= "`{$key}` = '{$value}',";
-        }
-        $setstr = rtrim($setstr, ",");
-        
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
-        $sql = "UPDATE `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
-        $st = $db->prepare($sql);
-        $result = $st->execute();
-        return $result;
-    }
 }
