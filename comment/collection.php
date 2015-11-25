@@ -90,9 +90,6 @@ class collection extends controller
             $taglist = $this->get_tag_from_dangda($source_url);
             foreach($taglist as $k => $v) {
                 foreach($v as $k2 => $v2) {
-                    if (in_array($v2, array('童书', '图书'))) {
-                        continue;
-                    }
                     $exists = $tag->check_exists("`albumid`={$albumid} and `content`='{$v2}'");
                     if (!$exists) {
                         $tag->insert(array(
@@ -144,10 +141,19 @@ class collection extends controller
                 if (strstr($tmp_data, '/')) {
                     $tmp_arr = explode("/", $tmp_data);
                     foreach ($tmp_arr as $k3 => $v3) {
-                        $tag_list[$k][] = $v3;
+                        if (strstr($v3, '书')) {
+                            continue;
+                        } else {
+                            $tag_list[$k][] = $v3;
+                        }
                     }
                 } else {
-                    $tag_list[$k][] = Http::sub_data($v2, '>', '<');
+                    $tag = Http::sub_data($v2, '>', '<');
+                    if (strstr($tag, '书')) {
+                        continue;
+                    } else {
+                        $tag_list[$k][] = $tag;
+                    }
                 }
             }
         }
@@ -157,34 +163,20 @@ class collection extends controller
         // var_dump($tag_list);
 
         /************
-        array(2) {
+        array(1) {
           [0]=>
           array(4) {
             [0]=>
-            string(6) "图书"
-            [1]=>
-            string(6) "童书"
-            [2]=>
-            string(15) "平装图画书"
-            [3]=>
             string(6) "欧美"
-          }
-          [1]=>
-          array(4) {
-            [0]=>
-            string(6) "图书"
             [1]=>
-            string(6) "童书"
-            [2]=>
             string(6) "3-6岁"
+            [2]=>
+            string(6) "卡通"
             [3]=>
-            string(23) "卡通/动漫/图画书"
+            string(6) "动漫"
           }
         }
-
         ************/
-
-
     }
 
     private function get_rand_time()
