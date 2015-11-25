@@ -45,6 +45,9 @@ class collection extends controller
             foreach($system_user_list as $k => $v) {
                 array_push($uid_list, $v['uid']);
             }
+            if (!$uid_list) {
+                return $this->showErrorJson(ErrorConf::AnonymousEmpty());
+            }
             Http::$referer = $source_url;
 
             $page = 1;
@@ -68,7 +71,7 @@ class collection extends controller
                                 'albumid'    => $albumid,
                                 'star_level' => mt_rand(4, 5),
                                 'content'    => $v['content'],
-                                'addtime'    => date('Y-m-d H:i:s')
+                                'addtime'    => $this->get_rand_time()
                             ));
                             $start ++;
                             if ($start >= $count) {
