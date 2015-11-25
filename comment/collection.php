@@ -130,7 +130,7 @@ class collection extends controller
         $content = Http::get($url);
 
         $content =  @iconv('GBK', 'UTF-8', $content);
-        $content = Http::sub_data($content, '<div class="show_info_left">所属分类</div>', '</div>');
+        $content = Http::sub_data($content, 'fenlei">', '</li');
         $content = htmlspecialchars_decode($content);
         $content = str_replace("&nbsp", '', $content);
         $r = explode("br", $content);
@@ -140,7 +140,15 @@ class collection extends controller
         foreach($r as $k => $v) {
             preg_match_all('/<a[\S|\s].*?a>/', $v, $result);
             foreach($result[0] as $k2 => $v2) {
-                $tag_list[$k][] = Http::sub_data($v2, '>', '<');
+                $tmp_data = Http::sub_data($v2, '>', '<');
+                if (strstr($tmp_data, '/')) {
+                    $tmp_arr = explode("/", $tmp_data);
+                    foreach ($tmp_arr as $k3 => $v3) {
+                        $tag_list[$k][] = $v3;
+                    }
+                } else {
+                    $tag_list[$k][] = Http::sub_data($v2, '>', '<');
+                }
             }
         }
 
@@ -179,7 +187,7 @@ class collection extends controller
 
     }
 
-    function get_rand_time()
+    private function get_rand_time()
     {
         $max_time = time();
         $min_time = strtotime(date('Y-m-d 07:00:00', strtotime('-30 days')));
