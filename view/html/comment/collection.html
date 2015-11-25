@@ -27,6 +27,12 @@
                                     <input type="text" class="input-xlarge datepicker" name="source_url" value="" placeholder="http://dangdang.com/xxx.html">
                                 </div>
                             </div>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">评论数量<span class="required">*</span></label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="count" value="10">
+                                </div>
+                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
                                 <button type="reset" class="btn">重置</button>
@@ -56,8 +62,8 @@ $(function() {
     		if (json && json.code == 10000) {
     			alert('采集成功');
     		} else {
-    			var name = json.split('-')[0];
-                var msg  = json.split('-')[1];
+    			var name = json.desc.split('-')[0];
+                var msg  = json.desc.split('-')[1];
                 var errObj = $("[name='"+name+"']");
                 errObj.closest(".control-group").addClass('error');
                 errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');

@@ -14,19 +14,23 @@ class collection extends controller
         if ($_POST) {
             $albumid    = (int)$this->getRequest('album_id', 0);
             $source_url = trim($this->getRequest('source_url', ''));
+            $count      = (int)$this->getRequest('count', 0);
             if (!$albumid) {
-                return $this->showErrorJson('album_id-请选择专辑');
+                return $this->showErrorJson(ErrorConf::CollectionAlbumEmpty());
             }
             if (!$source_url) {
-                return $this->showErrorJson('source_url-请填写页面地址');
+                return $this->showErrorJson(ErrorConf::CollectionDangUrlEmpty());
+            }
+            if (!$count) {
+                return $this->showErrorJson(ErrorConf::CollectionCommentNumError());
             }
             $dangdang_id = Http::sub_data($source_url, 'com/', '.html');
             if (!is_numeric($dangdang_id)) {
-                return $this->showErrorJson('source_url-页面地址不正确');
+                return $this->showErrorJson(ErrorConf::CollectionDangUrlError());
             }
             $exists = $commenttask->check_exists("`albumid`={$albumid} and `url`='{$source_url}'");
             if ($exists) {
-                return $this->showErrorJson('source_url-该评论已经采集');
+                return $this->showErrorJson(ErrorConf::CollectionDangUrlExists());
             } else {
                 $commenttask->insert(array(
                     'albumid' => $albumid,
@@ -44,6 +48,7 @@ class collection extends controller
             Http::$referer = $source_url;
 
             $page = 1;
+            $start = 0; // 统计采集数 不能超过$count
 
             while (true) {
                 $url_page = "http://product.dangdang.com/comment/comment.php?product_id={$dangdang_id}&datatype=1&page={$page}&filtertype=2&sysfilter=1&sorttype=1";
@@ -59,11 +64,16 @@ class collection extends controller
                             // 随机uid
                             $uid = $uid_list[array_rand($uid_list)];
                             $comment->insert(array(
-                                'userid'  => $uid,
-                                'albumid' => $albumid,
-                                'content' => $v['content'],
-                                'addtime' => date('Y-m-d H:i:s')
+                                'userid'     => $uid,
+                                'albumid'    => $albumid,
+                                'star_level' => mt_rand(4, 5),
+                                'content'    => $v['content'],
+                                'addtime'    => date('Y-m-d H:i:s')
                             ));
+                            $start ++;
+                            if ($start >= $count) {
+                                break 2;
+                            }
                         }
                         
                     }
@@ -85,7 +95,7 @@ class collection extends controller
                         $tag->insert(array(
                             'albumid' => $albumid,
                             'content' => $v2,
-                            'addtime' => date('Y-m-d H:i:s')
+                            'addtime' => $this->get_rand_time()
                         ));
                     }
                 }
@@ -164,6 +174,24 @@ class collection extends controller
         ************/
 
 
+    }
+
+    function get_rand_time()
+    {
+        $max_time = time();
+        $min_time = strtotime(date('Y-m-d 07:00:00', strtotime('-30 days')));
+
+        while (true) {
+            $rand_time = mt_rand($min_time, $max_time);
+            echo date('Y-m-d H:i:s', $rand_time);echo "\n";
+            $start     = strtotime(date('Y-m-d 07:00:00', $rand_time));
+            $end       = strtotime(date('Y-m-d 24:00:00', $rand_time));
+            if ($rand_time >= $start && $rand_time <= $end) {
+                break;
+            }
+        }
+        return date('Y-m-d H:i:s', $rand_time);
+        
     }
 }
 new collection();
