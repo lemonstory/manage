@@ -186,7 +186,6 @@ class collection extends controller
 
         while (true) {
             $rand_time = mt_rand($min_time, $max_time);
-            echo date('Y-m-d H:i:s', $rand_time);echo "\n";
             $start     = strtotime(date('Y-m-d 07:00:00', $rand_time));
             $end       = strtotime(date('Y-m-d 24:00:00', $rand_time));
             if ($rand_time >= $start && $rand_time <= $end) {
