@@ -32,7 +32,7 @@ class story_edit extends controller
 
             $story->update($newstoryinfo, "`id`={$storyid}");
             // 清故事列表缓存
-            $story->clearAlbumStoryListCache($storyinfo['album_id'])
+            $story->clearAlbumStoryListCache($storyinfo['album_id']);
             
             // 封面处理
             if (!empty($_FILES['cover'])) {
