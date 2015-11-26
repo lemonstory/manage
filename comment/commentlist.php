@@ -13,6 +13,7 @@ class index extends controller
 
         $searchFilter = $where = array();
         $where[] = "`status` = {$status} ";
+        $searchFilter['status'] = $status;
 
         if (empty($currentPage)) {
             $currentPage = 0;
