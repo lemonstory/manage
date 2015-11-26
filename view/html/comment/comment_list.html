@@ -59,7 +59,7 @@
 						        <th width="400">评论内容</th>
                                 <th>星级</th>
 						        <th>添加时间</th>
-						        <th>状态</th>
+						        <th width="75">状态</th>
 						        <th>操作</th>
                             </tr>
                         </thead>
@@ -111,7 +111,7 @@
 <script>
 {literal}
 $(function() {
-    $("[id^='op_comment__delete'],[id^='op_comment__recover']").on('click', function(){
+    $("[id^='op_comment__delete'],[id^='op_comment__recover'],[id^='op_comment__offline'],[id^='op_comment__online']").on('click', function(){
     	var data = {};
     	var op = $(this).attr('id');
     	data.op_name = op.split('__')[1];
