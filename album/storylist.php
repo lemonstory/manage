@@ -26,6 +26,7 @@ class index extends controller
         if ($albumid) {
             $search_filter['albumid'] = $albumid;
             $where[] = " `album_id` = '{$albumid}' ";
+            $where[] = " `mediapath` != '' ";
             $baseUri =  $baseUri . "albumid={$albumid}&";
         }
 

@@ -31,15 +31,13 @@ class story_op extends controller
         		return $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
         	}
             $story = new Story();
-            // 清除故事列表缓
-            $story->clearAlbumStoryListCache($storyinfo['album_id']);
             $story->update(array('album_id' => $albumid), "`id`={$op_id}");
         } else if ($op_name == 'removealbum') {
             $story = new Story();
-            // 清除故事列表缓
-            $story->clearAlbumStoryListCache($storyinfo['album_id']);
             $story->update(array('album_id' => 0), "`id`={$op_id}");
         }
+        // 清除专辑故事列表缓存
+        $story->clearAlbumStoryListCache($storyinfo['album_id']);
         return $this->showSuccJson('操作成功');
 
     }
