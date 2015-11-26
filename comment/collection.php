@@ -71,6 +71,7 @@ class collection extends controller
                                 'albumid'    => $albumid,
                                 'star_level' => mt_rand(4, 5),
                                 'content'    => $v['content'],
+                                'status'     => 2,
                                 'addtime'    => $this->get_rand_time()
                             ));
                             $start ++;

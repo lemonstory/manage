@@ -25,7 +25,11 @@ class comment_op extends controller
 		} else if ($op_name == 'delete') {
 			$comment->update(array('status' => 0), "`id`={$op_id}");
 		} else if ($op_name == 'recover') {
+			$comment->update(array('status' => 2), "`id`={$op_id}");
+		} else if ($op_name == 'online') {
 			$comment->update(array('status' => 1), "`id`={$op_id}");
+		} else if ($op_name == 'offline') {
+			$comment->update(array('status' => 2), "`id`={$op_id}");
 		}
 
 		return $this->showSuccJson('操作成功');
