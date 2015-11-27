@@ -16,8 +16,8 @@ class index extends controller
         if ($status != -1) {
             $where[] = "`status` = {$status} ";
             $searchFilter['status'] = $status;
-            $baseUri .= "&status={$status}";
         }
+        $baseUri .= "&status={$status}";
 
         if (empty($currentPage)) {
             $currentPage = 0;
