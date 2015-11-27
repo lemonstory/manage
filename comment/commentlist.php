@@ -10,11 +10,13 @@ class index extends controller
         $content     = $this->getRequest('content', '');
         $albumid     = (int)$this->getRequest('albumid', 0);
         $status      = (int)$this->getRequest('status', -1);
+        $baseUri     = "/comment/commentlist.php?perPage={$perPage}";
 
         $searchFilter = $where = array();
         if ($status != -1) {
             $where[] = "`status` = {$status} ";
             $searchFilter['status'] = $status;
+            $baseUri .= "&status={$status}";
         }
 
         if (empty($currentPage)) {
@@ -27,10 +29,12 @@ class index extends controller
         if ($albumid) {
             $searchFilter['albumid'] = $albumid;
             $where[] = "`albumid` = {$albumid} ";
+            $baseUri .= "&albumid={$albumid}";
         }
         if ($content) {
             $searchFilter['content'] = $content;
             $where[] = "`content` like '%{$content}%'";
+            $baseUri .= "&content={$content}";
         }
 
         if ($where) {
@@ -38,7 +42,6 @@ class index extends controller
         }
 
         $pageBanner = "";
-        $baseUri = "/comment/commentlist.php?perPage={$perPage}";
 
         $manageCommentObj = new ManageComment();
         $commentList = $manageCommentObj->getCommentList($where, $currentPage + 1, $perPage);
