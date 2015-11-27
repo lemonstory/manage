@@ -16,9 +16,10 @@
                                 <label class="control-label">状态</label>
                                 <div class="controls">
                                     <select id="selectError" name="status" class="auto_submit">
+                                        <option value="-1">全部</option>
                                         <option {if $searchFilter.status === 1}selected{/if} value="1">上线</option>
                                         <option {if $searchFilter.status === 2}selected{/if} value="2">下线</option>
-                                        <option {if $searchFilter.status === 3}selected{/if} value="3">删除</option>
+                                        <option {if $searchFilter.status === 0}selected{/if} value="0">删除</option>
                                     </select>
                                 </div>
                             </div>

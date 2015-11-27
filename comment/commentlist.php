@@ -9,11 +9,13 @@ class index extends controller
         $perPage     = $this->getRequest('perPage', 20) + 0;
         $content     = $this->getRequest('content', '');
         $albumid     = (int)$this->getRequest('albumid', 0);
-        $status      = (int)$this->getRequest('status', 1);
+        $status      = (int)$this->getRequest('status', -1);
 
         $searchFilter = $where = array();
-        $where[] = "`status` = {$status} ";
-        $searchFilter['status'] = $status;
+        if ($status != -1) {
+            $where[] = "`status` = {$status} ";
+            $searchFilter['status'] = $status;
+        }
 
         if (empty($currentPage)) {
             $currentPage = 0;
