@@ -1,27 +1,24 @@
 <?php
-include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
+include_once (dirname(dirname(__FILE__)) . "/DaemonBase.php");
 class cron_analyticsCommentDay extends DaemonBase {
-	public $isWhile = false;
-	protected function deal() {
-		$analytics = new Analytics();
-		$db = DbConnecter::connectMysql('share_comment');
-		$todocounttime = time() - 720;
-		$day = date('Y-m-d', $todocounttime);
-		
-		$sql = "select count(distinct(userid)) as pn,count(1) as tn,count(distinct(albumid)) as atn from album_comment where addtime like ? limit 1;";
-		$st = $db->prepare($sql);
-		$st->execute(array($day.'%'));
-		$list = $st->fetch(PDO::FETCH_ASSOC);
-		
-		$timeline = date('Ymd', $todocounttime);
-		$personnum = $list['pn'];
-		$commentnum = $list['tn'];
-		$actionalbumnum = $list['atn'];
-	    $flag = $analytics->putAnalyticsCommentDay($timeline, $personnum, $commentnum, $actionalbumnum);
-		echo "$day comment day update flag:$flag";
-	}
-
-	protected function checkLogPath() {}
+    public $isWhile = false;
+    protected function deal() {
+        $todocounttime = time() - 720;
+        $day = date('Y-m-d', $todocounttime);
+        $timeline = date('Ymd', $todocounttime);
+        
+        $alislsobj = new AliSlsUserActionLog();
+        $list = $alislsobj->commentAlbumCountDay($day);
+        
+        $personnum = $list['usercount'];
+        $commentnum = $list['commentcount'];
+        $actionalbumnum = $list['albumcount'];
+        $analytics = new Analytics();
+        $flag = $analytics->putAnalyticsCommentDay($timeline, $personnum, $commentnum, $actionalbumnum);
+    }
+    
+    protected function checkLogPath() {
+    }
 
 }
-new cron_analyticsCommentDay ();
+new cron_analyticsCommentDay();
