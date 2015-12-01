@@ -6,38 +6,42 @@ class story_title_batch_edit extends controller
     public function action()
     {
     	$story = new Story();
-        $manageAlbum = new ManageAlbum();
+        $manageStoryObj = new ManageStory();
 
         // if ($_POST) {
         	
+
             // $albumid    = (int)$this->getRequest('albumid');
             //$story_original_title_prefix      = $this->getRequest('story_original_title_prefix');
+            $where = array();
 
             $albumid = 5221;
             $story_original_title_prefix = "中华上下五千年 ";
             
             if ($albumid) {
-                $album_info = $manageAlbum->getAlbumInfo($albumid);
+
+                $where[] = " `album_id` = '{$albumid}' ";
+                $storyList = $manageStoryObj->getStoryList($where, 1, 10000);
             }
             
-            if (empty($album_info)) {
+            if (empty($storyList)) {
+
                 return $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
 
             }else {
 
                 //获取故事辑里面的故事标题然后逐个更改
-                $story_list_count = count($album_info['storylist']);
+                $story_list_count = count($storyList);
                 if($story_list_count > 0) {
 
-                    foreach ($album_info['storylist'] as $key => $value) {
+                    foreach ($storyList as $key => $value) {
                         
                         $newstoryinfo = $storyinfo  = array();
                         $new_title_prefix = "";
                         $new_title = "";
-                        $storyinfo = $album_info['storylist'][$key];
-                        $storyid = $storyinfo['id'];
-                        $story_title = $storyinfo['title'];
-                        $story_view_order = $storyinfo['view_order'];
+                        $storyid = $value['id'];
+                        $story_title = $value['title'];
+                        $story_view_order = $value['view_order'];
 
                         //故事标题替换
                         //将类似于："中华上下五千年 016"（原标题:中华上下五千年 016 一鼓作气） 替换为：第16集, 排序更改为16
@@ -56,6 +60,7 @@ class story_title_batch_edit extends controller
                         $new_title = preg_replace('/^([^\d]+).*/', '$1', $story_title);
                         $newstoryinfo['title'] = $new_title_prefix .' ' .$new_title;
                         // $story->update($newstoryinfo, "`id`={$storyid}");
+
 
                         echo "{$storyid}{$story_title}--------->$newstoryinfo['title']";
                     }
