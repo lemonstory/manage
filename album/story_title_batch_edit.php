@@ -5,8 +5,7 @@ class story_title_batch_edit extends controller
 {
     public function action()
     {
-    	$story = new Story();
-        $manageStoryObj = new ManageStory();
+    	$manageStoryObj = new ManageStory();
 
         // if ($_POST) {
         	
@@ -20,7 +19,7 @@ class story_title_batch_edit extends controller
             
             if ($albumid) {
 
-                $where[] = " `album_id` = '{$albumid}' ";
+                $where = " `album_id` = '{$albumid}' ";
                 $storyList = $manageStoryObj->getStoryList($where, 1, 10000);
             }
             
