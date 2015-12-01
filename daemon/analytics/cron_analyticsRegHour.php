@@ -1,24 +1,22 @@
 <?php
-include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
+include_once (dirname(dirname(__FILE__)) . "/DaemonBase.php");
 class cron_analyticsRegNum extends DaemonBase {
-	public $isWhile = false;
-	protected function deal() {
-		$analytics = new Analytics();
-		$db = DbConnecter::connectMysql('share_main');
-		$todocounttime = time()-720;
-		$day = date('Y-m-d H',$todocounttime);
-		$sql = "select count(1) as pn from passport where addtime like ? limit 1;";
-		$st = $db->prepare($sql);
-		$st->execute(array($day.'%'));
-		$list = $st->fetch(PDO::FETCH_ASSOC);
-
-		$timeline = date('YmdH',$todocounttime);
-		$personnum = $list['pn'];
-	    $flag = $analytics->putAnalyticsPassportHour($timeline, $personnum);
-		echo "$day passport update flag:$flag";
-	}
-
-	protected function checkLogPath() {}
+    public $isWhile = false;
+    protected function deal() {
+        $todocounttime = time() - 720;
+        $day = date('Y-m-d', $todocounttime);
+        $hour = date('H', $todocounttime);
+        $timeline = date('YmdH', $todocounttime);
+        
+        $alislsobj = new AliSlsUserActionLog();
+        $personnum = $alislsobj->registerCountHour($day, $hour);
+        
+        $analytics = new Analytics();
+        $flag = $analytics->putAnalyticsPassportHour($timeline, $personnum);
+    }
+    
+    protected function checkLogPath() {
+    }
 
 }
-new cron_analyticsRegNum ();
+new cron_analyticsRegNum();

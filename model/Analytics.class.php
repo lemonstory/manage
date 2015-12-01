@@ -48,7 +48,7 @@ class Analytics extends ModelBase
 		{
 			return false;
 		}
-		if(empty($personnum) || empty($favnum))
+		if(empty($favnum))
 		{
 			return false;
 		}
@@ -93,7 +93,7 @@ class Analytics extends ModelBase
 		{
 			return false;
 		}
-		if(empty($personnum) || empty($listennum))
+		if(empty($listennum))
 		{
 			return false;
 		}
@@ -132,7 +132,7 @@ class Analytics extends ModelBase
 		{
 			return false;
 		}
-		if(empty($personnum) || empty($downnum))
+		if(empty($downnum))
 		{
 			return false;
 		}
@@ -171,7 +171,7 @@ class Analytics extends ModelBase
 		{
 			return false;
 		}
-		if(empty($personnum) || empty($commentnum))
+		if(empty($commentnum))
 		{
 			return false;
 		}
