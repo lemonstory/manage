@@ -191,7 +191,7 @@ class Analytics extends ModelBase
 		{
 			return false;
 		}
-		if(empty($personnum) || empty($listennum) || empty($actionalbumnum))
+		if(empty($personnum) || empty($commentnum) || empty($actionalbumnum))
 		{
 			return false;
 		}
