@@ -56,6 +56,7 @@ class Analytics extends ModelBase
 		$sql = "replace into `countfav` (`timeline`, `personnum`, `favnum`) values (?, ?, ?)";
 		$st = $db->prepare($sql);
 		$flag = $st->execute(array($timeline, $personnum, $favnum));
+		//$this->putCountAvg($timeline, 'favavg', $personnum, $favnum);
     	return $flag;
 	}
 	
@@ -81,7 +82,6 @@ class Analytics extends ModelBase
 		$sql = "replace into `dayfav` (`timeline`, `personnum`, `totalnum`) values(?, ?, ?)";
 		$st = $db->prepare($sql);
 		$flag = $st->execute(array($timeline, $personnum, $favnum));
-		$this->putCountAvg($timeline, 'favavg', $personnum, $favnum);
 		return $flag;
 	}
 	
@@ -101,6 +101,7 @@ class Analytics extends ModelBase
 	    $sql = "replace into `countlisten` (`timeline`, `personnum`, `listennum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $flag = $st->execute(array($timeline, $personnum, $listennum));
+	    //$this->putCountAvg($timeline, 'listenavg', $personnum, $listennum);
 	    return $flag;
 	}
 	
@@ -120,7 +121,6 @@ class Analytics extends ModelBase
 	    $sql = "replace into `daylisten` (`timeline`, `personnum`, `totalnum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $flag = $st->execute(array($timeline, $personnum, $listennum));
-	    $this->putCountAvg($timeline, 'listenavg', $personnum, $listennum);
 	    return $flag;
 	}
 	
@@ -140,6 +140,7 @@ class Analytics extends ModelBase
 	    $sql = "replace into `countdown` (`timeline`, `personnum`, `downnum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $flag = $st->execute(array($timeline, $personnum, $downnum));
+	    //$this->putCountAvg($timeline, 'downavg', $personnum, $downnum);
 	    return $flag;
 	}
 	
@@ -159,7 +160,6 @@ class Analytics extends ModelBase
 	    $sql = "replace into `daydown` (`timeline`, `personnum`, `totalnum`) values(?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $flag = $st->execute(array($timeline, $personnum, $downnum));
-	    $this->putCountAvg($timeline, 'downavg', $personnum, $downnum);
 	    return $flag;
 	}
 	
@@ -179,6 +179,7 @@ class Analytics extends ModelBase
 		$sql = "replace into `countcomment` (`timeline`, `personnum`, `commentnum`) values(?, ?, ?)";
 		$st = $db->prepare($sql);
 		$flag = $st->execute(array($timeline, $personnum, $commentnum));
+		//$this->putCountAvg($timeline, 'commentavg', $personnum, $commentnum);
 		return $flag;
 	}
 	
@@ -198,7 +199,6 @@ class Analytics extends ModelBase
 		$sql = "replace into `daycomment` (`timeline`, `personnum`, `totalnum`, `actionalbumnum`) values(?, ?, ?, ?, ?)";
 		$st = $db->prepare($sql);
 		$flag = $st->execute(array($timeline, $personnum, $commentnum, $actionalbumnum));
-		$this->putCountAvg($timeline, 'commentavg', $personnum, $commentnum);
 		return $flag;
 	}
 	
@@ -218,7 +218,7 @@ class Analytics extends ModelBase
 		$sql = "replace into `countreg` (`timeline`, `personnum`) values(?, ?)";
 		$st = $db->prepare($sql);
 		$flag = $st->execute(array($timeline, $personnum));
-		$this->putCountAvg($timeline, 'regavg', $personnum, $personnum);
+		//$this->putCountAvg($timeline, 'regavg', $personnum, $personnum);
 		return $flag;
 	}
 	

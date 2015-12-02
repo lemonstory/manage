@@ -18,13 +18,13 @@ class cron_analytcsBooter extends DaemonBase {
 		$list = array(
 		        //'analytics/cron_analyticsCommentDay.php',
 		        //'analytics/cron_analyticsCommentHour.php',
-		        //'analytics/cron_analyticsDownDay.php',
-		        //'analytics/cron_analyticsDownHour.php',
+		        'analytics/cron_analyticsDownDay.php',
+		        'analytics/cron_analyticsDownHour.php',
 		        'analytics/cron_analyticsFavDay.php',
 		        'analytics/cron_analyticsFavHour.php',
-		        //'analytics/cron_analyticsListenDay.php',
-		        //'analytics/cron_analyticsListenHour.php',
-		        //'analytics/cron_analyticsRegHour.php'
+		        'analytics/cron_analyticsListenDay.php',
+		        'analytics/cron_analyticsListenHour.php',
+		        'analytics/cron_analyticsRegHour.php'
 		        );
 		return $list;
 	}
