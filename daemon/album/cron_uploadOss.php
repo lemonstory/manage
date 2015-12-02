@@ -7,6 +7,7 @@ class cron_uploadOss extends DaemonBase
 {
     protected $home_url = 'http://m.idaddy.cn/mobile.php?etr=touch&mod=freeAudio&hidden=';
     protected $processnum = 1;
+    protected $isWhile = false;
     protected function deal() {
         $this->uploadOss();
         exit;
