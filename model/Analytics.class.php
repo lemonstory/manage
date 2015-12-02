@@ -196,7 +196,7 @@ class Analytics extends ModelBase
 			return false;
 		}
 		$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-		$sql = "replace into `daycomment` (`timeline`, `personnum`, `totalnum`, `actionalbumnum`) values(?, ?, ?, ?, ?)";
+		$sql = "replace into `daycomment` (`timeline`, `personnum`, `totalnum`, `actionalbumnum`) values(?, ?, ?, ?)";
 		$st = $db->prepare($sql);
 		$flag = $st->execute(array($timeline, $personnum, $commentnum, $actionalbumnum));
 		return $flag;
