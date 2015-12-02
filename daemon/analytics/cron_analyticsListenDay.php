@@ -11,7 +11,7 @@ class cron_analyticsListenDay extends DaemonBase {
         $list = $alislsobj->listenStoryCountDay($day);
         
         $personnum = $list['usercount'];
-        $listennum = $list['listennum'];
+        $listennum = $list['listencount'];
         $analytics = new Analytics();
         $flag = $analytics->putAnalyticsListenDay($timeline, $personnum, $listennum);
     }
