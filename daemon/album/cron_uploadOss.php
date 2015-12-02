@@ -54,6 +54,7 @@ class cron_uploadOss extends DaemonBase
                         $album->update(array('cover' => $r, 'cover_time' => time()), "`s_cover`='{$v['s_cover']}' and `cover`=''");
                         $image_cache[$v['s_cover']] = $r;
                         $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
+                        $album->clearAlbumCache($v['id']);
                     } else {
                         $this->writeLog("专辑封面 {$v['id']} => cover 更新失败");
                     }
@@ -74,7 +75,7 @@ class cron_uploadOss extends DaemonBase
                     $this->writeLog("故事封面 {$v['id']} => cover 默认图片");
                 } else {
                     if (isset($image_cache[$v['s_cover']])) {
-                    $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
+                        $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
                     } else {
                         $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
                         if (is_string($r)) {
@@ -82,6 +83,8 @@ class cron_uploadOss extends DaemonBase
                             $story->update(array('cover' => $r, 'cover_time' => time()), "`cover` = '' and `s_cover`='{$v['s_cover']}'");
                             $image_cache[$v['s_cover']] = $r;
                             $this->writeLog("故事封面 {$v['id']} => cover 更新成功");
+                            $story->clearAlbumStoryListCache($v['album_id']);
+                            $story->clearStoryCache($v['id']);
                         } else {
                             $this->writeLog("故事封面 {$v['id']} => cover 更新失败");
                         }
