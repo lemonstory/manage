@@ -62,7 +62,8 @@
 						        <th>所属专辑</th>
                                 <th>封面</th>
 						        <th>添加时间</th>
-						        <th>能否播放</th>
+                                <th>能否播放</th>
+						        <th>排序</th>
 						        <th>状态</th>
 						        <th>操作</th>
                             </tr>
@@ -87,6 +88,9 @@
                                         <audio class="span7" src="http://mf.xiaoningmeng.net/{$value.mediapath}" controls="controls">Your browser does not support the audio element.</audio>
                                         
                                     {/if}
+                                </td>
+                                <td>
+                                    <input type="text" name="view_order" class="form-control" op_id="{$value.id}" old_val="{$value.view_order}" value="{$value.view_order}" style="width: 60px;" />
                                 </td>
                                 <td>
                                     {if $value.status eq '0'}已删除
@@ -171,6 +175,29 @@ $(function() {
                 alert(json.desc);
             }
     	},'json')
+    })
+
+    $("[name='view_order']").on('change', function(){
+        var old_val = parseInt($(this).attr('old_val'));
+        var op_id   = parseInt($(this).attr('op_id'));
+        var new_val = parseInt($(this).val());
+        if (old_val == new_val) {
+            alert('没有变化');
+            return false;
+        } else {
+            var data = {};
+            data.op_name = 'view_order';
+            data.op_id   = op_id;
+            data.value   = new_val;
+            $.post('/album/story_op.php', data, function(json){
+                if (json && json.code == 10000) {
+                    alert('操作成功');
+                    window.location.reload();
+                } else {
+                    alert(json);
+                }
+            },'json');
+        }
     })
 
     $("#list-filter").on('click', function(e){

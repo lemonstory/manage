@@ -35,6 +35,9 @@ class story_op extends controller
         } else if ($op_name == 'removealbum') {
             $story = new Story();
             $story->update(array('album_id' => 0), "`id`={$op_id}");
+        } else if ($op_name == 'view_order') {
+            $value = (int)$this->getRequest('value', 0);
+            $story->update(array('view_order' => $value), "`id`={$op_id}");
         }
         // 清除专辑故事列表缓存
         $story->clearAlbumStoryListCache($storyinfo['album_id']);
