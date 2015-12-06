@@ -28,7 +28,7 @@ class index extends controller
 
         if ($uid) {
             $searchFilter['uid'] = $uid;
-            $where[] = "`uid` = {$uid} ";
+            $where[] = "`userid` = {$uid} ";
             $baseUri .= "&uid={$uid}";
         }
 
