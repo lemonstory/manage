@@ -9,6 +9,7 @@ class index extends controller
         $perPage     = $this->getRequest('perPage', 20) + 0;
         $content     = $this->getRequest('content', '');
         $albumid     = (int)$this->getRequest('albumid', 0);
+        $uid         = (int)$this->getRequest('uid', 0);
         $status      = (int)$this->getRequest('status', -1);
         $baseUri     = "/comment/commentlist.php?perPage={$perPage}";
 
@@ -24,6 +25,12 @@ class index extends controller
         } 
         if (empty($perPage)) {
             $perPage = 20;
+        }
+
+        if ($uid) {
+            $searchFilter['uid'] = $uid;
+            $where[] = "`uid` = {$uid} ";
+            $baseUri .= "&uid={$uid}";
         }
 
         if ($albumid) {
