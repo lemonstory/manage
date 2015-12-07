@@ -16,6 +16,7 @@
 	<script src="/static/bootstrap/js/bootstrap.min.js"></script>
 	<script src="/static/assets/scripts.js"></script>
 </head>
+{php}$privObj = new ManagePrivilege(){/php}
 <body>
     <!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -55,8 +56,13 @@
                     </ul>
                     <ul class="nav">
                         <li class="{$indexactive}"><a href="/index.php">首页</a></li>
+                        {php}if ($privObj->checkPrivilege('privilege')){{/php}
                         <li class="{$privilege}"><a href="/privilege/userlist.php">权限管理</a></li>
+                        {php}}{/php}
+                        {php}if ($privObj->checkPrivilege('user')){{/php}
                         <li class="{$useractive}"><a href="/user/getuserlist.php">用户管理</a></li>
+                        {php}}{/php}
+                        {php}if ($privObj->checkPrivilege('album')){{/php}
                         <li class="dropdown {$albumactive}{$storyactive}">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">专辑故事 <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="menu1">
@@ -64,6 +70,8 @@
                                 <li class="{$storyactive}"><a href="/album/storylist.php">故事管理</a></li>
                             </ul>
                         </li>
+                        {php}}{/php}
+                        {php}if ($privObj->checkPrivilege('comment')){{/php}
                         <li class="dropdown {$commentlistactive}{$commentcollectionactive}{$tagactive}">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">评论管理 <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="menu1">
@@ -71,7 +79,10 @@
                                 <li class="{$tagactive}"><a href="/comment/taglist.php">标签管理</a></li>
                             </ul>
                         </li>
+                        {php}}{/php}
+                        {php}if ($privObj->checkPrivilege('analytics')){{/php}
                         <li class="{$analyticsactive}"><a href="/analytics/searchcontentlist.php">统计管理</a></li>
+                        {php}}{/php}
                     </ul>
                 </div>
                 <!--/.nav-collapse -->
@@ -84,39 +95,107 @@
 			    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
 			         {if $indexactive}
 				         <li class="{$indexside}"><a href="/index.php"><i class="icon-chevron-right"></i>首页</a></li>
-				         <li class="{$focusside}"><a href="/system/focuslist.php"><i class="icon-chevron-right"></i>焦点图</a></li>
-				         <li class="{$hotrecommendside}"><a href="/system/hotrecommendlist.php"><i class="icon-chevron-right"></i>热门推荐</a></li>
-				         <li class="{$sameageside}"><a href="/system/sameagelist.php"><i class="icon-chevron-right"></i>同龄在听</a></li>
-				         <li class="{$newonlineside}"><a href="/system/newonlinelist.php"><i class="icon-chevron-right"></i>最新上架</a></li>
-				         <li class="{$rankuserlistenside}"><a href="/system/rankuserlistenlist.php"><i class="icon-chevron-right"></i>学霸排行榜</a></li>
+				         {php}if ($privObj->checkPrivilege('system')){{/php}
+				             {php}if ($privObj->checkPrivilege('system.focuslist')){{/php}
+					         <li class="{$focusside}"><a href="/system/focuslist.php"><i class="icon-chevron-right"></i>焦点图</a></li>
+					         {php}}{/php}
+					         {php}if ($privObj->checkPrivilege('system.hotrecommendlist')){{/php}
+					         <li class="{$hotrecommendside}"><a href="/system/hotrecommendlist.php"><i class="icon-chevron-right"></i>热门推荐</a></li>
+					         {php}}{/php}
+					         {php}if ($privObj->checkPrivilege('system.sameagelist')){{/php}
+					         <li class="{$sameageside}"><a href="/system/sameagelist.php"><i class="icon-chevron-right"></i>同龄在听</a></li>
+					         {php}}{/php}
+					         {php}if ($privObj->checkPrivilege('system.newonlinelist')){{/php}
+					         <li class="{$newonlineside}"><a href="/system/newonlinelist.php"><i class="icon-chevron-right"></i>最新上架</a></li>
+					         {php}}{/php}
+					         {php}if ($privObj->checkPrivilege('system.rankuserlistenlist')){{/php}
+					         <li class="{$rankuserlistenside}"><a href="/system/rankuserlistenlist.php"><i class="icon-chevron-right"></i>学霸排行榜</a></li>
+					         {php}}{/php}
+				         {php}}{/php}
 			         {elseif $privilege}
-				         <li class="{$userlistside}"><a href="/privilege/userlist.php"><i class="icon-chevron-right"></i>管理员</a></li>
-				         <li class="{$grouplistside}"><a href="/privilege/grouplist.php"><i class="icon-chevron-right"></i>管理组</a></li>
-				         <li class="{$listside}"><a href="/privilege/list.php"><i class="icon-chevron-right"></i>标记列表</a></li>
+			             {php}if ($privObj->checkPrivilege('privilege')){{/php}
+			                 {php}if ($privObj->checkPrivilege('privilege.userlist')){{/php}
+					         <li class="{$userlistside}"><a href="/privilege/userlist.php"><i class="icon-chevron-right"></i>管理员</a></li>
+					         {php}}{/php}
+					         {php}if ($privObj->checkPrivilege('privilege.grouplist')){{/php}
+					         <li class="{$grouplistside}"><a href="/privilege/grouplist.php"><i class="icon-chevron-right"></i>管理组</a></li>
+					         {php}}{/php}
+					         {php}if ($privObj->checkPrivilege('privilege.list')){{/php}
+					         <li class="{$listside}"><a href="/privilege/list.php"><i class="icon-chevron-right"></i>标记列表</a></li>
+					         {php}}{/php}
+				         {php}}{/php}
 			         {elseif $useractive}
-			             <li class="{$getuserlistside}"><a href="/user/getuserlist.php"><i class="icon-chevron-right"></i>用户列表</a></li>
-			             <li class="{$getfavlistside}"><a href="/fav/getfavlist.php"><i class="icon-chevron-right"></i>收藏列表</a></li>
-			             <li class="{$getdownloadlistside}"><a href="/download/getdownloadlist.php"><i class="icon-chevron-right"></i>下载列表</a></li>
-			             <li class="{$getlistenlistside}"><a href="/listen/getlistenlist.php"><i class="icon-chevron-right"></i>收听历史</a></li>
-			             <li class="{$userimsilistside}"><a href="/user/userimsilist.php"><i class="icon-chevron-right"></i>用户与设备关联信息</a></li>
-			             <li class="{$userimsiactionlogside}"><a href="/user/userimsiactionlog.php"><i class="icon-chevron-right"></i>用户与设备行为日志</a></li>
-			             <li class="{$userloginlogside}"><a href="/user/userloginlog.php"><i class="icon-chevron-right"></i>用户登录日志</a></li>
-			             <li class="{$systemuserlistside}"><a href="/user/systemuserlist.php"><i class="icon-chevron-right"></i>系统僵尸用户列表</a></li>
-			             <li class="{$feedbackactive}"><a href="/user/feedback.php"><i class="icon-chevron-right"></i>用户反馈</a></li>
+			             {php}if ($privObj->checkPrivilege('user')){{/php}
+			                 {php}if ($privObj->checkPrivilege('user.getuserlist')){{/php}
+				             <li class="{$getuserlistside}"><a href="/user/getuserlist.php"><i class="icon-chevron-right"></i>用户列表</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('fav.getfavlist')){{/php}
+				             <li class="{$getfavlistside}"><a href="/fav/getfavlist.php"><i class="icon-chevron-right"></i>收藏列表</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('download.getdownloadlist')){{/php}
+				             <li class="{$getdownloadlistside}"><a href="/download/getdownloadlist.php"><i class="icon-chevron-right"></i>下载列表</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('listen.getlistenlist')){{/php}
+				             <li class="{$getlistenlistside}"><a href="/listen/getlistenlist.php"><i class="icon-chevron-right"></i>收听历史</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('user.userimsilist')){{/php}
+				             <li class="{$userimsilistside}"><a href="/user/userimsilist.php"><i class="icon-chevron-right"></i>用户与设备关联信息</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('user.userimsiactionlog')){{/php}
+				             <li class="{$userimsiactionlogside}"><a href="/user/userimsiactionlog.php"><i class="icon-chevron-right"></i>用户与设备行为日志</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('user.userloginlog')){{/php}
+				             <li class="{$userloginlogside}"><a href="/user/userloginlog.php"><i class="icon-chevron-right"></i>用户登录日志</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('user.systemuserlist')){{/php}
+				             <li class="{$systemuserlistside}"><a href="/user/systemuserlist.php"><i class="icon-chevron-right"></i>系统僵尸用户列表</a></li>
+				             {php}}{/php}
+				             {php}if ($privObj->checkPrivilege('user.feedback')){{/php}
+				             <li class="{$feedbackactive}"><a href="/user/feedback.php"><i class="icon-chevron-right"></i>用户反馈</a></li>
+				             {php}}{/php}
+			             {php}}{/php}
 			         {elseif ($albumactive || $storyactive)}
-				         <li class="{$albumactive}"><a href="/album/index.php"><i class="icon-chevron-right"></i>专辑列表</a></li>
-				         <li class="{$storyactive}"><a href="/album/storylist.php"><i class="icon-chevron-right"></i>故事列表</a></li>
+			             {php}if ($privObj->checkPrivilege('album')){{/php}
+			                 {php}if ($privObj->checkPrivilege('album.index')){{/php}
+					         <li class="{$albumactive}"><a href="/album/index.php"><i class="icon-chevron-right"></i>专辑列表</a></li>
+					         {php}}{/php}
+					         {php}if ($privObj->checkPrivilege('album.storylist')){{/php}
+					         <li class="{$storyactive}"><a href="/album/storylist.php"><i class="icon-chevron-right"></i>故事列表</a></li>
+					         {php}}{/php}
+				         {php}}{/php}
                      {elseif ($commentlistactive || $commentcollectionactive || $tagactive)}
-                         <li class="{$commentcollectionactive}"><a href="/comment/collection.php"><i class="icon-chevron-right"></i>评论采集</a></li>
-                         <li class="{$commentlistactive}"><a href="/comment/commentlist.php"><i class="icon-chevron-right"></i>评论列表</a></li>
-                         <li class="{$tagactive}"><a href="/comment/taglist.php"><i class="icon-chevron-right"></i>标签列表</a></li>
+                         {php}if ($privObj->checkPrivilege('comment')){{/php}
+                             {php}if ($privObj->checkPrivilege('comment.collection')){{/php}
+	                         <li class="{$commentcollectionactive}"><a href="/comment/collection.php"><i class="icon-chevron-right"></i>评论采集</a></li>
+	                         {php}}{/php}
+	                         {php}if ($privObj->checkPrivilege('comment.commentlist')){{/php}
+	                         <li class="{$commentlistactive}"><a href="/comment/commentlist.php"><i class="icon-chevron-right"></i>评论列表</a></li>
+	                         {php}}{/php}
+	                         {php}if ($privObj->checkPrivilege('comment.taglist')){{/php}
+	                         <li class="{$tagactive}"><a href="/comment/taglist.php"><i class="icon-chevron-right"></i>标签列表</a></li>
+	                         {php}}{/php}
+                         {php}}{/php}
                      {elseif $analyticsactive}
-                         <li class="{$searchcontentlistside}"><a href="/analytics/searchcontentlist.php"><i class="icon-chevron-right"></i>搜索关键词统计</a></li>
-                         <li class="{$analyticsregside}"><a href="/analytics/analyticsreg.php"><i class="icon-chevron-right"></i>注册用户统计</a></li>
-                         <li class="{$analyticsfavside}"><a href="/analytics/analyticsfav.php"><i class="icon-chevron-right"></i>收藏统计</a></li>
-                         <li class="{$analyticslistenside}"><a href="/analytics/analyticslisten.php"><i class="icon-chevron-right"></i>收听历史统计</a></li>
-                         <li class="{$analyticsdownside}"><a href="/analytics/analyticsdown.php"><i class="icon-chevron-right"></i>下载统计</a></li>
-                         <li class="{$analyticscommentside}"><a href="/analytics/analyticscomment.php"><i class="icon-chevron-right"></i>评论统计</a></li>
+                         {php}if ($privObj->checkPrivilege('analytics')){{/php}
+                             {php}if ($privObj->checkPrivilege('analytics.searchcontentlist')){{/php}
+	                         <li class="{$searchcontentlistside}"><a href="/analytics/searchcontentlist.php"><i class="icon-chevron-right"></i>搜索关键词统计</a></li>
+	                         {php}}{/php}
+	                         {php}if ($privObj->checkPrivilege('analytics.analyticsreg')){{/php}
+	                         <li class="{$analyticsregside}"><a href="/analytics/analyticsreg.php"><i class="icon-chevron-right"></i>注册用户统计</a></li>
+	                         {php}}{/php}
+	                         {php}if ($privObj->checkPrivilege('analytics.analyticsfav')){{/php}
+	                         <li class="{$analyticsfavside}"><a href="/analytics/analyticsfav.php"><i class="icon-chevron-right"></i>收藏统计</a></li>
+	                         {php}}{/php}
+	                         {php}if ($privObj->checkPrivilege('analytics.analyticslisten')){{/php}
+	                         <li class="{$analyticslistenside}"><a href="/analytics/analyticslisten.php"><i class="icon-chevron-right"></i>收听历史统计</a></li>
+	                         {php}}{/php}
+	                         {php}if ($privObj->checkPrivilege('analytics.analyticsdown')){{/php}
+	                         <li class="{$analyticsdownside}"><a href="/analytics/analyticsdown.php"><i class="icon-chevron-right"></i>下载统计</a></li>
+	                         {php}}{/php}
+	                         {php}if ($privObj->checkPrivilege('analytics.analyticscomment')){{/php}
+	                         <li class="{$analyticscommentside}"><a href="/analytics/analyticscomment.php"><i class="icon-chevron-right"></i>评论统计</a></li>
+	                         {php}}{/php}
+                         {php}}{/php}
 			         {/if}
 			    </ul>
 			</div>
