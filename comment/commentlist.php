@@ -51,9 +51,7 @@ class index extends controller
 
         $manageCommentObj = new ManageComment();
         $commentList = $manageCommentObj->getCommentList($where, $currentPage + 1, $perPage);
-        if(empty($commentList)) {
-            exit("评论数据为空");
-        }
+
         $totalCount = $manageCommentObj->getCommentTotalCount($where);
         
         if ($totalCount > $perPage) {
