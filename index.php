@@ -21,25 +21,33 @@ class index extends controller
         if (empty($uid)) {
             $this->redirect('/user/login.php');
         }
+        $anobj = new Analytics();
         
-        // 用户总数
-        
-        // 新增用户数、按天图表
-        
-        // 收听故事量、按天图表
-        
-        // 用户收藏故事专辑量、按天图表
-        
-        // 用户下载故事量、按天图表
+        // 今日新增
+        $nowdaystime = date("Y-m-d 00:00:00", time());
+        $nowdayetime = $nowdaystime + 86400;
+        $favlist = $anobj->getAnalyticsDayList("fav", $nowdaystime, $nowdayetime);
         
         
-        // 专辑总数
-        // 故事总数
+        
+        // 新增注册用户数、对比昨天增长百分比、上周对比增长百分比
+        
+        // 收听故事量
+        
+        // 用户收藏故事专辑量
+        
+        // 用户下载故事量
         
         // 评论总数
         
+        // 专辑总数
+        
+        // 故事总数
+        
+        
         // 用户反馈总数
-		// 待回复总数
+        
+        // 待回复总数
         
         $smartyobj = $this->getSmartyObj();
         $smartyobj->assign("indexactive", "active");
