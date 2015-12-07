@@ -40,7 +40,7 @@ class analyticsfav extends controller
         $smartyobj->assign('list', $list);
         $smartyobj->assign('data', $data);
         $smartyobj->assign('analyticsactive', "active");
-        $smartyobj->assign('analyticsfav', 'active');
+        $smartyobj->assign('analyticsfavside', 'active');
         $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display('analytics/analyticsfav.html');
     }
