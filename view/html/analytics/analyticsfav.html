@@ -9,14 +9,14 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/analytics/analyticsfav.php">
+                    <form class="form-horizontal" method="get" action="/analytics/analyticsfav.php">
                         <fieldset>
                             <legend>搜索查询</legend>
                             <div class="control-group">
                                 <label class="control-label">类型</label>
                                 <div class="controls">
                                     <select id="selectError" name="showflag">
-                                        <option {if $showflag=="ndaylist"}selected{/if} value="fbl">收藏量</option>
+                                        <option {if $showflag=="ndaylist"}selected{/if} value="ndaylist">收藏量</option>
                                     </select>
                                 </div>
                             </div>
@@ -24,14 +24,14 @@
                             <div class="control-group">
                                 <label class="control-label" for="date01">开始时间</label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" id="stime" value="{$stime}">
+                                    <input type="text" id="date01" class="input-xlarge datepicker" name="stime" value="{$stime}">
                                 </div>
                             </div>
                             
                             <div class="control-group">
-                                <label class="control-label" for="date01">结束时间</label>
+                                <label class="control-label" for="date02">结束时间</label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" id="etime" value="{$etime}">
+                                    <input type="text" id="date02" class="input-xlarge datepicker" name="etime" value="{$etime}">
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -52,7 +52,7 @@
         <div class="block">
             <div class="navbar navbar-inner block-header">
                 <div class="muted pull-left">统计曲线图</div>
-                <div class="pull-right"><span class="badge badge-warning">更多</span></div>
+                <div class="pull-right"><span class="badge badge-warning"></span></div>
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
@@ -66,26 +66,34 @@
 </div>
 
 <!--/.fluid-container-->
+<link href="/static/vendors/datepicker.css" rel="stylesheet" media="screen">
 <link rel="stylesheet" href="/static/vendors/morris/morris.css">
+<script src="/static/vendors/bootstrap-datepicker.js"></script>
 <script src="/static/vendors/raphael-min.js"></script>
 <script src="/static/vendors/morris/morris.min.js"></script>
 <script>
+var datajson = {$data};
 {literal}
 // Morris Area Chart
 Morris.Area({
     element: 'hero-area',
-    data: [
+    /*data: [
         {'period': '2013-03-01', 'totalnum': 100, 'personnum': 300},
         {'period': '2013-03-02', 'totalnum': 2778, 'personnum': 1969},
         //{period: '2010 Q4', iphone: 3767, ipad: 3597, itouch: 5689},
         
-    ],
+    ],*/
+    data: datajson,
     xkey: 'period',
-    ykeys: ['totalnum', 'personnum'],
-    labels: ['收藏量', '收藏人数'],
-    lineWidth: 2,
+    ykeys: ['num'],
+    labels: ['收藏量'],
+    lineWidth: 3,
     hideHover: 'auto',
-    lineColors: ["#a6e182", "#67bdf8"]
+    lineColors: ["#67bdf8"]
+});
+
+$(function() {
+    $(".datepicker").datepicker();
 });
 {/literal}
 </script>

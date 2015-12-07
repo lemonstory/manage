@@ -14,10 +14,10 @@ class analyticsfav extends controller
         $stime = $this->getRequest('stime');
         $etime = $this->getRequest('etime');
         if (empty($etime)) {
-            $etime = date("Ymd", time());
+            $etime = date("Y-m-d", time());
         }
         if (empty($stime)) {
-            $stime = date("Ymd", time() - 30 * 86400);
+            $stime = date("Y-m-d", time() - 30 * 86400);
         }
         $showtype = 'fav';
         
@@ -29,13 +29,16 @@ class analyticsfav extends controller
         $data = "";
         foreach ($reslist as $value) {
             $value['timeline'] = date("Y-m-d", strtotime($value['timeline']));
+            $data[] = array("period" => "{$value['timeline']}", "num" => $value['totalnum']+0);
         }
+        $data = json_encode($data);
         
         $smartyobj = $this->getSmartyObj();
         $smartyobj->assign('showflag', $showflag);
         $smartyobj->assign('stime', $stime);
         $smartyobj->assign('etime', $etime);
         $smartyobj->assign('list', $list);
+        $smartyobj->assign('data', $data);
         $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display('analytics/analyticsfav.html');
     }
