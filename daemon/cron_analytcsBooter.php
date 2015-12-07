@@ -24,7 +24,8 @@ class cron_analytcsBooter extends DaemonBase {
 		        'analytics/cron_analyticsFavHour.php',
 		        'analytics/cron_analyticsListenDay.php',
 		        'analytics/cron_analyticsListenHour.php',
-		        'analytics/cron_analyticsRegHour.php'
+		        'analytics/cron_analyticsRegHour.php',
+		        'analytics/cron_analyticsRegDay.php'
 		        );
 		return $list;
 	}

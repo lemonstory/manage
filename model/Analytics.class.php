@@ -203,7 +203,7 @@ class Analytics extends ModelBase
 	}
 	
 	
-	//插入 countpassport
+	//插入 countreg
 	public function putAnalyticsPassportHour($timeline, $personnum)
 	{
 	    if(empty($timeline))
@@ -220,6 +220,24 @@ class Analytics extends ModelBase
 		$flag = $st->execute(array($timeline, $personnum));
 		//$this->putCountAvg($timeline, 'regavg', $personnum, $personnum);
 		return $flag;
+	}
+	
+	//插入 daycomment
+	public function putAnalyticsPassportDay($timeline, $personnum)
+	{
+	    if(empty($timeline))
+	    {
+	        return false;
+	    }
+	    if(empty($personnum))
+	    {
+	        return false;
+	    }
+	    $db = DbConnecter::connectMysql($this->DB_INSTANCE);
+	    $sql = "replace into `dayreg` (`timeline`, `personnum`) values(?, ?)";
+	    $st = $db->prepare($sql);
+	    $flag = $st->execute(array($timeline, $personnum));
+	    return $flag;
 	}
 	
 	
