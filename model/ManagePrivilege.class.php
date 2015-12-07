@@ -111,7 +111,7 @@ class ManagePrivilege extends ModelBase
         $data = array();
         try {
             $db = DbConnecter::connectMysql($this->PRIVILEGE_DB_INSTANCE);
-            $sql = "select uid,name from {$this->PRIVILEGE_ADMIN_TABLE_NAME}".
+            $sql = "select * from {$this->PRIVILEGE_ADMIN_TABLE_NAME}".
                     " order by addtime desc limit {$start}, {$length}";
             $st = $db->prepare($sql);
             $re = $st->execute();
