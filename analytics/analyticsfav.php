@@ -7,9 +7,9 @@ class analyticsfav extends controller
         $showflag = $this->getRequest('showflag');
         if (empty($showflag)) {
             /*
-             * ndaylist    n天内的曲线图 
+             * dayfavnum    n天内的收藏量曲线图 
              */
-            $showflag = 'ndaylist';
+            $showflag = 'dayfavnum';
         }
         $stime = $this->getRequest('stime');
         $etime = $this->getRequest('etime');
@@ -22,7 +22,7 @@ class analyticsfav extends controller
         $showtype = 'fav';
         
         $analytics = new Analytics();
-        if ($showflag == 'ndaylist') {
+        if ($showflag == 'dayfavnum') {
             $reslist = $analytics->getAnalyticsDayList($showtype, $stime, $etime);
         }
         

@@ -17,23 +17,22 @@
                                 <label class="control-label">类型</label>
                                 <div class="controls">
                                     <select id="selectError" name="showflag">
-                                        <option {if $showflag=="fbl"}selected{/if} value="fbl">评论量走势</option>
-                                        <option {if $showflag=="drb"}selected{/if} value="drb">评论量单日对比</option>
+                                        <option {if $showflag=="daycommentnum"}selected{/if} value="daycommentnum">评论量</option>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="control-group">
-                                <label class="control-label" for="date01">开始时间/单日时间</label>
+                                <label class="control-label" for="date01">开始时间</label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" id="stime" value="{$stime}">
+                                    <input type="text" id="date01" class="input-xlarge datepicker" name="stime" value="{$stime}">
                                 </div>
                             </div>
                             
                             <div class="control-group">
-                                <label class="control-label" for="date01">结束时间/单日时间</label>
+                                <label class="control-label" for="date02">结束时间</label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" id="etime" value="{$etime}">
+                                    <input type="text" id="date02" class="input-xlarge datepicker" name="etime" value="{$etime}">
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -67,40 +66,34 @@
 
 </div>
 
-<!--/.fluid-container-->
+<link href="/static/vendors/datepicker.css" rel="stylesheet" media="screen">
 <link rel="stylesheet" href="/static/vendors/morris/morris.css">
-<script src="/static/vendors/jquery.knob.js"></script>
+<script src="/static/vendors/bootstrap-datepicker.js"></script>
 <script src="/static/vendors/raphael-min.js"></script>
 <script src="/static/vendors/morris/morris.min.js"></script>
-<script src="/static/vendors/flot/jquery.flot.js"></script>
-<script src="/static/vendors/flot/jquery.flot.categories.js"></script>
-<script src="/static/vendors/flot/jquery.flot.pie.js"></script>
-<script src="/static/vendors/flot/jquery.flot.time.js"></script>
-<script src="/static/vendors/flot/jquery.flot.stack.js"></script>
-<script src="/static/vendors/flot/jquery.flot.resize.js"></script>
 <script>
+var datajson = {$data};
 {literal}
 // Morris Area Chart
 Morris.Area({
     element: 'hero-area',
-    data: [
-        {period: '2010 Q1', iphone: 2666, ipad: null, itouch: 2647},
-        {period: '2010 Q2', iphone: 2778, ipad: 2294, itouch: 2441},
-        {period: '2010 Q3', iphone: 4912, ipad: 1969, itouch: 2501},
-        {period: '2010 Q4', iphone: 3767, ipad: 3597, itouch: 5689},
-        {period: '2011 Q1', iphone: 6810, ipad: 1914, itouch: 2293},
-        {period: '2011 Q2', iphone: 5670, ipad: 4293, itouch: 1881},
-        {period: '2011 Q3', iphone: 4820, ipad: 3795, itouch: 1588},
-        {period: '2011 Q4', iphone: 15073, ipad: 5967, itouch: 5175},
-        {period: '2012 Q1', iphone: 10687, ipad: 4460, itouch: 2028},
-        {period: '2012 Q2', iphone: 8432, ipad: 5713, itouch: 1791}
-    ],
+    /*data: [
+        {'period': '2013-03-01', 'totalnum': 100, 'personnum': 300},
+        {'period': '2013-03-02', 'totalnum': 2778, 'personnum': 1969},
+        //{period: '2010 Q4', iphone: 3767, ipad: 3597, itouch: 5689},
+        
+    ],*/
+    data: datajson,
     xkey: 'period',
-    ykeys: ['iphone', 'ipad', 'itouch'],
-    labels: ['iPhone', 'iPad', 'iPod Touch'],
-    lineWidth: 2,
+    ykeys: ['num'],
+    labels: ['评论量'],
+    lineWidth: 3,
     hideHover: 'auto',
-    lineColors: ["#81d5d9", "#a6e182", "#67bdf8"]
+    lineColors: ["#67bdf8"]
+});
+
+$(function() {
+    $(".datepicker").datepicker();
 });
 {/literal}
 </script>

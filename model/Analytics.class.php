@@ -258,16 +258,16 @@ class Analytics extends ModelBase
 		        $sql = "select * from dayfav where timeline >= ? and timeline <= ?";
 		        break;
 			case 'listen' :
-				$sql = "select sum(personnum) as pn, sum(listennum) as tn,  substring(timeline,1,8) as tl from countlisten where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
+				$sql = "select * from daylisten where timeline >= ? and timeline <= ?";
 				break;
 			case 'comment' :
-				$sql = "select sum(personnum) as pn, sum(commentnum) as tn, substring(timeline,1,8) as tl from countcomment where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
+				$sql = "select * from daycomment where timeline >= ? and timeline <= ?";
 				break;
 			case 'reg' :
-				$sql = "select sum(personnum) as pn, sum(personnum) as tn,  substring(timeline,1,8) as tl from countreg where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
+				$sql = "select * from dayreg where timeline >= ? and timeline <= ?";
 				break;
 			case 'down' :
-				$sql = "select sum(personnum) as pn, sum(personnum) as tn,  substring(timeline,1,8) as tl from countdown where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
+				$sql = "select * from daydown where timeline >= ? and timeline <= ?";
 				break;
 			case 'countavg' :
 				$sql = "select avg(favavg) as fav, avg(commentavg) as comment, avg(listenavg) as listen, avg(downavg) as down, avg(regavg) as reg, substring(timeline,1,8) as tl from countavg where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
