@@ -75,18 +75,17 @@
 Morris.Area({
     element: 'hero-area',
     data: [
-        {period: '2013-03-01', iphone: 2666},
-        {period: '2013-03-02', iphone: 2778},
-        {period: '2013-03-03', iphone: 4912},
+        {'period': '2013-03-01', 'totalnum': 2666, 'personnum': 1969},
+        {'period': '2013-03-02', 'totalnum': 2778, 'personnum': 1969},
         //{period: '2010 Q4', iphone: 3767, ipad: 3597, itouch: 5689},
         
     ],
     xkey: 'period',
-    ykeys: ['iphone'],
-    labels: ['iPhone'],
+    ykeys: ['totalnum', 'personnum'],
+    labels: ['收藏量', '收藏人数'],
     lineWidth: 2,
     hideHover: 'auto',
-    lineColors: ["#67bdf8"]
+    lineColors: ["#a6e182", "#67bdf8"]
 });
 {/literal}
 </script>

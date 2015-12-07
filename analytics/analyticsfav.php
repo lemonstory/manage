@@ -23,14 +23,19 @@ class analyticsfav extends controller
         
         $analytics = new Analytics();
         if ($showflag == 'ndaylist') {
-            $list = $analytics->getAnalyticsDayList($showtype, $stime, $etime);
+            $reslist = $analytics->getAnalyticsDayList($showtype, $stime, $etime);
         }
-        var_dump($list);
+        
+        $data = "";
+        foreach ($reslist as $value) {
+            $value['timeline'] = date("Y-m-d", strtotime($value['timeline']));
+        }
         
         $smartyobj = $this->getSmartyObj();
         $smartyobj->assign('showflag', $showflag);
         $smartyobj->assign('stime', $stime);
         $smartyobj->assign('etime', $etime);
+        $smartyobj->assign('list', $list);
         $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display('analytics/analyticsfav.html');
     }
