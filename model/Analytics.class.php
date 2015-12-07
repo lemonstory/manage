@@ -223,19 +223,21 @@ class Analytics extends ModelBase
 	}
 	
 	
-	//获取发布量统计数据
-    public function getAnalyticsCount($showtype, $stime='', $etime='')
+	//获取n天内统计列表数据
+    public function getAnalyticsDayList($showtype, $stime='', $etime='')
     {
         if (empty($showtype)) {
             return array();
         }
+        $stime = date("Ymd", strtotime($stime));
+        $etime = date("Ymd", strtotime($etime));
         
     	$list = array();
     	$db = DbConnecter::connectMysql($this->DB_INSTANCE);
 		switch ($showtype)
 		{
 		    case 'fav' :
-		        $sql = "select sum(personnum) as pn, sum(favnum) as tn,     substring(timeline,1,8) as tl from countfav where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
+		        $sql = "select * from dayfav where timeline >= ? and timeline <= ?";
 		        break;
 			case 'listen' :
 				$sql = "select sum(personnum) as pn, sum(listennum) as tn,  substring(timeline,1,8) as tl from countlisten where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
@@ -253,39 +255,6 @@ class Analytics extends ModelBase
 				$sql = "select avg(favavg) as fav, avg(commentavg) as comment, avg(listenavg) as listen, avg(downavg) as down, avg(regavg) as reg, substring(timeline,1,8) as tl from countavg where substring(timeline,1,8)>=? and substring(timeline,1,8)<=? group by tl;";
 				break;
 		}
-    	$st = $db->prepare($sql);
-    	$st->execute(array($stime, $etime));
-    	$list = $st->fetchAll(PDO::FETCH_ASSOC);
-    	return $list;
-    }
-    
-    
-    //获取两个单日对比数据
-    public function getAnalyticsCountRast($showtype, $stime, $etime)
-    {
-    	$list = array();
-    	$db = DbConnecter::connectMysql($this->DB_INSTANCE);
-    	switch ($showtype)
-    	{
-    	    case 'fav' : 
-    	        $sql = "select  personnum as pn, topicnum as tn, substring(timeline,9,2) as tl from counttopicvideo where timeline>=? and timeline<=? limit 25 ;";
-    	        break;
-    		case 'listen' :
-    			$sql = "select  personnum as pn, topicnum as tn, substring(timeline,9,2) as tl from counttopic where timeline>=? and timeline<=? limit 25 ;";
-    			break;
-    		case 'comment' :
-    			$sql = "select  personnum as pn, commentnum as tn, substring(timeline,9,2) as tl from countcomment where timeline>=? and timeline<=? limit 25 ;";
-    			break;
-    		case 'reg' :
-    			$sql = "select  personnum as pn, personnum as tn, substring(timeline,9,2) as tl from countreg where timeline>=? and timeline<=? limit 25 ;";
-    			break;
-    		case 'down' :
-    			$sql = "select  personnum as tn, substring(timeline,9,2) as tl from countdown where timeline>=? and timeline<=? limit 25 ;";
-    			break;
-    		case 'countavg' :
-    			$sql = "select * from countavg where timeline>=? and timeline<=? limit 25 ;";
-    			break;
-    	}
     	$st = $db->prepare($sql);
     	$st->execute(array($stime, $etime));
     	$list = $st->fetchAll(PDO::FETCH_ASSOC);

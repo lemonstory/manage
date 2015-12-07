@@ -16,21 +16,20 @@
                                 <label class="control-label">类型</label>
                                 <div class="controls">
                                     <select id="selectError" name="showflag">
-                                        <option {if $showflag=="fbl"}selected{/if} value="fbl">收藏量走势</option>
-                                        <option {if $showflag=="drb"}selected{/if} value="drb">收藏量单日对比</option>
+                                        <option {if $showflag=="ndaylist"}selected{/if} value="fbl">收藏量</option>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="control-group">
-                                <label class="control-label" for="date01">开始时间/单日时间</label>
+                                <label class="control-label" for="date01">开始时间</label>
                                 <div class="controls">
                                     <input type="text" class="input-xlarge datepicker" id="stime" value="{$stime}">
                                 </div>
                             </div>
                             
                             <div class="control-group">
-                                <label class="control-label" for="date01">结束时间/单日时间</label>
+                                <label class="control-label" for="date01">结束时间</label>
                                 <div class="controls">
                                     <input type="text" class="input-xlarge datepicker" id="etime" value="{$etime}">
                                 </div>
@@ -76,18 +75,18 @@
 Morris.Area({
     element: 'hero-area',
     data: [
-        {period: '2013-03-01', iphone: 2666, ipad: null, itouch: 2647},
-        {period: '2013-03-02', iphone: 2778, ipad: 2294, itouch: 2441},
-        {period: '2013-03-03', iphone: 4912, ipad: 1969, itouch: 2501},
+        {period: '2013-03-01', iphone: 2666},
+        {period: '2013-03-02', iphone: 2778},
+        {period: '2013-03-03', iphone: 4912},
         //{period: '2010 Q4', iphone: 3767, ipad: 3597, itouch: 5689},
         
     ],
     xkey: 'period',
-    ykeys: ['iphone', 'ipad', 'itouch'],
-    labels: ['iPhone', 'iPad', 'iPod Touch'],
+    ykeys: ['iphone'],
+    labels: ['iPhone'],
     lineWidth: 2,
     hideHover: 'auto',
-    lineColors: ["#81d5d9", "#a6e182", "#67bdf8"]
+    lineColors: ["#67bdf8"]
 });
 {/literal}
 </script>
