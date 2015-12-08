@@ -4,58 +4,76 @@
 
 <div class="span9" id="content">
     <div class="row-fluid">
-        <!-- <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Success</h4>
-            The operation completed successfully</div>
-            <div class="navbar">
-                <div class="navbar-inner">
-                    <ul class="breadcrumb">
-                        <i class="icon-chevron-left hide-sidebar"><a href='#' title="Hide Sidebar" rel='tooltip'>&nbsp;</a></i>
-                        <i class="icon-chevron-right show-sidebar" style="display:none;"><a href='#' title="Show Sidebar" rel='tooltip'>&nbsp;</a></i>
-                        <li>
-                            <a href="#">Dashboard</a> <span class="divider">/</span>    
-                        </li>
-                        <li>
-                            <a href="#">Settings</a> <span class="divider">/</span> 
-                        </li>
-                        <li class="active">Tools</li>
-                    </ul>
-                </div>
-            </div>
-        </div> -->
     <div class="row-fluid">
         <!-- block -->
         <div class="block">
             <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">与昨日同比数据</div>
+                <div class="muted pull-left">与昨日同比</div>
                 <div class="pull-right"><span class="badge badge-warning"></span></div>
             </div>
             <div class="block-content collapse in">
                 <div class="span3">
-                    <div class="chart" data-percent="{$rastlist.tolastdayregrast}">{$rastlist.tolastdayregrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.regrast}">{$lastdayrastlist.regrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">注册用户</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$rastlist.tolastdayfavrast}">{$rastlist.tolastdayfavrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.favrast}">{$lastdayrastlist.favrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">收藏故事辑</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$rastlist.tolastdaycommentrast}">{$rastlist.tolastdaycommentrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.commentrast}">{$lastdayrastlist.commentrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">评论故事辑</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$rastlist.tolastdaylistenrast}">{$rastlist.tolastdaylistenrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.listenrast}">{$lastdayrastlist.listenrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">收听故事</span></div>
                 </div>
+            </div>
+            <div class="block-content collapse in">
                 <div class="span3">
-                    <div class="chart" data-percent="{$rastlist.tolastdaydownrast}">{$rastlist.tolastdaydownrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.downrast}">{$lastdayrastlist.downrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">下载故事</span></div>
                 </div>
             </div>
         </div>
         <!-- /block -->
     </div>
+    
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">与上周同比</div>
+                <div class="pull-right"><span class="badge badge-warning"></span></div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span3">
+                    <div class="chart" data-percent="{$lastweekrastlist.regrast}">{$lastweekrastlist.regrast}%</div>
+                    <div class="chart-bottom-heading"><span class="label label-info">注册用户</span></div>
+                </div>
+                <div class="span3">
+                    <div class="chart" data-percent="{$lastweekrastlist.favrast}">{$lastweekrastlist.favrast}%</div>
+                    <div class="chart-bottom-heading"><span class="label label-info">收藏故事辑</span></div>
+                </div>
+                <div class="span3">
+                    <div class="chart" data-percent="{$lastweekrastlist.commentrast}">{$lastweekrastlist.commentrast}%</div>
+                    <div class="chart-bottom-heading"><span class="label label-info">评论故事辑</span></div>
+                </div>
+                <div class="span3">
+                    <div class="chart" data-percent="{$lastweekrastlist.listenrast}">{$lastweekrastlist.listenrast}%</div>
+                    <div class="chart-bottom-heading"><span class="label label-info">收听故事</span></div>
+                </div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span3">
+                    <div class="chart" data-percent="{$lastweekrastlist.downrast}">{$lastweekrastlist.downrast}%</div>
+                    <div class="chart-bottom-heading"><span class="label label-info">下载故事</span></div>
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
     <div class="row-fluid">
         <div class="span6">
             <!-- block -->

@@ -21,47 +21,113 @@ class index extends controller
         if (empty($uid)) {
             $this->redirect('/user/login.php');
         }
+        
         $anobj = new Analytics();
+        $nowdaystime = date("Ymd", time());
+        $nowdayetime = date("Ymd", strtotime($nowdaystime) + 86400);
+        $lastdaystime = date("Ymd", strtotime($nowdaystime) - 86400);
+        $lastweekstime = date("Ymd", strtotime($nowdaystime) - 7 * 86400);
         
-        // 今日日统计数据
-        $nowdaystime = date("Y-m-d 00:00:00", time());
-        $nowdayetime = $nowdaystime + 86400;
-        $nowdayfavlist = $anobj->getAnalyticsDayList("fav", $nowdaystime, $nowdayetime);
-        $nowdaylistenlist = $anobj->getAnalyticsDayList("listen", $nowdaystime, $nowdayetime);
-        $nowdaycommentlist = $anobj->getAnalyticsDayList("comment", $nowdaystime, $nowdayetime);
-        $nowdayreglist = $anobj->getAnalyticsDayList("reg", $nowdaystime, $nowdayetime);
-        $nowdaydownlist = $anobj->getAnalyticsDayList("down", $nowdaystime, $nowdayetime);
+        // 获取7天内的统计数据
+        $sevendayfavlist = $anobj->getAnalyticsDayList("fav", $lastweekstime, $nowdayetime);
+        $sevendaylistenlist = $anobj->getAnalyticsDayList("listen", $lastweekstime, $nowdayetime);
+        $sevendaycommentlist = $anobj->getAnalyticsDayList("comment", $lastweekstime, $nowdayetime);
+        $sevendayreglist = $anobj->getAnalyticsDayList("reg", $lastweekstime, $nowdayetime);
+        $sevendaydownlist = $anobj->getAnalyticsDayList("down", $lastweekstime, $nowdayetime);
         
-        // 昨日日统计数据
-        $lastdaystime = $nowdaystime - 86400;
-        $lastdayetime = $nowdaystime;
-        $lastdayfavlist = $anobj->getAnalyticsDayList("fav", $lastdaystime, $lastdayetime);
-        $lastdaylistenlist = $anobj->getAnalyticsDayList("listen", $lastdaystime, $lastdayetime);
-        $lastdaycommentlist = $anobj->getAnalyticsDayList("comment", $lastdaystime, $lastdayetime);
-        $lastdayreglist = $anobj->getAnalyticsDayList("reg", $lastdaystime, $lastdayetime);
-        $lastdaydownlist = $anobj->getAnalyticsDayList("down", $lastdaystime, $lastdayetime);
+//         $nowdayfavcount = $nowdayfavlist['totalnum'];
+//         $nowdaylistencount = $nowdaylistenlist['totalnum'];
+//         $nowdaycommentcount = $nowdaycommentlist['totalnum'];
+//         $nowdayregcount = $nowdayreglist['personnum'];
         
+        $nowdayfavcount = $lastdayfavcount = $lastweekfavcount = 0;
+        if (!empty($sevendayfavlist)) {
+            foreach ($sevendayfavlist as $info) {
+                $timeline = $info['timeline'];
+                if ($timeline == $nowdaystime) {
+                    // 今日日统计数据
+                    $nowdayfavcount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastdaystime) {
+                    // 昨日日统计数据
+                    $lastdayfavcount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastweekstime) {
+                    // 上周同日统计数据
+                    $lastweekfavcount = $info['totalnum'] + 0;
+                }
+            }
+        }
         
-        $nowdayfavcount = $nowdayfavlist['totalnum'];
-        $nowdaylistencount = $nowdaylistenlist['totalnum'];
-        $nowdaycommentcount = $nowdaycommentlist['totalnum'];
-        $nowdayregcount = $nowdayreglist['personnum'];
-        $nowdaydowncount = $nowdaydownlist['totalnum'];
+        $nowdaylistencount = $lastdaylistencount = $lastweeklistencount = 0;
+        if (!empty($sevendaylistenlist)) {
+            foreach ($sevendaylistenlist as $info) {
+                $timeline = $info['timeline'];
+                if ($timeline == $nowdaystime) {
+                    $nowdaylistencount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastdaystime) {
+                    $lastdaylistencount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastweekstime) {
+                    $lastweeklistencount = $info['totalnum'] + 0;
+                }
+            }
+        }
         
-        $lastdayfavcount = $lastdayfavlist['totalnum'];
-        $lastdaylistencount = $lastdaylistenlist['totalnum'];
-        $lastdaycommentcount = $lastdaycommentlist['totalnum'];
-        $lastdayregcount = $lastdayreglist['personnum'];
-        $lastdaydowncount = $lastdaydownlist['totalnum'];
+        $nowdaycommentcount = $lastdaycommentcount = $lastweekcommentcount = 0;
+        if (!empty($sevendaycommentlist)) {
+            foreach ($sevendaycommentlist as $info) {
+                $timeline = $info['timeline'];
+                if ($timeline == $nowdaystime) {
+                    $nowdaycommentcount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastdaystime) {
+                    $lastdaycommentcount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastweekstime) {
+                    $lastweekcommentcount = $info['totalnum'] + 0;
+                }
+            }
+        }
         
+        $nowdayregcount = $lastdayregcount = $lastweekregcount = 0;
+        if (!empty($sevendayreglist)) {
+            foreach ($sevendayreglist as $info) {
+                $timeline = $info['timeline'];
+                if ($timeline == $nowdaystime) {
+                    $nowdayregcount = $info['personnum'] + 0;
+                } elseif ($timeline == $lastdaystime) {
+                    $lastdayregcount = $info['personnum'] + 0;
+                } elseif ($timeline == $lastweekstime) {
+                    $lastweekregcount = $info['personnum'] + 0;
+                }
+            }
+        }
         
-        // 计算增长或下降率
-        $rastlist = array();
-        $rastlist['tolastdayfavrast'] = number_format((($nowdayfavcount / $lastdayfavcount) - 1), 2) * 100;
-        $rastlist['tolastdaylistenrast'] = number_format((($nowdaylistencount / $lastdaylistencount) - 1), 2) * 100;
-        $rastlist['tolastdaycommentrast'] = number_format((($nowdaycommentcount / $lastdaycommentcount) - 1), 2) * 100;
-        $rastlist['tolastdayregrast'] = number_format((($nowdayregcount / $lastdayregcount) - 1), 2) * 100;
-        $rastlist['tolastdaydownrast'] = number_format((($nowdaydowncount / $lastdaydowncount) - 1), 2) * 100;
+        $nowdaydowncount = $lastdaydowncount = $lastweekdowncount = 0;
+        if (!empty($sevendaydownlist)) {
+            foreach ($sevendaydownlist as $info) {
+                $timeline = $info['timeline'];
+                if ($timeline == $nowdaystime) {
+                    $nowdaydowncount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastdaystime) {
+                    $lastdaydowncount = $info['totalnum'] + 0;
+                } elseif ($timeline == $lastweekstime) {
+                    $lastweekdowncount = $info['totalnum'] + 0;
+                }
+            }
+        }
+        
+        // 计算昨日对比增长或下降率
+        $lastdayrastlist = array();
+        $lastdayrastlist['favrast'] = number_format((($nowdayfavcount / $lastdayfavcount) - 1), 2) * 100;
+        $lastdayrastlist['listenrast'] = number_format((($nowdaylistencount / $lastdaylistencount) - 1), 2) * 100;
+        $lastdayrastlist['commentrast'] = number_format((($nowdaycommentcount / $lastdaycommentcount) - 1), 2) * 100;
+        $lastdayrastlist['regrast'] = number_format((($nowdayregcount / $lastdayregcount) - 1), 2) * 100;
+        $lastdayrastlist['downrast'] = number_format((($nowdaydowncount / $lastdaydowncount) - 1), 2) * 100;
+        
+        // 计算上周同比增长或下降率
+        $lastweekrastlist = array();
+        $lastweekrastlist['favrast'] = number_format((($nowdayfavcount / $lastweekfavcount) - 1), 2) * 100;
+        $lastweekrastlist['listenrast'] = number_format((($nowdaylistencount / $lastweeklistencount) - 1), 2) * 100;
+        $lastweekrastlist['commentrast'] = number_format((($nowdaycommentcount / $lastweekcommentcount) - 1), 2) * 100;
+        $lastweekrastlist['regrast'] = number_format((($nowdayregcount / $lastweekregcount) - 1), 2) * 100;
+        $lastweekrastlist['downrast'] = number_format((($nowdaydowncount / $lastweekdowncount) - 1), 2) * 100;
         
         
         // 专辑总数
@@ -75,7 +141,8 @@ class index extends controller
         $smartyobj = $this->getSmartyObj();
         $smartyobj->assign("indexactive", "active");
         $smartyobj->assign("indexside", "active");
-        $smartyobj->assign("rastlist", $rastlist);
+        $smartyobj->assign("lastdayrastlist", $lastdayrastlist);
+        $smartyobj->assign("lastweekrastlist", $lastweekrastlist);
         $smartyobj->assign("headerdata", $this->headerCommonData($uid));
         $smartyobj->display("index.html");
     }
