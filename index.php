@@ -43,16 +43,16 @@ class index extends controller
         
         
         $nowdayfavcount = $nowdayfavlist['totalnum'];
-        $nowdaylistencount = $nowdayfavlist['totalnum'];
-        $nowdaycommentcount = $nowdayfavlist['totalnum'];
-        $nowdayregcount = $nowdayfavlist['personnum'];
-        $nowdaydowncount = $nowdayfavlist['totalnum'];
+        $nowdaylistencount = $nowdaylistenlist['totalnum'];
+        $nowdaycommentcount = $nowdaycommentlist['totalnum'];
+        $nowdayregcount = $nowdayreglist['personnum'];
+        $nowdaydowncount = $nowdaydownlist['totalnum'];
         
         $lastdayfavcount = $lastdayfavlist['totalnum'];
-        $lastdaylistencount = $lastdayfavlist['totalnum'];
-        $lastdaycommentcount = $lastdayfavlist['totalnum'];
-        $lastdayregcount = $lastdayfavlist['personnum'];
-        $lastdaydowncount = $lastdayfavlist['totalnum'];
+        $lastdaylistencount = $lastdaylistenlist['totalnum'];
+        $lastdaycommentcount = $lastdaycommentlist['totalnum'];
+        $lastdayregcount = $lastdayreglist['personnum'];
+        $lastdaydowncount = $lastdaydownlist['totalnum'];
         
         
         // 计算增长或下降率
