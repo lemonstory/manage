@@ -26,7 +26,7 @@ class analyticsreg extends controller
         $data = "";
         foreach ($reslist as $value) {
             $value['timeline'] = date("Y-m-d", strtotime($value['timeline']));
-            $data[] = array("period" => "{$value['timeline']}", "num" => $value['totalnum']+0);
+            $data[] = array("period" => "{$value['timeline']}", "num" => $value['personnum']+0);
         }
         $data = json_encode($data);
         
