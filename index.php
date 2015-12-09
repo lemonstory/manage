@@ -35,11 +35,6 @@ class index extends controller
         $sevendayreglist = $anobj->getAnalyticsDayList("reg", $lastweekstime, $nowdayetime);
         $sevendaydownlist = $anobj->getAnalyticsDayList("down", $lastweekstime, $nowdayetime);
         
-//         $nowdayfavcount = $nowdayfavlist['totalnum'];
-//         $nowdaylistencount = $nowdaylistenlist['totalnum'];
-//         $nowdaycommentcount = $nowdaycommentlist['totalnum'];
-//         $nowdayregcount = $nowdayreglist['personnum'];
-        
         $nowdayfavcount = $lastdayfavcount = $lastweekfavcount = 0;
         if (!empty($sevendayfavlist)) {
             foreach ($sevendayfavlist as $info) {

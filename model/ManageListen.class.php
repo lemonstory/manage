@@ -156,13 +156,14 @@ class ManageListen extends ModelBase
         if ($perPage <= 0) {
             $perPage = 50;
         }
-        $offset = ($currentPage - 1) * $perPage;
+        $start = ($currentPage - 1) * $perPage;
+        $end = $start + $perPage - 1;
         
         $list = array();
         $rankkey = RedisKey::getRankListenUserKey();
         $redisobj = AliRedisConnecter::connRedis("rank");
         if (empty($uid)) {
-            $list = $redisobj->zRevRange($rankkey, $offset, $perPage - 1, true);
+            $list = $redisobj->zRevRange($rankkey, $start, $end, true);
         } else {
             $num = $redisobj->zScore($rankkey, $uid);
             $list = array($uid => $num);
@@ -178,5 +179,7 @@ class ManageListen extends ModelBase
         } else {
             $count = 1;
         }
+        
+        return $count;
     }
 }
