@@ -17,7 +17,7 @@ class cron_repairUploadAudio extends DaemonBase
     protected function repairUploadAudio() {
         // 更新故事为本地地址
         $story = new Story();
-        $story_list = $story->get_list("id=2122 and `mediapath`!='' and `times`=0 ", 10);
+        $story_list = $story->get_list("`mediapath`!='' and `times`=0 order by id", 10);
         foreach ($story_list as $k => $v) {
         		$r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
                 if (is_array($r) && $r) {
