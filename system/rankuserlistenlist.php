@@ -32,8 +32,8 @@ class rankuserlistenlist extends controller
         $resultList = $managelistenobj->getRankUserListenListBySearch($uid, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $uids = array();
-            foreach ($resultList as $uid => $num) {
-                $uids[] = $uid;
+            foreach ($resultList as $uidkey => $num) {
+                $uids[] = $uidkey;
             }
             if (!empty($uids)) {
                 $uids = array_unique($uids);
