@@ -13,25 +13,25 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastdayrastlist.regrast}">{$lastdayrastlist.regrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.regrast}" data-symbol="{$lastdayrastlist.regsymbol}">{$lastdayrastlist.regsymbol}{$lastdayrastlist.regrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">注册用户</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastdayrastlist.favrast}">{$lastdayrastlist.favrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.favrast}" data-symbol="{$lastdayrastlist.favsymbol}">{$lastdayrastlist.favsymbol}{$lastdayrastlist.favrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">收藏故事辑</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastdayrastlist.commentrast}">{$lastdayrastlist.commentrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.commentrast}" data-symbol="{$lastdayrastlist.commentsymbol}">{$lastdayrastlist.commentsymbol}{$lastdayrastlist.commentrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">评论故事辑</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastdayrastlist.listenrast}">{$lastdayrastlist.listenrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.listenrast}" data-symbol="{$lastdayrastlist.listensymbol}">{$lastdayrastlist.listensymbol}{$lastdayrastlist.listenrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">收听故事</span></div>
                 </div>
             </div>
             <div class="block-content collapse in">
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastdayrastlist.downrast}">{$lastdayrastlist.downrast}%</div>
+                    <div class="chart" data-percent="{$lastdayrastlist.downrast}" data-symbol="{$lastdayrastlist.downsymbol}">{$lastdayrastlist.downsymbol}{$lastdayrastlist.downrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">下载故事</span></div>
                 </div>
             </div>
@@ -48,25 +48,25 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastweekrastlist.regrast}">{$lastweekrastlist.regrast}%</div>
+                    <div class="chart" data-percent="{$lastweekrastlist.regrast}" data-symbol="{$lastweekrastlist.regsymbol}">{$lastweekrastlist.regsymbol}{$lastweekrastlist.regrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">注册用户</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastweekrastlist.favrast}">{$lastweekrastlist.favrast}%</div>
+                    <div class="chart" data-percent="{$lastweekrastlist.favrast}" data-symbol="{$lastweekrastlist.favsymbol}">{$lastweekrastlist.favsymbol}{$lastweekrastlist.favrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">收藏故事辑</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastweekrastlist.commentrast}">{$lastweekrastlist.commentrast}%</div>
+                    <div class="chart" data-percent="{$lastweekrastlist.commentrast}" data-symbol="{$lastweekrastlist.commentsymbol}">{$lastweekrastlist.commentsymbol}{$lastweekrastlist.commentrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">评论故事辑</span></div>
                 </div>
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastweekrastlist.listenrast}">{$lastweekrastlist.listenrast}%</div>
+                    <div class="chart" data-percent="{$lastweekrastlist.listenrast}" data-symbol="{$lastweekrastlist.listensymbol}">{$lastweekrastlist.listensymbol}{$lastweekrastlist.listenrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">收听故事</span></div>
                 </div>
             </div>
             <div class="block-content collapse in">
                 <div class="span3">
-                    <div class="chart" data-percent="{$lastweekrastlist.downrast}">{$lastweekrastlist.downrast}%</div>
+                    <div class="chart" data-percent="{$lastweekrastlist.downrast}" data-symbol="{$lastweekrastlist.downsymbol}">{$lastweekrastlist.downsymbol}{$lastweekrastlist.downrast}%</div>
                     <div class="chart-bottom-heading"><span class="label label-info">下载故事</span></div>
                 </div>
             </div>
@@ -80,7 +80,15 @@
 {literal}
 $(function() {
     // Easy pie charts
-    $('.chart').easyPieChart({animate: 1000});
+    //$('.chart').easyPieChart({animate: 1000, barColor: "#89DF81"});
+    $('.chart').each(function(i){
+    	var symbol = $(this).attr("data-symbol");
+        if (symbol == "-") {
+        	$(this).easyPieChart({animate: 1000, barColor: "#89DF81"});
+        } else {
+        	$(this).easyPieChart({animate: 1000});
+        }
+    });
 });
 {/literal}
 </script>

@@ -116,6 +116,29 @@ class index extends controller
         $lastdayrastlist['regrast'] = number_format((($nowdayregcount / $lastdayregcount) - 1), 2) * 100;
         $lastdayrastlist['downrast'] = number_format((($nowdaydowncount / $lastdaydowncount) - 1), 2) * 100;
         
+        $lastdayrastlist['favsymbol'] = $lastdayrastlist['listensymbol'] = $lastdayrastlist['commentsymbol'] = $lastdayrastlist['regsymbol'] = $lastdayrastlist['downsymbol'] = "+";
+        if ($lastdayrastlist['favrast'] < 0) {
+            $lastdayrastlist['favsymbol'] = "-";
+        }
+        if ($lastdayrastlist['listenrast'] < 0) {
+            $lastdayrastlist['listensymbol'] = "-";
+        }
+        if ($lastdayrastlist['commentrast'] < 0) {
+            $lastdayrastlist['commentsymbol'] = "-";
+        }
+        if ($lastdayrastlist['regrast'] < 0) {
+            $lastdayrastlist['regsymbol'] = "-";
+        }
+        if ($lastdayrastlist['downrast'] < 0) {
+            $lastdayrastlist['downsymbol'] = "-";
+        }
+        $lastdayrastlist['favrast'] = abs($lastdayrastlist['favrast']);
+        $lastdayrastlist['listenrast'] = abs($lastdayrastlist['listenrast']);
+        $lastdayrastlist['commentrast'] = abs($lastdayrastlist['commentrast']);
+        $lastdayrastlist['regrast'] = abs($lastdayrastlist['regrast']);
+        $lastdayrastlist['downrast'] = abs($lastdayrastlist['downrast']);
+        
+        
         // 计算上周同比增长或下降率
         $lastweekrastlist = array();
         $lastweekrastlist['favrast'] = number_format((($nowdayfavcount / $lastweekfavcount) - 1), 2) * 100;
@@ -124,6 +147,27 @@ class index extends controller
         $lastweekrastlist['regrast'] = number_format((($nowdayregcount / $lastweekregcount) - 1), 2) * 100;
         $lastweekrastlist['downrast'] = number_format((($nowdaydowncount / $lastweekdowncount) - 1), 2) * 100;
         
+        $lastweekrastlist['favsymbol'] = $lastweekrastlist['listensymbol'] = $lastweekrastlist['commentsymbol'] = $lastweekrastlist['regsymbol'] = $lastweekrastlist['downsymbol'] = "+";
+        if ($lastweekrastlist['favrast'] < 0) {
+            $lastweekrastlist['favsymbol'] = "-";
+        }
+        if ($lastweekrastlist['listenrast'] < 0) {
+            $lastweekrastlist['listensymbol'] = "-";
+        }
+        if ($lastweekrastlist['commentrast'] < 0) {
+            $lastweekrastlist['commentsymbol'] = "-";
+        }
+        if ($lastweekrastlist['regrast'] < 0) {
+            $lastweekrastlist['regsymbol'] = "-";
+        }
+        if ($lastweekrastlist['downrast'] < 0) {
+            $lastweekrastlist['downsymbol'] = "-";
+        }
+        $lastweekrastlist['favrast'] = abs($lastweekrastlist['favrast']);
+        $lastweekrastlist['listenrast'] = abs($lastweekrastlist['listenrast']);
+        $lastweekrastlist['commentrast'] = abs($lastweekrastlist['commentrast']);
+        $lastweekrastlist['regrast'] = abs($lastweekrastlist['regrast']);
+        $lastweekrastlist['downrast'] = abs($lastweekrastlist['downrast']);
         
         // 专辑总数
         
