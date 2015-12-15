@@ -9,12 +9,13 @@ class comment_op extends controller
         $op_id = $this->getRequest('op_id', 0);
 
         $comment = new Comment();
+        $comment_info = $comment->get_comment_info($op_id);
 
 		if ($op_name == 'edit_content') {
 			$value = $this->getRequest('value');
 			if (!$value) {
-        	return $this->showErrorJson(ErrorConf::CommentContentIsEmpty());
-        }
+        		return $this->showErrorJson(ErrorConf::CommentContentIsEmpty());
+        	}
 			$comment->update(array('content' => $value), "`id`={$op_id}");
 		} else if ($op_name == 'edit_star_level') {
 			$value = (int)$this->getRequest('value');
@@ -31,6 +32,12 @@ class comment_op extends controller
 		} else if ($op_name == 'offline') {
 			$comment->update(array('status' => 2), "`id`={$op_id}");
 		}
+        if ($comment_info) {
+			// 更新星级
+	        $star_level = $comment->getStarLevel($albumid);
+	        $album = new Album();
+	        $album->update(array('star_level' => $star_level), " `id`={$comment_info['albumid']} ");
+        }
 
 		return $this->showSuccJson('操作成功');
 

@@ -87,9 +87,6 @@ class collection extends controller
                 $page ++;
                 usleep(100);
             }
-            // 更新星级
-            $star_level = $comment->getStarLevel($albumid);
-            $album->update(array('star_level' => $star_level), " `id`={$albumid} ");
             // 标签列表
             $taglist = $this->get_tag_from_dangda($source_url);
             foreach($taglist as $k => $v) {
