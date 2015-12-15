@@ -34,7 +34,7 @@ class comment_op extends controller
 		}
         if ($comment_info) {
 			// 更新星级
-	        $star_level = $comment->getStarLevel($albumid);
+	        $star_level = $comment->getStarLevel($comment_info['albumid']);
 	        $album = new Album();
 	        $album->update(array('star_level' => $star_level), " `id`={$comment_info['albumid']} ");
         }
