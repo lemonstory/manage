@@ -19,7 +19,7 @@ class cron_uploadOss extends DaemonBase
     protected function uploadOss() {
         // 更新分类封面
         $category = new Category();
-        $category_list = $category->get_list("cover=''", '', 100);
+        $category_list = $category->get_list("cover=''", '', 20);
         if (!empty($category_list)) {
             // 存已经上传的缓存
             $image_cache = array();
@@ -41,7 +41,7 @@ class cron_uploadOss extends DaemonBase
         }
         // 更新专辑封面
         $album = new Album();
-        $album_list = $album->get_list("cover='' and s_cover!=''", 100);
+        $album_list = $album->get_list("cover='' and s_cover!=''", 20);
         if (!empty($album_list)) {
             // 存已经上传的缓存
             $image_cache = array();
@@ -65,7 +65,7 @@ class cron_uploadOss extends DaemonBase
 
         // 更新故事封面
         $story = new Story();
-        $story_list = $story->get_list("cover='' and `s_cover` !='http://s1.xmcdn.com/wap/css/img/default/sound.jpg' and `status` = 1", 100);
+        $story_list = $story->get_list("cover='' and `s_cover` !='http://s1.xmcdn.com/wap/css/img/default/sound.jpg' and `status` = 1", 20);
         if (!empty($story_list)) {
             // 存已经上传的缓存
             $image_cache = array();
