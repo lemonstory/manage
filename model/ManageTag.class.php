@@ -1,7 +1,7 @@
 <?php
 class ManageTag extends ModelBase 
 {
-    public $dbname = "share_story";
+    public $dbname = "share_comment";
     public function getTagList($where = array(), $currentPage = 1, $perPage = 50) 
     {
         if (empty($currentPage)) {
