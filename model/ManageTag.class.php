@@ -1,6 +1,7 @@
 <?php
 class ManageTag extends ModelBase 
 {
+    public $dbname = "share_story";
     public function getTagList($where = array(), $currentPage = 1, $perPage = 50) 
     {
         if (empty($currentPage)) {
@@ -23,7 +24,7 @@ class ManageTag extends ModelBase
         $offset = ($currentPage - 1) * $perPage;
         
         $list = array();
-        $db = DbConnecter::connectMysql('share_comment');
+        $db = DbConnecter::connectMysql($this->dbname);
         $sql = "SELECT * FROM `album_tag` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
         
         $st = $db->prepare($sql);
@@ -34,7 +35,7 @@ class ManageTag extends ModelBase
     
     public function getTagTotalCount($where = array())
     {
-        $db = DbConnecter::connectMysql('share_comment');
+        $db = DbConnecter::connectMysql($this->dbname);
         if ($where) {
             $where = " where {$where} ";
         } else {
