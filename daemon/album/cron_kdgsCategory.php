@@ -20,6 +20,7 @@ class cron_kdgsCategory extends DaemonBase {
         $category = new Category();
         $kdgs = new Kdgs();
         $story_url = new StoryUrl();
+        $tagnewobj = new TagNew();
         $current_time = date('Y-m-d H:i:s');
         $this->writeLog('口袋故事执行开始');
         $parent_category_list = $kdgs->get_parent_category($this->home_url);
@@ -49,6 +50,8 @@ class cron_kdgsCategory extends DaemonBase {
                     'add_time' => date('Y-m-d H:i:s'),
                 ));
                 if ($category_id) {
+                    // add tag
+                    $tagnewobj->addTag($v['title'], 0);
                     $this->writeLog("{$category_id} 入库");
                 } else {
                     $this->writeLog('没有写入成功'.var_export($v, true));
@@ -84,6 +87,8 @@ class cron_kdgsCategory extends DaemonBase {
                         'add_time' => date('Y-m-d H:i:s'),
                     ));
                     if ($category_id) {
+                        // add tag
+                        $tagnewobj->addTag($v['title'], $v['id']);
                         $this->writeLog("{$category_id} 入库");
                     } else {
                         $this->writeLog('没有写入成功'.var_export($v, true));

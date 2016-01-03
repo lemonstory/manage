@@ -18,6 +18,8 @@ class cron_xmlyAlbum extends DaemonBase {
         $category = new Category();
         $story_url = new StoryUrl();
         $manageobj = new ManageSystem();
+        $tagnewobj = new TagNew();
+        
         $this->writeLog("采集喜马拉雅专辑开始");
         $current_time = date('Y-m-d H:i:s');
         // 分类
@@ -48,6 +50,8 @@ class cron_xmlyAlbum extends DaemonBase {
                     // 最新上架
                     if ($album_id) {
                         $manageobj->addRecommendNewOnlineDb($album_id, 0);
+                        // add album tag
+                        $tagnewobj->addAlbumTag($album_id, $v['title'], $v['parent_id']);
                     }
                     $story_url->insert(array(
                         'res_name' => 'album',

@@ -18,6 +18,7 @@ class cron_kdgsAlbum extends DaemonBase {
         $category  = new Category();
         $story_url = new StoryUrl();
         $manageobj = new ManageSystem();
+        $tagnewobj = new TagNew();
 
         $this->writeLog('采集口袋故事专辑执行开始');
 
@@ -51,6 +52,8 @@ class cron_kdgsAlbum extends DaemonBase {
                     // 最新上架
                     if ($album_id) {
                         $manageobj->addRecommendNewOnlineDb($album_id, $age_type);
+                        // add album tag
+                        $tagnewobj->addAlbumTag($album_id, $v['title'], $v['parent_id']);
                     }
 
                     $story_url->insert(array(

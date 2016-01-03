@@ -44,6 +44,8 @@ class cron_xmlyCategory extends DaemonBase {
                 'add_time' => date('Y-m-d H:i:s'),
             ));
             if ($category_id) {
+                $tagnewobj = new TagNew();
+                $tagnewobj->addTag($v['title'], 0);
                 $this->writeLog("{$category_id} 入库");
             } else {
                 $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
