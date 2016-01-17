@@ -37,6 +37,8 @@ class comment_op extends controller
 	        $star_level = $comment->getStarLevel($comment_info['albumid']);
 	        $album = new Album();
 	        $album->update(array('star_level' => $star_level), " `id`={$comment_info['albumid']} ");
+	        $tagnewobj = new TagNew();
+	        $tagnewobj->updateAlbumTagRelationCommentStarLevel($comment_info['albumid'], $star_level);
         }
 
 		return $this->showSuccJson('操作成功');
