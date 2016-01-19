@@ -53,6 +53,7 @@
                             <tr>
                                 <th>id</th>
                                 <th>标题</th>
+                                <th width="20%">标签</th>
 						        <th>封面</th>
 						        <th>排序</th>
                                 <th>添加时间</th>
@@ -69,6 +70,11 @@
                                     <a href="javascript:void(0);" id="op_album_view_{$value.id}_title">{$value.title}
                                     </a>
                                     <span class="badge">{$value.story_num}</span>
+                                </td>
+                                <td>
+                                    {foreach from=$value.taglist item=taginfo}
+                                        <span class="badge">{$taginfo.name}</span>
+                                    {/foreach}
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);" id="op_album_view_{$value.id}_cover">
