@@ -20,7 +20,9 @@ class addsameage extends controller
         $agetypenamelist = $configvarobj->AGE_TYPE_NAME_LIST;
         
         $aliossobj = new AliOss();
-        $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 100, $albuminfo['cover_time']);
+        if (!empty($albuminfo['cover'])) {
+            $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 100, $albuminfo['cover_time']);
+        }
         if (empty($action)) {
             $agetype = $albuminfo['age_type'];
         } else {
@@ -28,6 +30,10 @@ class addsameage extends controller
             $sameageinfo = $manageobj->getRecommendInfoByFilter("share_main", "recommend_same_age", "`albumid` = '{$albumid}'");
             $agetype = $sameageinfo['agetype'];
         }
+        
+        // 获取一级标签列表
+        $tagnewobj = new TagNew();
+        $firsttaglist = $tagnewobj->getFirstTagList(50);
         
         $refer = "";
         if (!empty($_SERVER['HTTP_REFERER'])) {
@@ -39,6 +45,7 @@ class addsameage extends controller
         $smartyObj->assign('albuminfo', $albuminfo);
         $smartyObj->assign('agetype', $agetype);
         $smartyObj->assign("agetypenamelist", $agetypenamelist);
+        $smartyObj->assign("firsttaglist", $firsttaglist);
         $smartyObj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('sameageside', "active");

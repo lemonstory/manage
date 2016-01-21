@@ -5,8 +5,6 @@ class addhotrecommend extends controller
 {
     public function action()
     {
-        die();
-        
         $albumid = $this->getRequest('albumid');
         if (empty($albumid)) {
             $this->showErrorJson(ErrorConf::paramError());
@@ -17,12 +15,22 @@ class addhotrecommend extends controller
             $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
         }
         
+        $aliossobj = new AliOss();
+        if (!empty($albuminfo['cover'])) {
+            $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 100, $albuminfo['cover_time']);
+        }
+        
+        // 获取一级标签列表
+        $tagnewobj = new TagNew();
+        $firsttaglist = $tagnewobj->getFirstTagList(50);
+        
         $refer = "";
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $refer = $_SERVER['HTTP_REFERER'];
         }
         $smartyObj = $this->getSmartyObj();
         $smartyobj->assign('albuminfo', $albuminfo);
+        $smartyObj->assign("firsttaglist", $firsttaglist);
         $smartyobj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('hotrecommendside', "active");

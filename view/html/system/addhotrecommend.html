@@ -20,10 +20,29 @@
                             </div>
                             <div class="control-group">
                                 <label class="control-label">专辑封面</label>
+                                <div class="controls">{if $albuminfo.cover != ''}<img src="{$albuminfo.cover}" />{else}等待封面自动上传{/if}</div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">选择标签</label>
                                 <div class="controls">
-                                    {$albuminfo.cover}
+                                    {foreach from=$firsttaglist item=value}
+                                    <label class="uniform">
+                                        <input class="uniform_on" type="checkbox" value="{$value.id}">{$value.name}
+                                    </label>
+                                    {/foreach}
+                                    <p class="help-block">决定此专辑在热门推荐列表中，出现在某个或某些标签列表下</p>
                                 </div>
                             </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">推荐语</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="recommenddesc" value="{$recommenddesc}">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            
                             <input type="hidden" id="albumid" name="albumid" value="{$albuminfo.id}" />
                             <input type="hidden" id="refer" name="refer" value="{$refer}" />
                             <div class="form-actions">

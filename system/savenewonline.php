@@ -8,6 +8,7 @@ class savenewonline extends controller
         $action = $this->getRequest('action');
         $albumid = $this->getRequest('albumid');
         $agetype = $this->getRequest('agetype');
+        $recommenddesc = $this->getRequest('recommenddesc', "");
         if (empty($albumid)) {
             $this->showErrorJson(ErrorConf::paramError());
         }
@@ -28,6 +29,11 @@ class savenewonline extends controller
         if ($res == false) {
             $this->showErrorJson($manageobj->getError());
         }
+        
+        // 添加推荐语
+        $recommenddescobj = new RecommendDesc();
+        $recommenddescobj->addAlbumRecommendDescDb($albumid, $recommenddesc);
+        
         $this->showSuccJson();
     }
 }

@@ -5,7 +5,9 @@ class savehotrecommend extends controller
 {
     public function action()
     {
+        $action = $this->getRequest('action');
         $albumid = $this->getRequest('albumid');
+        $recommenddesc = $this->getRequest('recommenddesc', "");
         if (empty($albumid)) {
             $this->showErrorJson(ErrorConf::paramError());
         }
@@ -16,10 +18,21 @@ class savehotrecommend extends controller
         }
         
         $manageobj = new ManageSystem();
-        $res = $manageobj->addRecommendHotDb($albumid);
+        if (empty($action)) {
+            // add
+            $res = $manageobj->addRecommendHotDb($albumid);
+        } else {
+            // edit
+            
+        }
+        
         if ($res == false) {
             $this->showErrorJson($manageobj->getError());
         }
+        
+        $recommenddescobj = new RecommendDesc();
+        $recommenddescobj->addAlbumRecommendDescDb($albumid, $recommenddesc);
+        
         $this->showSuccJson();
     }
 }

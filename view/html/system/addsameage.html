@@ -18,10 +18,10 @@
                             </div>
                             <div class="control-group">
                                 <label class="control-label">专辑封面</label>
-                                <div class="controls"><img src="{$albuminfo.cover}" /></div>
+                                <div class="controls">{if $albuminfo.cover != ''}<img src="{$albuminfo.cover}" />{else}等待封面自动上传{/if}</div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">【同龄在听】适合年龄段</label>
+                                <label class="control-label">适合年龄段</label>
                                 <div class="controls">
                                     <select id="selectError" name="agetype">
                                         {foreach from=$agetypenamelist item=value key=key}
@@ -29,6 +29,26 @@
                                         {/foreach}
                                     </select>
                                     <p class="help-block">此处不会更改故事辑的适合年龄，只作为同龄在听推荐年龄段</p>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">选择标签</label>
+                                <div class="controls">
+                                    {foreach from=$firsttaglist item=value}
+                                    <label class="uniform">
+                                        <input class="uniform_on" type="checkbox" value="{$value.id}">{$value.name}
+                                    </label>
+                                    {/foreach}
+                                    <p class="help-block">决定此专辑在同龄在听列表中，出现在某个或某些标签列表下</p>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">推荐语</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="recommenddesc" value="{$recommenddesc}">
+                                    <p class="help-block"></p>
                                 </div>
                             </div>
                             
