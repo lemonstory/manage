@@ -27,9 +27,11 @@
                                 <label class="control-label">选择标签</label>
                                 <div class="controls">
                                     {foreach from=$firsttaglist item=value}
+                                    {foreach from=$albumtaglist item=taginfo}
                                     <label class="uniform">
-                                        <input class="uniform_on" type="checkbox" value="{$value.id}">{$value.name}
+                                        <input class="uniform_on" type="checkbox" name="tagids" value="{$value.id}" {if $taginfo.tagid == $value.id}checked{/if}>{$value.name}
                                     </label>
+                                    {/foreach}
                                     {/foreach}
                                     <p class="help-block">决定此专辑在热门推荐列表中，出现在某个或某些标签列表下</p>
                                 </div>
@@ -44,6 +46,7 @@
                             </div>
                             
                             <input type="hidden" id="albumid" name="albumid" value="{$albuminfo.id}" />
+                            <input type="hidden" id="action" name="action" value="{$action}" />
                             <input type="hidden" id="refer" name="refer" value="{$refer}" />
                             <div class="form-actions">
                                 <button type="button" class="btn btn-primary">加入热门推荐</button>
@@ -64,10 +67,16 @@
 $(function() {
     $(".btn-primary").click(function(){
         $(".modal-body").text("");
+        var action = $("#action").val();
         var albumid = $("#albumid").val();
+        var tagidobj = $("input:checked");
+        var tagids = "";
+        tagidobj.each(function(i) {
+            tagids += $(tagidobj[i]).val() + ",";
+        });
         var refer = $("#refer").val();
         var url = "/system/savehotrecommend.php";
-        $.post(url, {albumid:albumid}, function(data){
+        $.post(url, {action:action, albumid:albumid, tagids:tagids}, function(data){
         	if(data.code == '10000') {
                 $(".modal-body").text("操作成功");
                 $("#myModal").modal({show:true});

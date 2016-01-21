@@ -24,14 +24,18 @@ class addhotrecommend extends controller
         $tagnewobj = new TagNew();
         $firsttaglist = $tagnewobj->getFirstTagList(50);
         
+        // 获取选中的标签列表
+        $albumtaglist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
+        
         $refer = "";
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $refer = $_SERVER['HTTP_REFERER'];
         }
         $smartyObj = $this->getSmartyObj();
-        $smartyobj->assign('albuminfo', $albuminfo);
+        $smartyObj->assign('albuminfo', $albuminfo);
         $smartyObj->assign("firsttaglist", $firsttaglist);
-        $smartyobj->assign('refer', $refer);
+        $smartyObj->assign("albumtaglist", $albumtaglist);
+        $smartyObj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('hotrecommendside', "active");
         $smartyObj->assign("headerdata", $this->headerCommonData());

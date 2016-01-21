@@ -36,9 +36,11 @@
                                 <label class="control-label">选择标签</label>
                                 <div class="controls">
                                     {foreach from=$firsttaglist item=value}
+                                    {foreach from=$albumtaglist item=taginfo}
                                     <label class="uniform">
-                                        <input class="uniform_on" type="checkbox" value="{$value.id}">{$value.name}
+                                        <input class="uniform_on" type="checkbox" name="tagids" value="{$value.id}" {if $taginfo.tagid == $value.id}checked{/if}>{$value.name}
                                     </label>
+                                    {/foreach}
                                     {/foreach}
                                     <p class="help-block">决定此专辑在同龄在听列表中，出现在某个或某些标签列表下</p>
                                 </div>
@@ -76,10 +78,15 @@ $(function() {
         $(".modal-body").text("");
         var action = $("#action").val();
         var albumid = $("#albumid").val();
+        var tagidobj = $("input:checked");
+        var tagids = "";
+        tagidobj.each(function(i) {
+            tagids += $(tagidobj[i]).val() + ",";
+        });
         var refer = $("#refer").val();
         var agetype = $("select[name='agetype']").val();
         var url = "/system/savesameage.php";
-        $.post(url, {action:action, albumid:albumid, agetype:agetype}, function(data){
+        $.post(url, {action:action, albumid:albumid, agetype:agetype, tagids:tagids}, function(data){
             if(data.code == '10000') {
             	$(".modal-body").text("操作成功");
                 $("#myModal").modal({show:true});

@@ -35,6 +35,9 @@ class addsameage extends controller
         $tagnewobj = new TagNew();
         $firsttaglist = $tagnewobj->getFirstTagList(50);
         
+        // 获取选中的标签列表
+        $albumtaglist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
+        
         $refer = "";
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $refer = $_SERVER['HTTP_REFERER'];
@@ -46,6 +49,7 @@ class addsameage extends controller
         $smartyObj->assign('agetype', $agetype);
         $smartyObj->assign("agetypenamelist", $agetypenamelist);
         $smartyObj->assign("firsttaglist", $firsttaglist);
+        $smartyObj->assign("albumtaglist", $albumtaglist);
         $smartyObj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('sameageside', "active");
