@@ -39,6 +39,10 @@ class addnewonline extends controller
         // 获取选中的标签列表
         $albumtaglist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
         
+        // 获取推荐语
+        $recommenddescobj = new RecommendDesc();
+        $recommenddescinfo = current($recommenddescobj->getAlbumRecommendDescList($albumid));
+        
         $refer = "";
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $refer = $_SERVER['HTTP_REFERER'];
@@ -50,6 +54,7 @@ class addnewonline extends controller
         $smartyObj->assign("agetypenamelist", $agetypenamelist);
         $smartyObj->assign("firsttaglist", $firsttaglist);
         $smartyObj->assign("albumtaglist", $albumtaglist);
+        $smartyObj->assign("recommenddescinfo", $recommenddescinfo);
         $smartyObj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('newonlineside', "active");

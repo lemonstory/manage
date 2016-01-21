@@ -51,7 +51,7 @@
                             <div class="control-group">
                                 <label class="control-label">推荐语</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" name="recommenddesc" value="{$recommenddesc}">
+                                    <input type="text" class="span6 auto_submit" name="recommenddesc" id="recommenddesc" value="{$recommenddescinfo.desc}">
                                     <p class="help-block"></p>
                                 </div>
                             </div>
@@ -85,10 +85,11 @@ $(function() {
         tagidobj.each(function(i) {
             tagids += $(tagidobj[i]).val() + ",";
         });
+        var recommenddesc = $("#recommenddesc").val();
         var refer = $("#refer").val();
         var agetype = $("select[name='agetype']").val();
         var url = "/system/savenewonline.php";
-        $.post(url, {action:action, albumid:albumid, agetype:agetype, tagids:tagids}, function(data){
+        $.post(url, {action:action, albumid:albumid, agetype:agetype, tagids:tagids, recommenddesc:recommenddesc}, function(data){
             if(data.code == '10000') {
             	$(".modal-body").text("操作成功");
                 $("#myModal").modal({show:true});
