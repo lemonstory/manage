@@ -8,6 +8,7 @@ class savenewonline extends controller
         $action = $this->getRequest('action');
         $albumid = $this->getRequest('albumid');
         $agetype = $this->getRequest('agetype');
+        $tagids = $this->getRequest('tagids');
         $recommenddesc = $this->getRequest('recommenddesc', "");
         if (empty($albumid)) {
             $this->showErrorJson(ErrorConf::paramError());
