@@ -5,6 +5,7 @@ class addhotrecommend extends controller
 {
     public function action()
     {
+        $action = $this->getRequest("action");
         $albumid = $this->getRequest('albumid');
         if (empty($albumid)) {
             $this->showErrorJson(ErrorConf::paramError());
@@ -36,6 +37,7 @@ class addhotrecommend extends controller
             $refer = $_SERVER['HTTP_REFERER'];
         }
         $smartyObj = $this->getSmartyObj();
+        $smartyObj->assign('action', $action);
         $smartyObj->assign('albuminfo', $albuminfo);
         $smartyObj->assign("firsttaglist", $firsttaglist);
         $smartyObj->assign("albumtaglist", $albumtaglist);
