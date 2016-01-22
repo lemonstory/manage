@@ -66,6 +66,7 @@
                             <tr>
                                 <th>id</th>
 						        <th>标题</th>
+						        <th width="20%">标签</th>
 						        <th>封面</th>
 						        <th>排序</th>
 						        <th>添加时间</th>
@@ -83,6 +84,11 @@
                                     </a>
                                     
                                     <span class="badge">{$value.albuminfo.story_num}</span>
+                                </td>
+                                <td>
+                                    {foreach from=$value.albuminfo.taglist item=taginfo}
+                                        <span class="badge">{$taginfo.name}</span>
+                                    {/foreach}
                                 </td>
                                 <td>
                                      <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">

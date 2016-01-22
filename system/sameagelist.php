@@ -49,6 +49,21 @@ class sameagelist extends controller
                 $albumlist = $albumobj->getListByIds($albumids);
             }
             
+            // 获取多个专辑的关联tag列表
+            $tagnewobj = new TagNew();
+            $relationlist = $tagnewobj->getAlbumTagRelationListByAlbumIds($albumids);
+            $tagids = array();
+            if (!empty($relationlist)) {
+                foreach ($relationlist as $albumid => $albumtaglist) {
+                    foreach ($albumtaglist as $value) {
+                        $tagids[] = $value['tagid'];
+                    }
+                }
+            }
+            $tagids = array_unique($tagids);
+            // 获取标签信息
+            $taglist = $tagnewobj->getTagInfoByIds($tagids);
+            
             $aliossobj = new AliOss();
             foreach ($resultList as $value) {
                 $albumid = $value['albumid'];
@@ -59,6 +74,19 @@ class sameagelist extends controller
                 if (!empty($albuminfo['cover'])) {
                     $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 100, $albuminfo['cover_time']);
                 }
+                
+                // 整合专辑的所有标签
+                $albumtaglist = array();
+                $albumtaglist = $relationlist[$albumid];
+                if (!empty($albumtaglist)) {
+                    foreach ($albumtaglist as $relationinfo) {
+                        $tagid = $relationinfo['tagid'];
+                        if (!empty($taglist[$tagid])) {
+                            $albuminfo['taglist'][$tagid] = $taglist[$tagid];
+                        }
+                    }
+                }
+                
                 $value['albuminfo'] = $albuminfo;
                 $value['agetypename'] = $agetypenamelist[$value['agetype']];
                 $sameagelist[] = $value;
