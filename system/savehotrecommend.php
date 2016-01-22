@@ -35,30 +35,17 @@ class savehotrecommend extends controller
             $tagids = explode(",", $tagids);
         }
         
-        // 获取专辑原tagids
-        $tagnewobj = new TagNew();
-        $oldtaglist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
-        $oldtagids = array();
-        if (!empty($oldtaglist)) {
-            $oldtagids = array_keys($oldtaglist);
-        }
-        // 对比得出新增、取消推荐的tagids
-        $addtagids = array_diff($tagids, $oldtagids);
-        // @huqq
-        //$deltagids = array_diff($oldtagids, $tagids);
-        
         $managetagnewobj = new ManageTagNew();
-        // 更新专辑下，所有标签的isrecommend=1
-        if (!empty($addtagids)) {
-            $recommendres = $managetagnewobj->updateAlbumTagRelationRecommend($albumid, $addtagids, "isrecommend");
-            if (empty($recommendres)) {
-                $this->showErrorJson($managetagnewobj->getError());
-            }
-        }
         // 更新专辑下，所有标签的isrecommend=0
-        if (!empty($deltagids)) {
-            $unrecommendres = $managetagnewobj->updateAlbumTagRelationUnRecommend($albumid, $deltagids, "isrecommend");
-            if (empty($unrecommendres)) {
+        $unrecommendres = $managetagnewobj->updateAlbumTagRelationUnRecommend($albumid, "isrecommend");
+        if (empty($unrecommendres)) {
+            $this->showErrorJson($managetagnewobj->getError());
+        }
+        
+        // 更新专辑下，指定一级标签的isrecommend=1
+        if (!empty($tagids)) {
+            $recommendres = $managetagnewobj->updateAlbumTagRelationRecommend($albumid, $tagids, "isrecommend");
+            if (empty($recommendres)) {
                 $this->showErrorJson($managetagnewobj->getError());
             }
         }

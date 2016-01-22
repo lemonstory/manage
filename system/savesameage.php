@@ -33,6 +33,26 @@ class savesameage extends controller
             $this->showErrorJson($manageobj->getError());
         }
         
+        if (!empty($tagids)) {
+            $tagids = rtrim($tagids, ",");
+            $tagids = explode(",", $tagids);
+        }
+        
+        $managetagnewobj = new ManageTagNew();
+        // 更新专辑下，所有标签的issameage=0
+        $unrecommendres = $managetagnewobj->updateAlbumTagRelationUnRecommend($albumid, "issameage");
+        if (empty($unrecommendres)) {
+            $this->showErrorJson($managetagnewobj->getError());
+        }
+        
+        // 更新专辑下，指定一级标签的issameage=1
+        if (!empty($tagids)) {
+            $recommendres = $managetagnewobj->updateAlbumTagRelationRecommend($albumid, $tagids, "issameage");
+            if (empty($recommendres)) {
+                $this->showErrorJson($managetagnewobj->getError());
+            }
+        }
+        
         // 添加推荐语
         $recommenddescobj = new RecommendDesc();
         $recommenddescobj->addAlbumRecommendDescDb($albumid, $recommenddesc);

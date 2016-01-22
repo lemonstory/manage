@@ -36,7 +36,18 @@ class addsameage extends controller
         $firsttaglist = $tagnewobj->getFirstTagList(50);
         
         // 获取选中的标签列表
-        $albumtaglist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
+        $relationlist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
+        
+        $filterfirsttaglist = array();
+        foreach ($firsttaglist as $firstvalue) {
+            $firstvalue['checked'] = 0;
+            foreach ($relationlist as $relationtagid => $relationvalue) {
+                if ($relationvalue['isrecommend'] == 1 && $relationtagid == $firstvalue['id']) {
+                    $firstvalue['checked'] = 1;
+                }
+            }
+            $filterfirsttaglist[] = $firstvalue;
+        }
         
         // 获取推荐语
         $recommenddescobj = new RecommendDesc();
@@ -52,8 +63,7 @@ class addsameage extends controller
         $smartyObj->assign('albuminfo', $albuminfo);
         $smartyObj->assign('agetype', $agetype);
         $smartyObj->assign("agetypenamelist", $agetypenamelist);
-        $smartyObj->assign("firsttaglist", $firsttaglist);
-        $smartyObj->assign("albumtaglist", $albumtaglist);
+        $smartyObj->assign("filterfirsttaglist", $filterfirsttaglist);
         $smartyObj->assign("recommenddescinfo", $recommenddescinfo);
         $smartyObj->assign('refer', $refer);
         $smartyObj->assign('indexactive', "active");

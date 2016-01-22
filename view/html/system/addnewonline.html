@@ -37,12 +37,11 @@
                             <div class="control-group">
                                 <label class="control-label">推荐到标签【一级标签】</label>
                                 <div class="controls">
-                                    {foreach from=$firsttaglist item=value}
-                                    {foreach from=$albumtaglist item=taginfo}
+                                    {foreach from=$filterfirsttaglist item=value}
                                     <label class="uniform">
-                                        <input class="uniform_on" type="checkbox" name="tagids" value="{$value.id}" {if $taginfo.tagid == $value.id}checked{/if}>{$value.name}
+                                        <input class="uniform_on" type="checkbox" name="tagids" value="{$value.id}" {if $value.checked == 1}checked{/if}>
+                                        {$value.name}
                                     </label>
-                                    {/foreach}
                                     {/foreach}
                                     <p class="help-block"></p>
                                 </div>
