@@ -7,6 +7,29 @@ class ManageTagNew extends ModelBase
     
     
     /**
+     * 更新专辑标签关联记录的推荐状态
+     * @param A $setdata
+     * @param S $where
+     */
+    public function updateAlbumTagRelationRecommendStatus($setdata, $where)
+    {
+        $setstr = "";
+        foreach ($setdata as $key => $value) {
+            $setstr .= "`{$key}` = '{$value}',";
+        }
+        $setstr = rtrim($setstr, ",");
+        
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
+        $sql = "UPDATE `{$this->ALBUM_TAG_RELATION_TABLE}` SET {$setstr} WHERE {$where}";
+        $st = $db->prepare($sql);
+        $result = $st->execute();
+        
+        // @huqq 清除cache
+        
+    }
+    
+    
+    /**
      * 更新专辑到指定一个或多个标签的（热门推荐/最新上架/同龄在听）列表
      * @param I $albumid            专辑ID
      * @param A $tagids             需要添加/更新推荐字段的标签id数组
@@ -46,7 +69,7 @@ class ManageTagNew extends ModelBase
             }
         }
         if (!empty($updatetagids)) {
-            // 更新专辑相应的tagid的推荐状态
+            // 更新专辑相应的tagid为推荐状态
             $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
             $updatetagidstr = implode(",", $updatetagids);
             $sql = "UPDATE `{$this->ALBUM_TAG_RELATION_TABLE}` SET `{$recommendcolumn}` = ?, `uptime` = ? WHERE `albumid` = ? AND `tagid` IN ($updatetagidstr)";
@@ -67,7 +90,6 @@ class ManageTagNew extends ModelBase
             $this->setError(ErrorConf::paramError());
             return false;
         }
-        //$nowtime = time();
         
         $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "UPDATE `{$this->ALBUM_TAG_RELATION_TABLE}` SET `{$unrecommendcolumn}` = ? WHERE `albumid` = ?";
@@ -89,11 +111,18 @@ class ManageTagNew extends ModelBase
         }
         $nowtime = time();
         $addtime = date("Y-m-d H:i:s", $nowtime);
+        if ($recommendcolumn == 'isrecommend') {
+            $statuscolumn = "recommendstatus";
+        } elseif ($recommendcolumn == 'isnewonline') {
+            $statuscolumn = "newonlinestatus";
+        } elseif ($recommendcolumn == 'issameage') {
+            $statuscolumn = "sameagestatus";
+        }
         $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
-        $sql = "INSERT INTO `{$this->ALBUM_TAG_RELATION_TABLE}` (`tagid`, `albumid`, `{$recommendcolumn}`, `uptime`, `addtime`) 
-            VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `{$this->ALBUM_TAG_RELATION_TABLE}` (`tagid`, `albumid`, `{$recommendcolumn}`, `{$statuscolumn}`, `uptime`, `addtime`) 
+            VALUES (?, ?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
-        $res = $st->execute(array($tagid, $albumid, 1, $nowtime, $addtime));
+        $res = $st->execute(array($tagid, $albumid, 1, $this->RECOMMEND_STATUS_OFFLINE, $nowtime, $addtime));
         if (empty($res)) {
             return false;
         }

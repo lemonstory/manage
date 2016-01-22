@@ -13,8 +13,10 @@ class sethotrecommendstatus extends controller
             $this->showErrorJson(ErrorConf::paramError());
         }
         $updata = array();
+        $settagdata = array();
         if ($type == 'status') {
             $updata['status'] = $status;
+            $settagdata['recommendstatus'] = $status;
         }
         if ($type == 'ordernum') {
             $updata['ordernum'] = $ordernum;
@@ -32,6 +34,13 @@ class sethotrecommendstatus extends controller
             if(empty($result)) {
                 $this->showErrorJson($managesysobj->getError());
             }
+        }
+        
+        // 更新album_tag_relation的推荐status
+        if (!empty($settagdata)) {
+            $managetagnewobj = new ManageTagNew();
+            $tagwhere = "`albumid` = '{$albumid}' and `isrecommend` = 1";
+            $managetagnewobj->updateAlbumTagRelationRecommendStatus($settagdata, $tagwhere);
         }
         
         $this->showSuccJson();

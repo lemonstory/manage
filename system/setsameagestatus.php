@@ -13,8 +13,10 @@ class setsameagestatus extends controller
             $this->showErrorJson(ErrorConf::paramError());
         }
         $updata = array();
+        $settagdata = array();
         if ($type == 'status') {
             $updata['status'] = $status;
+            $settagdata['sameagestatus'] = $status;
         }
         if ($type == 'ordernum') {
             $updata['ordernum'] = $ordernum;
@@ -32,6 +34,13 @@ class setsameagestatus extends controller
             if(empty($result)) {
                 $this->showErrorJson($manageobj->getError());
             }
+        }
+        
+        // 更新album_tag_relation的推荐status
+        if (!empty($settagdata)) {
+            $managetagnewobj = new ManageTagNew();
+            $tagwhere = "`albumid` = '{$albumid}' and `issameage` = 1";
+            $managetagnewobj->updateAlbumTagRelationRecommendStatus($settagdata, $tagwhere);
         }
         
         $this->showSuccJson();
