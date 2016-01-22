@@ -42,7 +42,7 @@ class addsameage extends controller
         foreach ($firsttaglist as $firstvalue) {
             $firstvalue['checked'] = 0;
             foreach ($relationlist as $relationtagid => $relationvalue) {
-                if ($relationvalue['isrecommend'] == 1 && $relationtagid == $firstvalue['id']) {
+                if ($relationvalue['issameage'] == 1 && $relationtagid == $firstvalue['id']) {
                     $firstvalue['checked'] = 1;
                 }
             }

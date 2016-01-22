@@ -75,14 +75,16 @@ class sameagelist extends controller
                     $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 100, $albuminfo['cover_time']);
                 }
                 
-                // 整合专辑的所有标签
-                $albumtaglist = array();
-                $albumtaglist = $relationlist[$albumid];
-                if (!empty($albumtaglist)) {
-                    foreach ($albumtaglist as $relationinfo) {
+                // 整合专辑的所有标签、推荐的标签
+                $recommendtaglist = array();
+                if (!empty($relationlist[$albumid])) {
+                    foreach ($relationlist[$albumid] as $relationinfo) {
                         $tagid = $relationinfo['tagid'];
                         if (!empty($taglist[$tagid])) {
                             $albuminfo['taglist'][$tagid] = $taglist[$tagid];
+                        }
+                        if ($relationinfo['issameage'] == 1) {
+                            $albuminfo['recommendtaglist'][$tagid] = $taglist[$tagid];
                         }
                     }
                 }

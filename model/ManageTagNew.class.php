@@ -3,7 +3,7 @@ class ManageTagNew extends ModelBase
 {
     public $ALBUM_TAG_RELATION_TABLE = 'album_tag_relation';
     
-    public $RECOMMEND_COLUMN = array("isrecommend", "isnewonline", "issamgeage");
+    public $RECOMMEND_COLUMN = array("isrecommend", "isnewonline", "issameage");
     
     
     /**

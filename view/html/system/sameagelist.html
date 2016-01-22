@@ -79,7 +79,7 @@
                             <tr>
                                 <th>id</th>
                                 <th>标题</th>
-                                <th width="20%">标签</th>
+                                <th width="20%">推荐的标签</th>
                                 <th>封面</th>
                                 <th>排序</th>
                                 <th>推荐年龄段</th>
@@ -96,9 +96,13 @@
                                         {$value.albuminfo.title}
                                     </a>
                                     <span class="badge">{$value.albuminfo.story_num}</span>
+                                    <br><br>
+                                    {foreach from=$value.albuminfo.taglist item=taginfo}
+                                        <span class="badge">{$taginfo.name}</span>
+                                    {/foreach}
                                 </td>
                                 <td>
-                                    {foreach from=$value.albuminfo.taglist item=taginfo}
+                                    {foreach from=$value.albuminfo.recommendtaglist item=taginfo}
                                         <span class="badge">{$taginfo.name}</span>
                                     {/foreach}
                                 </td>
