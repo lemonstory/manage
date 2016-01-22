@@ -79,9 +79,30 @@ class album_edit extends controller
         if (!$albuminfo && $albumid) {
         	return $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
         }
+        
+        
+        // 获取选中的标签列表
+        $relationlist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
+        $relationtagids = array_keys($relationlist);
+        
+        $taglist = array();
+        if (!empty($relationtagids)) {
+            $relationtagids = array_unique($relationtagids);
+            $taglist = $tagnewobj->getTagInfoByIds($relationtagids);
+        }
+        
+        $checkedtaglist = array();
+        foreach ($taglist as $taginfo) {
+            foreach ($relationlist as $relationvalue) {
+                if ($relationvalue['tagid'] == $taginfo['id']) {
+                    $checkedtaglist[$taginfo['id']] = $taginfo;
+                }
+            }
+        }
 
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('albuminfo', $albuminfo);
+        $smartyObj->assign("checkedtaglist", $checkedtaglist);
         $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("album/album_edit.html"); 
 

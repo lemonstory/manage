@@ -56,6 +56,19 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">专辑标签</label>
+                                <div class="controls">
+                                    {foreach from=$checkedtaglist item=value}
+                                    <span class="badge" id="{$value.id}">{$value.name}</span>&nbsp;
+                                    {/foreach}
+                                    <p class="help-block">
+                                        <a href="###">编辑专辑标签</a>
+                                    </p>
+                                </div>
+                            </div>
+                            
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
                                 <button type="reset" class="btn">重置</button>
