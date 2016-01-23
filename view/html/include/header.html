@@ -72,7 +72,7 @@
                         </li>
                         {php}}{/php}
                         {php}if ($privObj->checkPrivilege('comment')){{/php}
-                        <li class="dropdown {$commentlistactive}{$commentcollectionactive}{$tagactive}">
+                        <li class="dropdown {$commentlistactive}{$commentcollectionactive}">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">评论管理 <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="menu1">
                                 <li class="{$commentlistactive}"><a href="/comment/commentlist.php">评论管理</a></li>
@@ -166,7 +166,7 @@
 					         <li class="{$storyactive}"><a href="/album/storylist.php"><i class="icon-chevron-right"></i>故事列表</a></li>
 					         {php}}{/php}
 				         {php}}{/php}
-                     {elseif ($commentlistactive || $commentcollectionactive || $tagactive)}
+                     {elseif ($commentlistactive || $commentcollectionactive)}
                          {php}if ($privObj->checkPrivilege('comment')){{/php}
                              {php}if ($privObj->checkPrivilege('comment.collection')){{/php}
 	                         <li class="{$commentcollectionactive}"><a href="/comment/collection.php"><i class="icon-chevron-right"></i>评论采集</a></li>

@@ -1,0 +1,235 @@
+{include file="include/header.html"}
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">标签列表筛选</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/fav/gettaglist.php">
+                        <fieldset>
+                            <legend></legend>
+                            <div class="control-group">
+                                <label class="control-label">条件</label>
+                                <div class="controls">
+                                    <select id="selectError" name="searchCondition">
+                                        <option {if $searchCondition=="id"}selected{/if} value="id">标签ID</option>
+                                        <option {if $searchCondition=="name"}selected{/if} value="name">标签名称</option>
+                                    </select>
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">内容</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">标签列表</div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>标签ID</th>
+						        <th>所属标签</th>
+						        <th>名称</th>
+						        <th>二级标签</th>
+						        <th>排序</th>
+						        <th>状态</th>
+						        <th>操作</th>
+						        <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$taglist item=value}
+                            <tr>
+                                <td>{$value.id}</td>
+                                <td>{if $value.pid ==0}无{/if}</td>
+                                <td>{$value.name}</td>
+                                <td>
+                                    <span class="badge">{$value.secondtagcount}个</span>&nbsp;
+                                    {if $value.secondtagcount > 0}<a href="javascript:void(0);" id="{$value.id}" class="openclose_buton">展开</a>{/if}
+                                </td>
+                                <td><input type="text" name="order" class="form-control" op_id="{$value.id}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
+                                <td id="status_{$value.id}">
+                                    {if $value.status eq '1'}已上线
+                                    {elseif $value.status eq '2'}未上线
+                                    {/if}
+                                </td>
+                                <td>
+                                    <a href="/tag/addtaginfo.php?id={$value.id}&action=edit">编辑</a>&nbsp;
+                                    {if $value.status eq 1}
+                                    <a href="javascript:void(0);" id="{$value.id}" class="offline">下线</a>
+                                    {/if}
+                                    {if $value.status eq 2}
+                                    <a href="javascript:void(0);" id="{$value.id}" class="online">上线</a>
+                                    {/if}
+                                    &nbsp;<a href="javascript:void(0);" id="{$value.id}" class="delete">删除</a>
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                                {foreach from=$value.secondtaglist item=secondtaginfo}
+                                <tr class="secondtaglist secondtaglist_{$value.id}" style="display:none;">
+                                    <td>&nbsp;</td>
+	                                <td>{$secondtaginfo.id}</td>
+	                                <td>{$value.name}</td>
+	                                <td>{$secondtaginfo.name}</td>
+	                                <td><input type="text" name="order" class="form-control" op_id="{$secondtaginfo.id}" old_val="{$secondtaginfo.ordernum}" value="{$secondtaginfo.ordernum}" style="width: 60px;" /></td>
+	                                <td id="status_{$secondtaginfo.id}">
+	                                    {if $secondtaginfo.status eq '1'}已上线
+	                                    {elseif $secondtaginfo.status eq '2'}未上线
+	                                    {/if}
+	                                </td>
+	                                <td>
+	                                    <a href="/tag/addtaginfo.php?id={$secondtaginfo.id}&action=edit">编辑</a>&nbsp;
+	                                    {if $secondtaginfo.status eq 1}
+	                                    <a href="javascript:void(0);" id="{$secondtaginfo.id}" class="offline">下线</a>
+	                                    {/if}
+	                                    {if $secondtaginfo.status eq 2}
+	                                    <a href="javascript:void(0);" id="{$secondtaginfo.id}" class="online">上线</a>
+	                                    {/if}
+	                                    &nbsp;<a href="javascript:void(0);" id="{$secondtaginfo.id}" class="delete">删除</a>
+	                                </td>
+	                            </tr>
+                                {/foreach}
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+    
+    {$pageBanner}
+</div>
+
+
+<script>
+{literal}
+$(function() {
+	$(".openclose_buton").click(function(){
+		var tagid = $(this).attr("id");
+		var button_text = $(this).text();
+        var secondtaglistclass = "secondtaglist_" + tagid;
+        if(button_text == "展开") {
+        	$("." + secondtaglistclass).show();
+            $(this).text("收起");
+        } else if (button_text == "收起") {
+        	$("." + secondtaglistclass).hide();
+            $(this).text("展开");
+        }
+	});
+	
+    var setstatusurl = "/tag/settaginfostatus.php";
+    $(".offline").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定要下线吗？")) {
+            var tagid = $(this).attr("id");
+            $.post(setstatusurl, {type:'status', tagid:tagid, status:2}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("操作成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
+    
+    $(".online").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定要上线吗？")) {
+            var tagid = $(this).attr("id");
+            $.post(setstatusurl, {type:'status', tagid:tagid, status:1}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("操作成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
+    
+    $(".delete").click(function(){
+        $(".modal-body").text("");
+        if(confirm("确定要删除吗？")) {
+            var tagid = $(this).attr("id");
+            var delurl = "/tag/deltaginfo.php";
+            $.post(delurl, {tagid:tagid}, function(data){
+                if(data.code == "10000") {
+                    $(".modal-body").text("删除成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+            }, "json");
+        }
+    });
+    
+    $("[name='order']").on('change', function(){
+        $(".modal-body").text("");
+        var old_val = parseInt($(this).attr('old_val'));
+        var op_id   = parseInt($(this).attr('op_id'));
+        var new_val = parseInt($(this).val());
+        if (old_val == new_val) {
+            return false;
+        } else {
+            var data = {};
+            data.type = 'ordernum';
+            data.tagid = op_id;
+            data.ordernum = new_val;
+            $.post(setstatusurl, data, function(json){
+                if (json.code == 10000) {
+                    $(".modal-body").text("设置成功");
+                    $("#myModal").modal({show:true});
+                    $("#modal_closebtn").click(function(){
+                        location.href=location.href;
+                    });
+                } else {
+                    $(".modal-body").text(json.desc);
+                    $("#myModal").modal({show:true});
+                }
+            },'json');
+        }
+    });
+});
+{/literal}
+</script>
+{include file="include/footer.html"}

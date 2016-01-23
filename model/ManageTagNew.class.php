@@ -1,10 +1,46 @@
 <?php
 class ManageTagNew extends ModelBase
 {
+    public $TAG_INFO_TABLE = 'tag_info';
     public $ALBUM_TAG_RELATION_TABLE = 'album_tag_relation';
     
     public $RECOMMEND_COLUMN = array("isrecommend", "isnewonline", "issameage");
     
+    // 分页获取标签指定条件的列表
+    public function getTagListByColumnSearch($where, $orderby = "", $currentPage = 1, $perPage = 50)
+    {
+        if (empty($currentPage)) {
+            $currentPage = 1;
+        }
+        if ($currentPage <= 0) {
+            $currentPage = 1;
+        }
+        if (empty($perPage)) {
+            $perPage = 50;
+        }
+        if ($perPage <= 0) {
+            $perPage = 50;
+        }
+        $offset = ($currentPage - 1) * $perPage;
+        
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
+        $sql = "SELECT * FROM `{$this->TAG_INFO_TABLE}` WHERE {$where} {$orderby} LIMIT {$offset}, {$perPage}";
+        $st = $db->prepare($sql);
+        $st->execute();
+        $result = $st->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
+    
+    public function getTagCountByColumnSearch($where)
+    {
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
+        $sql = "SELECT COUNT(*) FROM `{$this->TAG_INFO_TABLE}` WHERE {$where}";
+        $st = $db->prepare($sql);
+        $st->execute();
+        $count = $st->fetch(PDO::FETCH_COLUMN);
+        return $count;
+    }
     
     /**
      * 更新专辑标签关联记录的推荐状态

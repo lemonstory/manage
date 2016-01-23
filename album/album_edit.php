@@ -82,6 +82,7 @@ class album_edit extends controller
         
         
         // 获取选中的标签列表
+        $tagnewobj = new TagNew();
         $relationlist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
         $relationtagids = array_keys($relationlist);
         
