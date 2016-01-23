@@ -80,7 +80,7 @@
                                     {/if}
                                 </td>
                                 <td>
-                                    <a href="/tag/addtaginfo.php?id={$value.id}&action=edit">编辑</a>&nbsp;
+                                    <a href="/tag/addtaginfo.php?tagid={$value.id}&action=edit">编辑</a>&nbsp;
                                     {if $value.status eq 1}
                                     <a href="javascript:void(0);" id="{$value.id}" class="offline">下线</a>
                                     {/if}
@@ -104,7 +104,7 @@
 	                                    {/if}
 	                                </td>
 	                                <td>
-	                                    <a href="/tag/addtaginfo.php?id={$secondtaginfo.id}&action=edit">编辑</a>&nbsp;
+	                                    <a href="/tag/addtaginfo.php?tagid={$secondtaginfo.id}&action=edit">编辑</a>&nbsp;
 	                                    {if $secondtaginfo.status eq 1}
 	                                    <a href="javascript:void(0);" id="{$secondtaginfo.id}" class="offline">下线</a>
 	                                    {/if}

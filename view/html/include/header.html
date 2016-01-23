@@ -76,7 +76,6 @@
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">评论管理 <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="menu1">
                                 <li class="{$commentlistactive}"><a href="/comment/commentlist.php">评论管理</a></li>
-                                <!-- <li class="{$tagactive}"><a href="/comment/taglist.php">标签管理</a></li> -->
                             </ul>
                         </li>
                         {php}}{/php}
@@ -174,14 +173,14 @@
 	                         {php}if ($privObj->checkPrivilege('comment.commentlist')){{/php}
 	                         <li class="{$commentlistactive}"><a href="/comment/commentlist.php"><i class="icon-chevron-right"></i>评论列表</a></li>
 	                         {php}}{/php}
-	                         <!-- {php}if ($privObj->checkPrivilege('comment.taglist')){{/php}
-	                         <li class="{$tagactive}"><a href="/comment/taglist.php"><i class="icon-chevron-right"></i>标签列表</a></li>
-	                         {php}}{/php} -->
                          {php}}{/php}
                      {elseif $tagactive}
                          {php}if ($privObj->checkPrivilege('tag')){{/php}
                              {php}if ($privObj->checkPrivilege('tag.gettaglist')){{/php}
-                             <li class="{$gettaglistside}"><a href="/user/gettaglist.php"><i class="icon-chevron-right"></i>标签列表</a></li>
+                             <li class="{$gettaglistside}"><a href="/tag/gettaglist.php"><i class="icon-chevron-right"></i>标签列表</a></li>
+                             {php}}{/php}
+                             {php}if ($privObj->checkPrivilege('tag.addtaginfo')){{/php}
+                             <li class="{$addtaginfoside}"><a href="/tag/addtaginfo.php"><i class="icon-chevron-right"></i>添加标签</a></li>
                              {php}}{/php}
                          {php}}{/php}
                      {elseif $analyticsactive}

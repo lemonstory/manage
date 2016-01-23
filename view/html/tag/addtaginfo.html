@@ -1,0 +1,117 @@
+{include file="include/header.html"}
+<script src="/static/vendors/jquery.form.min.js"></script>
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">标签管理</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" enctype="multipart/form-data" method="post">
+                        <fieldset>
+                            <legend>{if ($taginfo)}编辑{else}创建{/if}标签</legend>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">标签名称<span class="required">*</span></label>
+                                <div class="controls">
+                                    <input type="text" name="name" value="{$taginfo.name}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">所属父级标签</label>
+                                <div class="controls">
+                                    <select id="select01" class="chzn-select chzn-done" style="" name="pid">
+                                        <option value="0">无</option>
+                                        {foreach from=$firsttaglist item=value}
+                                        <option value="1" {if $taginfo.pid == $value.id}selected{/if}>{$value.name}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">排序</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" name="ordernum" value="{$taginfo.ordernum}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="fileInput">封面</label>
+                                <div class="controls">
+                                    {if $taginfo.cover != ''}
+                                        <img src="{$taginfo.cover}" />
+                                    {else}
+                                        <div class="uploader" id="uniform-fileInput">
+	                                        <input class="input-file uniform_on" id="fileInput" type="file" name="cover">
+	                                    </div>
+                                    {/if}
+                                    <p class="help-block">只有一级标签需要上传封面图片</p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <input type="hidden" id="tagid" name="tagid" value="{$taginfo.id}" />
+	                            <input type="hidden" id="action" name="action" value="{$action}" />
+	                            <input type="hidden" id="refer" name="refer" value="{$refer}" />
+                                <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+    
+    {$pageBanner}
+</div>
+<script>
+{literal}
+$(function() {
+    function result(json)
+    {
+        if (json && json.code == 10000) {
+            alert('操作成功');
+            window.location.href = '/tag/gettaglist.php';
+        } else {
+            var name = json.desc.split('-')[0];
+            var msg  = json.desc.split('-')[1];
+            var errObj = $("[name='"+name+"']");
+            errObj.closest(".control-group").addClass('error');
+            errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
+        }
+    }
+    var options = { 
+       // target:        '#output',   // target element(s) to be updated with server response 
+        // beforeSubmit:  result,  // pre-submit callback 
+        success:       result,  // post-submit callback
+        error:       result,  // post-submit callback
+        resetForm: false, 
+        dataType:  'json',
+ 
+        // other available options: 
+        url:       '/album/album_edit.php',         // override for form's 'action' attribute 
+        type:      'post'        // 'get' or 'post', override for form's 'method' attribute 
+        // dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+        // clearForm: true        // clear all form fields after successful submit 
+        // resetForm: true        // reset the form after successful submit 
+ 
+        // $.ajax options can be used here too, for example: 
+        //timeout:   3000 
+    }; 
+ 
+    $("#submit_form").on('click', function(e){
+        $(".help-inline").remove();
+        e.preventDefault();
+        $(".control-group").removeClass("error");
+        $("form").ajaxSubmit(options); 
+ 
+        // !!! Important !!! 
+        // always return false to prevent standard browser submit and page navigation 
+        return false; 
+    })
+});
+{/literal}
+</script>
+{include file="include/footer.html"}
