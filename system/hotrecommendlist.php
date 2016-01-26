@@ -21,6 +21,7 @@ class hotrecommendlist extends controller
         $baseUri = "/system/hotrecommendlist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $totalCount = 0;
     	$hotlist = array();
+    	$recommenddesclist = array();
     	if (!empty($searchContent)) {
     	    $column = $searchCondition;
             $columnValue = $searchContent;
@@ -39,6 +40,10 @@ class hotrecommendlist extends controller
                 $albumids = array_unique($albumids);
                 $albumobj = new Album();
                 $albumlist = $albumobj->getListByIds($albumids);
+                
+                // 获取推荐语
+                $recommenddescobj = new RecommendDesc();
+                $recommenddesclist = $recommenddescobj->getAlbumRecommendDescList($albumids);
             }
             
             // 获取多个专辑的关联tag列表
@@ -79,6 +84,11 @@ class hotrecommendlist extends controller
                             $albuminfo['recommendtaglist'][$tagid] = $taglist[$tagid];
                         }
                     }
+                }
+                
+                $albuminfo['recommenddesc'] = "";
+                if (!empty($recommenddesclist[$albumid])) {
+                    $albuminfo['recommenddesc'] = $recommenddesclist[$albumid]['desc'];
                 }
                 
                 $value['albuminfo'] = $albuminfo;
