@@ -35,17 +35,21 @@
                                     <input type="text" class="span6" name="ordernum" value="{$taginfo.ordernum}">
                                 </div>
                             </div>
+                            
                             <div class="control-group">
                                 <label class="control-label" for="fileInput">封面</label>
                                 <div class="controls">
-                                    {if $taginfo.cover != ''}
-                                        <img src="{$taginfo.cover}" />
-                                    {else}
-                                        <div class="uploader" id="uniform-fileInput">
-	                                        <input class="input-file uniform_on" id="fileInput" type="file" name="cover">
-	                                    </div>
-                                    {/if}
-                                    <p class="help-block">只有一级标签需要上传封面图片</p>
+                                    {if $taginfo.cover != ''}<img src="{$taginfo.cover}" />{else}无{/if}
+                                </div>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label" for="fileInput">上传封面</label>
+                                <div class="controls">
+                                    <div class="uploader" id="uniform-fileInput">
+                                        <input class="input-file uniform_on" id="fileInput" type="file" name="cover">
+                                    </div>
+                                    <p class="help-block">只有一级标签需要上传封面图片【尺寸：135x135 px】</p>
                                 </div>
                             </div>
                             
@@ -54,6 +58,7 @@
 	                            <input type="hidden" id="action" name="action" value="{$action}" />
 	                            <input type="hidden" id="refer" name="refer" value="{$refer}" />
                                 <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
+                                {if $refer}&nbsp;<a class="btn" href="{$refer}">取消</a>{/if}
                             </div>
                         </fieldset>
                     </form>
@@ -91,7 +96,7 @@ $(function() {
         dataType:  'json',
  
         // other available options: 
-        url:       '/album/album_edit.php',         // override for form's 'action' attribute 
+        url:       '/tag/savetaginfo.php',         // override for form's 'action' attribute 
         type:      'post'        // 'get' or 'post', override for form's 'method' attribute 
         // dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
         // clearForm: true        // clear all form fields after successful submit 

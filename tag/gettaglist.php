@@ -5,6 +5,10 @@ class gettaglist extends controller
 {
     public function action()
     {
+        // 用于添加专辑标签参数
+        $displaycheckbox = $this->getRequest('displaycheckbox', 0);
+        $albumid = $this->getRequest('albumid', 0);
+        
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
         $searchCondition = $this->getRequest('searchCondition', 'id');
@@ -17,11 +21,27 @@ class gettaglist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/tag/gettaglist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/tag/gettaglist.php?displaycheckbox={$displaycheckbox}&albumid={$albumid}&perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         $totalCount = 0;
         $taglist = array();
         $firsttaglist = array();
         $secondtaglist = array();
+        
+        // 添加专辑标签，选中专辑已有的标签checkbox
+        $checktagids = array();
+        if (!empty($displaycheckbox) && !empty($albumid)) {
+            $tagnewobj = new TagNew();
+            $relationlist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
+            if (!empty($relationlist)) {
+                foreach ($relationlist as $value) {
+                    $checktagids[] = $value['tagid'];
+                }
+            }
+            if (!empty($checktagids)) {
+                $checktagids = array_unique($checktagids);
+            }
+        }
+        
         
         $managetagnewobj = new ManageTagNew();
         $orderby = "ORDER BY `status` ASC, `ordernum` ASC, `id` ASC";
@@ -47,13 +67,29 @@ class gettaglist extends controller
                 foreach ($firsttaglist as $firsttaginfo) {
                     $firsttagid = $firsttaginfo['id'];
                     $taglist[$firsttagid] = $firsttaginfo;
+                    
+                    // 添加专辑标签时，一级标签的checkbox是否选中状态
+                    if (!empty($checktagids) && in_array($firsttagid, $checktagids)) {
+                        $taglist[$firsttagid]['checked'] = 1;
+                    } else {
+                        $taglist[$firsttagid]['checked'] = 0;
+                    }
+                    
                     if (!empty($secondtaglist)) {
                         foreach ($secondtaglist as $secondtaginfo) {
                             $secondtagid = $secondtaginfo['id'];
                             if ($secondtaginfo['pid'] == $firsttagid) {
                                 $taglist[$firsttagid]['secondtaglist'][$secondtagid] = $secondtaginfo;
+                                // 添加专辑标签时，二级标签的checkbox是否选中状态
+                                if (!empty($checktagids) && in_array($secondtagid, $checktagids)) {
+                                    $taglist[$firsttagid]['secondtaglist'][$secondtagid]['checked'] = 1;
+                                } else {
+                                    $taglist[$firsttagid]['secondtaglist'][$secondtagid]['checked'] = 0;
+                                }
                             }
                         }
+                        
+                        // 一级标签下的，二级标签数量
                         $taglist[$firsttagid]['secondtagcount'] = 0;
                         if (!empty($taglist[$firsttagid]['secondtaglist'])) {
                             $taglist[$firsttagid]['secondtagcount'] = count($taglist[$firsttagid]['secondtaglist']);
@@ -63,6 +99,7 @@ class gettaglist extends controller
             }
         }
         
+        
         if (!empty($taglist)) {
             $totalCount = $managetagnewobj->getTagCountByColumnSearch($where);
             if ($totalCount > $perPage) {
@@ -70,7 +107,15 @@ class gettaglist extends controller
             }
         }
         
+        $refer = "";
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $refer = $_SERVER['HTTP_REFERER'];
+        }
         $smartyObj = $this->getSmartyObj();
+        $smartyObj->assign('refer', $refer);
+        $smartyObj->assign('displaycheckbox', $displaycheckbox);
+        $smartyObj->assign('albumid', $albumid);
+        
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('searchCondition', $searchCondition);

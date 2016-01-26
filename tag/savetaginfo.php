@@ -6,50 +6,54 @@ class savetaginfo extends controller
     public function action()
     {
         $action = $this->getRequest("action");
-        
+        $tagid = $this->getRequest("tagid");
+        $refer = $this->getRequest("refer");
+        $name = $this->getRequest("name");
+        $pid = $this->getRequest("pid");
+        $ordernum = $this->getRequest("ordernum");
+        if (empty($name)) {
+            $this->showErrorJson(ErrorConf::paramError());
+        }
         
         $tagnewobj = new TagNew();
-        
-        
-        // 获取一级分类
-        $firsttaglist = $tagnewobj->getFirstTagList(100);
-        
-        if (empty($action)) {
-            // add
-            
-            
-        } else {
+        $taginfo = array();
+        if (!empty($tagid)) {
             // edit
-            $tagid = $this->getRequest('tagid');
-            $name = $this->getRequest('name');
-            $pid = $this->getRequest('pid');
-            $taginfo = array();
-            if (!empty($tagid)) {
-                $taginfo = current($tagnewobj->getTagInfoByIds($tagid));
+            $taginfo = current($tagnewobj->getTagInfoByIds($tagid));
+            if (empty($taginfo)) {
+                $this->showErrorJson(ErrorConf::TagInfoIsEmpty());
             }
-            
-            $addres = $tagnewobj->addTag($name, $pid);
-            if (empty($addres)) {
+            $tagid = $taginfo['id'];
+        } else {
+            // add
+            $tagid = $tagnewobj->addTag($name, $pid);
+            if (empty($tagid)) {
                 $this->showErrorJson($tagnewobj->getError());
             }
-            $this->showSuccJson();
         }
         
+        $updatedata = array();
+        $updatedata['name'] = $name;
+        $updatedata['pid'] = $pid;
+        $updatedata['ordernum'] = $ordernum;
         
-        $refer = "";
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            $refer = $_SERVER['HTTP_REFERER'];
+        if (empty($pid)) {
+            // 封面处理
+            if (!empty($_FILES['cover'])) {
+                $uploadobj = new Upload();
+                $path = $uploadobj->uploadTagImageByPost($_FILES['cover'], $tagid);
+                if (!empty($path)) {
+                    // 更新cover
+                    $cover = str_replace("tag/", '', $path);
+                    $updatedata['cover'] = $cover;
+                    $updatedata['covertime'] = time();
+                }
+            }
         }
-        $smartyObj = $this->getSmartyObj();
-        $smartyObj->assign('action', $action);
-        $smartyObj->assign('tagid', $tagid);
-        $smartyObj->assign('firsttaglist', $firsttaglist);
-        $smartyObj->assign('taginfo', $taginfo);
-        $smartyObj->assign('refer', $refer);
-        $smartyObj->assign('tagactive', "active");
-        $smartyObj->assign('addtaginfoside', "active");
-        $smartyObj->assign("headerdata", $this->headerCommonData());
-        $smartyObj->display("tag/addtaginfo.html"); 
+        
+        $tagnewobj->updateTagInfo($tagid, $updatedata);
+        
+        $this->showSuccJson();
     }
 }
 new savetaginfo();

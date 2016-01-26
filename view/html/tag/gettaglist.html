@@ -45,14 +45,16 @@
         <div>
             <!-- block -->
             <div class="block">
+                <form class="form-horizontal" method="post">
                 <div class="navbar navbar-inner block-header">
-                    <div class="muted pull-left">标签列表</div>
+                    <div class="muted pull-left">{if $displaycheckbox == 1}<button type="button" class="btn btn-primary" id="submit_form">批量添加</button>{/if}</div>
                     <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
                 </div>
                 <div class="block-content collapse in">
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                {if $displaycheckbox == 1}<th>选择</th>{/if}
                                 <th>标签ID</th>
 						        <th>所属标签</th>
 						        <th>名称</th>
@@ -66,9 +68,10 @@
                         <tbody>
                             {foreach from=$taglist item=value}
                             <tr>
+                                {if $displaycheckbox == 1}<td><input type="checkbox" name="tagids" value="{$value.id}" {if $value.checked == 1}checked{/if}></td>{/if}
                                 <td>{$value.id}</td>
                                 <td>{if $value.pid ==0}无{/if}</td>
-                                <td>{$value.name}</td>
+                                <td style="color:green;">{$value.name}</td>
                                 <td>
                                     <span class="badge">{$value.secondtagcount}个</span>&nbsp;
                                     {if $value.secondtagcount > 0}<a href="javascript:void(0);" id="{$value.id}" class="openclose_buton">展开</a>{/if}
@@ -93,10 +96,11 @@
                             </tr>
                                 {foreach from=$value.secondtaglist item=secondtaginfo}
                                 <tr class="secondtaglist secondtaglist_{$value.id}" style="display:none;">
-                                    <td>&nbsp;</td>
+                                    <td>--|</td>
+                                    {if $displaycheckbox == 1}<td><input type="checkbox" name="tagids" value="{$secondtaginfo.id}" {if $secondtaginfo.checked == 1}checked{/if}></td>{/if}
 	                                <td>{$secondtaginfo.id}</td>
 	                                <td>{$value.name}</td>
-	                                <td>{$secondtaginfo.name}</td>
+	                                <td style="color:green;">{$secondtaginfo.name}</td>
 	                                <td><input type="text" name="order" class="form-control" op_id="{$secondtaginfo.id}" old_val="{$secondtaginfo.ordernum}" value="{$secondtaginfo.ordernum}" style="width: 60px;" /></td>
 	                                <td id="status_{$secondtaginfo.id}">
 	                                    {if $secondtaginfo.status eq '1'}已上线
@@ -119,6 +123,9 @@
                         </tbody>
                     </table>
                 </div>
+                <input type="hidden" name="albumid" id="albumid" value="{$albumid}" />
+                <input type="hidden" name="refer" id="refer" value="{$refer}" />
+                </form>
             </div>
             <!-- /block -->
         </div>
@@ -136,10 +143,10 @@ $(function() {
 		var button_text = $(this).text();
         var secondtaglistclass = "secondtaglist_" + tagid;
         if(button_text == "展开") {
-        	$("." + secondtaglistclass).show();
+        	$("." + secondtaglistclass).fadeIn();
             $(this).text("收起");
         } else if (button_text == "收起") {
-        	$("." + secondtaglistclass).hide();
+        	$("." + secondtaglistclass).fadeOut();
             $(this).text("展开");
         }
 	});
@@ -228,6 +235,31 @@ $(function() {
                 }
             },'json');
         }
+    });
+    
+    $("#submit_form").click(function(){
+    	var tagidobj = $("input:checked");
+    	var tagidstr = "";
+        tagidobj.each(function(i) {
+            tagidstr += $(tagidobj[i]).val() + ",";
+        });
+        
+        var refer = $("#refer").val();
+        var albumid = $("#albumid").val();
+        var url = "/tag/addalbumtagrelation.php";
+        $.post(url, {albumid:albumid, tagidstr:tagidstr}, function(data){
+            if(data.code == '10000') {
+                $(".modal-body").text("操作成功");
+                $("#myModal").modal({show:true});
+                $("#modal_closebtn").click(function(){
+                    location.href = refer;
+                });
+            } else {
+                $(".modal-body").text(data.desc);
+                $("#myModal").modal({show:true});
+                return false;
+            }
+        }, "json");
     });
 });
 {/literal}

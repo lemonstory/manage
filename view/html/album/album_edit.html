@@ -61,11 +61,12 @@
                                 <label class="control-label">专辑标签</label>
                                 <div class="controls">
                                     {foreach from=$checkedtaglist item=value}
-                                    <span class="badge" id="{$value.id}">{$value.name}</span>&nbsp;
+                                    <span class="badge deltag" id="{$value.id}" style="cursor:pointer;">{$value.name}</span>&nbsp;
                                     {/foreach}
                                     <br><br>
+                                    <p class="help-block">点击标签可删除</p>
                                     <p class="help-block">
-                                        <a href="###">编辑专辑标签</a>
+                                        <a href="/tag/gettaglist.php?displaycheckbox=1&albumid={$albuminfo.id}" onclick="return confirm('请保存完专辑信息后再添加，确定要跳转到标签页吗?');">新增标签</a>
                                     </p>
                                 </div>
                             </div>
@@ -129,7 +130,24 @@ $(function() {
         // !!! Important !!! 
         // always return false to prevent standard browser submit and page navigation 
         return false; 
-    })
+    });
+    
+    $(".deltag").click(function(){
+    	var albumid = $("input[name='id']").val();
+    	var tagid = $(this).attr("id");
+    	if(confirm("确定要删除吗?")) {
+    		$.post("/tag/deletealbumtagrelation.php", {albumid:albumid, tagid:tagid}, function(data){
+    			if(data.code == "10000") {
+                    $(".modal-body").text("删除成功");
+                    $("#" + tagid).hide();
+                    $("#myModal").modal({show:true});
+                } else {
+                    $(".modal-body").text(data.desc);
+                    $("#myModal").modal({show:true});
+                }
+    		}, "json");
+    	}
+    });
 });
 {/literal}
 </script>

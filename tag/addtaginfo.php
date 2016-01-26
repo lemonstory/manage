@@ -18,6 +18,10 @@ class addtaginfo extends controller
             $tagid = $this->getRequest('tagid');
             if (!empty($tagid)) {
                 $taginfo = current($tagnewobj->getTagInfoByIds($tagid));
+                if (!empty($taginfo['cover'])) {
+                    $aliossobj = new AliOss();
+                    $taginfo['cover'] = $aliossobj->getImageUrlNg("tag", $taginfo['cover'], 135, $taginfo['covertime']);
+                }
             }
         }
         
