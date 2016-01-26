@@ -61,8 +61,10 @@ class newonlinelist extends controller
             $tagids = array();
             if (!empty($relationlist)) {
                 foreach ($relationlist as $albumid => $albumtaglist) {
-                    foreach ($albumtaglist as $value) {
-                        $tagids[] = $value['tagid'];
+                    if (!empty($albumtaglist)) {
+                        foreach ($albumtaglist as $value) {
+                            $tagids[] = $value['tagid'];
+                        }
                     }
                 }
             }
