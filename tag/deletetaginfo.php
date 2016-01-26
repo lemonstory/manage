@@ -21,7 +21,7 @@ class deletetaginfo extends controller
         // 删除标签
         $result = $tagnewobj->deleteTagInfo($tagid);
         if(empty($result)) {
-            $this->showErrorJson($managesysobj->getError());
+            $this->showErrorJson(array("code" => "xx", "desc" => "删除标签失败"));
         }
         
         // 删除指定标签下，所有专辑标签关联记录

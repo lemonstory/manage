@@ -107,12 +107,7 @@ class gettaglist extends controller
             }
         }
         
-        $refer = "";
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            $refer = $_SERVER['HTTP_REFERER'];
-        }
         $smartyObj = $this->getSmartyObj();
-        $smartyObj->assign('refer', $refer);
         $smartyObj->assign('displaycheckbox', $displaycheckbox);
         $smartyObj->assign('albumid', $albumid);
         

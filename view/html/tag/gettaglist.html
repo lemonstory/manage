@@ -124,7 +124,6 @@
                     </table>
                 </div>
                 <input type="hidden" name="albumid" id="albumid" value="{$albumid}" />
-                <input type="hidden" name="refer" id="refer" value="{$refer}" />
                 </form>
             </div>
             <!-- /block -->
@@ -244,7 +243,6 @@ $(function() {
             tagidstr += $(tagidobj[i]).val() + ",";
         });
         
-        var refer = $("#refer").val();
         var albumid = $("#albumid").val();
         var url = "/tag/addalbumtagrelation.php";
         $.post(url, {albumid:albumid, tagidstr:tagidstr}, function(data){
@@ -252,7 +250,7 @@ $(function() {
                 $(".modal-body").text("操作成功");
                 $("#myModal").modal({show:true});
                 $("#modal_closebtn").click(function(){
-                    location.href = refer;
+                    location.href = "/album/album_edit.php?id=" + albumid;
                 });
             } else {
                 $(".modal-body").text(data.desc);
