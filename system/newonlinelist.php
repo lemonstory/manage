@@ -23,6 +23,7 @@ class newonlinelist extends controller
         $totalCount = 0;
         
     	$newonlinelist = array();
+    	$recommenddesclist = array();
     	if (!empty($searchContent) && empty($selectContent)) {
     	    $column = $searchCondition;
             $columnValue = $searchContent;
@@ -48,6 +49,10 @@ class newonlinelist extends controller
                 $albumids = array_unique($albumids);
                 $albumobj = new Album();
                 $albumlist = $albumobj->getListByIds($albumids);
+                
+                // 获取推荐语
+                $recommenddescobj = new RecommendDesc();
+                $recommenddesclist = $recommenddescobj->getAlbumRecommendDescList($albumids);
             }
             
             // 获取多个专辑的关联tag列表
@@ -88,6 +93,11 @@ class newonlinelist extends controller
                             $albuminfo['recommendtaglist'][$tagid] = $taglist[$tagid];
                         }
                     }
+                }
+                
+                $albuminfo['recommenddesc'] = "";
+                if (!empty($recommenddesclist[$albumid])) {
+                    $albuminfo['recommenddesc'] = $recommenddesclist[$albumid]['desc'];
                 }
                 
                 $value['albuminfo'] = $albuminfo;
