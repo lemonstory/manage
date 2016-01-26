@@ -12,9 +12,9 @@ class deletealbumtagrelation extends controller
         }
         
         $tagnewobj = new TagNew();
-        $res = $tagnewobj->deleteAlbumTag($albumid, $tagid);
+        $res = $tagnewobj->deleteAlbumTagRelationByAlbumIdTagId($albumid, $tagid);
         if (empty($res)) {
-            $this->showErrorJson(array("code" => "xx", "desc" => "删除标签失败"));
+            $this->showErrorJson(array("code" => "xx", "desc" => "删除专辑标签失败"));
         }
         $this->showSuccJson();
     }

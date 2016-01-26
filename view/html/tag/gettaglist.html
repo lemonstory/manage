@@ -192,9 +192,9 @@ $(function() {
     
     $(".delete").click(function(){
         $(".modal-body").text("");
-        if(confirm("确定要删除吗？")) {
+        if(confirm("此操作，会删除所有专辑中的该标签。确定要删除吗？")) {
             var tagid = $(this).attr("id");
-            var delurl = "/tag/deltaginfo.php";
+            var delurl = "/tag/deletetaginfo.php";
             $.post(delurl, {tagid:tagid}, function(data){
                 if(data.code == "10000") {
                     $(".modal-body").text("删除成功");
