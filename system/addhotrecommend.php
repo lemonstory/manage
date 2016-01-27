@@ -23,7 +23,7 @@ class addhotrecommend extends controller
         
         // 获取一级标签列表
         $tagnewobj = new TagNew();
-        $firsttaglist = $tagnewobj->getFirstTagList(50);
+        $firsttaglist = $tagnewobj->getFirstTagList(100);
         
         // 获取选中的标签列表
         $relationlist = current($tagnewobj->getAlbumTagRelationListByAlbumIds($albumid));
@@ -32,7 +32,8 @@ class addhotrecommend extends controller
         foreach ($firsttaglist as $firstvalue) {
             $firstvalue['checked'] = 0;
             foreach ($relationlist as $relationtagid => $relationvalue) {
-                if ($relationvalue['isrecommend'] == 1 && $relationtagid == $firstvalue['id']) {
+                //if ($relationvalue['isrecommend'] == 1 && $relationtagid == $firstvalue['id']) {
+                if ($relationtagid == $firstvalue['id']) {
                     $firstvalue['checked'] = 1;
                 }
             }
