@@ -42,7 +42,7 @@ class gettaglist extends controller
             }
         }
         
-        
+        $aliossobj = new AliOss();
         $managetagnewobj = new ManageTagNew();
         $orderby = "ORDER BY `status` ASC, `ordernum` ASC, `id` ASC";
         if (!empty($searchContent)) {
@@ -66,6 +66,9 @@ class gettaglist extends controller
                 
                 foreach ($firsttaglist as $firsttaginfo) {
                     $firsttagid = $firsttaginfo['id'];
+                    if (!empty($firsttaginfo['cover'])) {
+                        $firsttaginfo['cover'] = $aliossobj->getImageUrlNg("tag", $firsttaginfo['cover'], 0, $firsttaginfo['covertime']);
+                    }
                     $taglist[$firsttagid] = $firsttaginfo;
                     
                     // 添加专辑标签时，一级标签的checkbox是否选中状态

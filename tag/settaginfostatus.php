@@ -28,7 +28,7 @@ class settaginfostatus extends controller
                 $this->showErrorJson(ErrorConf::TagInfoIsEmpty());
             }
             
-            $result = $tagnewobj->updateTagInfo($tagid, $updata);
+            $result = $tagnewobj->updateTagInfo($tagid, $taginfo['name'], $updata);
             if(empty($result)) {
                 $this->showErrorJson($managesysobj->getError());
             }

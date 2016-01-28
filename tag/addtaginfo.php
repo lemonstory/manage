@@ -20,7 +20,7 @@ class addtaginfo extends controller
                 $taginfo = current($tagnewobj->getTagInfoByIds($tagid));
                 if (!empty($taginfo['cover'])) {
                     $aliossobj = new AliOss();
-                    $taginfo['cover'] = $aliossobj->getImageUrlNg("tag", $taginfo['cover'], 135, $taginfo['covertime']);
+                    $taginfo['cover'] = $aliossobj->getImageUrlNg("tag", $taginfo['cover'], 0, $taginfo['covertime']);
                 }
             }
         }

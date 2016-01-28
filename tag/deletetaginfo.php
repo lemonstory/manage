@@ -19,7 +19,7 @@ class deletetaginfo extends controller
         }
         
         // 删除标签
-        $result = $tagnewobj->deleteTagInfo($tagid);
+        $result = $tagnewobj->deleteTagInfo($tagid, $taginfo['name']);
         if(empty($result)) {
             $this->showErrorJson(array("code" => "xx", "desc" => "删除标签失败"));
         }

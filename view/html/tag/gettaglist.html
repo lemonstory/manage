@@ -59,6 +59,7 @@
 						        <th>所属标签</th>
 						        <th>名称</th>
 						        <th>二级标签</th>
+                                <th>标签图片</th>
 						        <th>排序</th>
 						        <th>状态</th>
 						        <th>操作</th>
@@ -76,6 +77,7 @@
                                     <span class="badge">{$value.secondtagcount}个</span>&nbsp;
                                     {if $value.secondtagcount > 0}<a href="javascript:void(0);" id="{$value.id}" class="openclose_buton">展开</a>{/if}
                                 </td>
+                                <td>{if $value.cover}<img src="{$value.cover}" width="135" height="135" />{else}&nbsp;{/if}</td>
                                 <td><input type="text" name="order" class="form-control" op_id="{$value.id}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
                                 <td id="status_{$value.id}">
                                     {if $value.status eq '1'}已上线
@@ -101,6 +103,7 @@
 	                                <td>{$secondtaginfo.id}</td>
 	                                <td>{$value.name}</td>
 	                                <td style="color:green;">{$secondtaginfo.name}</td>
+                                    <td>&nbsp;</td>
 	                                <td><input type="text" name="order" class="form-control" op_id="{$secondtaginfo.id}" old_val="{$secondtaginfo.ordernum}" value="{$secondtaginfo.ordernum}" style="width: 60px;" /></td>
 	                                <td id="status_{$secondtaginfo.id}">
 	                                    {if $secondtaginfo.status eq '1'}已上线

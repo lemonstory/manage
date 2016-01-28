@@ -5,7 +5,6 @@ class savetaginfo extends controller
 {
     public function action()
     {
-        $action = $this->getRequest("action");
         $tagid = $this->getRequest("tagid");
         $refer = $this->getRequest("refer");
         $name = $this->getRequest("name");
@@ -24,12 +23,14 @@ class savetaginfo extends controller
                 $this->showErrorJson(ErrorConf::TagInfoIsEmpty());
             }
             $tagid = $taginfo['id'];
+            $tagname = $taginfo['name'];
         } else {
             // add
             $tagid = $tagnewobj->addTag($name, $pid);
             if (empty($tagid)) {
                 $this->showErrorJson($tagnewobj->getError());
             }
+            $tagname = $name;
         }
         
         $updatedata = array();
@@ -51,7 +52,7 @@ class savetaginfo extends controller
             }
         }
         
-        $tagnewobj->updateTagInfo($tagid, $updatedata);
+        $tagnewobj->updateTagInfo($tagid, $tagname, $updatedata);
         
         $this->showSuccJson();
     }
