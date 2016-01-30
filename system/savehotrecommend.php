@@ -24,8 +24,12 @@ class savehotrecommend extends controller
             $res = $manageobj->addRecommendHotDb($albumid);
         } else {
             // edit
-            $res = true;
+            // 先设置为下线状态,否则后面的标签推荐一直无法为上线状态
+            $data = array('status'=>$manageobj->RECOMMEND_STATUS_OFFLINE);
+            $res = $manageobj->updateHotRecommendInfoByIds($albumid,$data);
+            //$res = true;
         }
+
         if ($res == false) {
             $this->showErrorJson($manageobj->getError());
         }
@@ -49,7 +53,12 @@ class savehotrecommend extends controller
                 $this->showErrorJson($managetagnewobj->getError());
             }
         }
-        
+
+        //清除故事专辑与标签及是否被推荐至{热门,同龄,最新}的cache
+        $tagnewobj = new TagNew();
+        $tagnewobj->clearAlbumTagRelationCacheByAlbumIds($albumid);
+
+
         // 添加或更新推荐语
         $recommenddescobj = new RecommendDesc();
         $recommenddescobj->addAlbumRecommendDescDb($albumid, $recommenddesc);
