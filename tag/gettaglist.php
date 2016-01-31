@@ -47,7 +47,43 @@ class gettaglist extends controller
         $orderby = "ORDER BY `status` ASC, `ordernum` ASC, `id` ASC";
         if (!empty($searchContent)) {
             $where = "`{$searchCondition}` = '{$searchContent}'";
-            $resultinfo = $managetagnewobj->getTagListByColumnSearch($where, $orderby, $currentPage + 1, $perPage);
+            $resultlist = $managetagnewobj->getTagListByColumnSearch($where, $orderby, $currentPage + 1, $perPage);
+            if (!empty($resultlist)) {
+                $info = current($resultlist);
+                $firsttagid = $info['id'];
+                if (!empty($info['cover'])) {
+                    $info['cover'] = $aliossobj->getImageUrlNg("tag", $info['cover'], 0, $info['covertime']);
+                }
+                if ($info['pid'] == 0) {
+                    // 搜索的是一级标签
+                    $secondwhere = "pid = '{$info['id']}'";
+                    $secondtaglist = $managetagnewobj->getTagListByColumnSearch($secondwhere, $orderby, 0, 1000);
+                } else {
+                    
+                }
+                $taglist[$firsttagid] = $info;
+                
+                if (!empty($secondtaglist)) {
+                    foreach ($secondtaglist as $secondtaginfo) {
+                        $secondtagid = $secondtaginfo['id'];
+                        if ($secondtaginfo['pid'] == $firsttagid) {
+                            $taglist[$firsttagid]['secondtaglist'][$secondtagid] = $secondtaginfo;
+                            // 添加专辑标签时，二级标签的checkbox是否选中状态
+                            if (!empty($checktagids) && in_array($secondtagid, $checktagids)) {
+                                $taglist[$firsttagid]['secondtaglist'][$secondtagid]['checked'] = 1;
+                            } else {
+                                $taglist[$firsttagid]['secondtaglist'][$secondtagid]['checked'] = 0;
+                            }
+                        }
+                    }
+                    
+                    // 一级标签下的，二级标签数量
+                    $taglist[$firsttagid]['secondtagcount'] = 0;
+                    if (!empty($taglist[$firsttagid]['secondtaglist'])) {
+                        $taglist[$firsttagid]['secondtagcount'] = count($taglist[$firsttagid]['secondtaglist']);
+                    }
+                }
+            }
         } else {
             $where = "`pid` = 0";
             $firsttaglist = $managetagnewobj->getTagListByColumnSearch($where, $orderby, $currentPage + 1, $perPage);
