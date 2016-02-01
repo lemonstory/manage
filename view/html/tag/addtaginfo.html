@@ -24,7 +24,7 @@
                                     <select id="select01" class="chzn-select chzn-done" style="" name="pid">
                                         <option value="0">无</option>
                                         {foreach from=$firsttaglist item=value}
-                                        <option value="1" {if $taginfo.pid == $value.id}selected{/if}>{$value.name}</option>
+                                        <option value="{$value.id}" {if $taginfo.pid == $value.id}selected{/if}>{$value.name}</option>
                                         {/foreach}
                                     </select>
                                 </div>
