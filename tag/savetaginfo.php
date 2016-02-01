@@ -51,9 +51,7 @@ class savetaginfo extends controller
                 }
             }
         }
-        
         $tagnewobj->updateTagInfo($tagid, $tagname, $updatedata);
-        
         $this->showSuccJson();
     }
 }
