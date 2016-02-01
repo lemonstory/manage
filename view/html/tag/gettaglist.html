@@ -8,7 +8,7 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/fav/gettaglist.php">
+                    <form class="form-horizontal" method="post" action="/tag/gettaglist.php">
                         <fieldset>
                             <legend></legend>
                             <div class="control-group">
@@ -74,8 +74,10 @@
                                 <td>{if $value.pid ==0}无{/if}</td>
                                 <td style="color:green;">{$value.name}</td>
                                 <td>
+                                    {if $value.secondtagcount > 0}
                                     <span class="badge">{$value.secondtagcount}个</span>&nbsp;
-                                    {if $value.secondtagcount > 0}<a href="javascript:void(0);" id="{$value.id}" class="openclose_buton">展开</a>{/if}
+                                    <a href="javascript:void(0);" id="{$value.id}" class="openclose_buton">展开</a>
+                                    {/if}
                                 </td>
                                 <td>{if $value.cover}<img src="{$value.cover}" width="135" height="135" />{else}&nbsp;{/if}</td>
                                 <td><input type="text" name="order" class="form-control" op_id="{$value.id}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
