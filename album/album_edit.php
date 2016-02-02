@@ -79,6 +79,10 @@ class album_edit extends controller
         if (!$albuminfo && $albumid) {
         	return $this->showErrorJson(ErrorConf::albumInfoIsEmpty());
         }
+        if (!empty($albuminfo['cover'])) {
+            $aliossobj = new AliOss();
+            $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 460, $albuminfo['cover_time']);
+        }
         
         
         // 获取选中的标签列表

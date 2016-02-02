@@ -51,6 +51,9 @@
                             <div class="control-group">
                                 <label class="control-label" for="fileInput">封面</label>
                                 <div class="controls">
+                                    {if $albuminfo.cover}
+                                    <img src="{$albuminfo.cover}" />
+                                    {/if}
                                     <div class="uploader" id="uniform-fileInput">
                                         <input class="input-file uniform_on" id="fileInput" type="file" name="cover">
                                     </div>
