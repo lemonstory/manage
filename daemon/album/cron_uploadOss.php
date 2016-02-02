@@ -42,7 +42,7 @@ class cron_uploadOss extends DaemonBase
         } */
         // 更新专辑封面
         $album = new Album();
-        $album_list = $album->get_list("cover='' and s_cover!=''", 20);
+        $album_list = $album->get_list("s_cover!='' and cover=''", 20);
         if (!empty($album_list)) {
             // 存已经上传的缓存
             $image_cache = array();
@@ -50,12 +50,16 @@ class cron_uploadOss extends DaemonBase
                 if (isset($image_cache[$v['s_cover']])) {
                     $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
                 } else {
+                    // 获取原图地址
+                    $oricover = $v['s_cover'];
                     foreach ($this->replacelist as $searchstr) {
-                        $v['s_cover'] = str_replace($searchstr, "", $v['s_cover']);
+                        $oricover = str_replace($searchstr, "", $oricover);
                     }
-                    $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
+                    // 上传原图
+                    $r = $this->middle_upload($oricover, $v['id'], 1);
                     if (is_string($r)) {
                         $r = str_replace("album/", "", $r);
+                        // 更新cover字段
                         $album->update(array('cover' => $r, 'cover_time' => time()), "`s_cover`='{$v['s_cover']}' and `cover`=''");
                         $image_cache[$v['s_cover']] = $r;
                         $this->writeLog("专辑封面 {$v['id']} => cover 更新成功");
@@ -82,10 +86,11 @@ class cron_uploadOss extends DaemonBase
                     if (isset($image_cache[$v['s_cover']])) {
                         $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
                     } else {
+                        $oricover = $v['s_cover'];
                         foreach ($this->replacelist as $searchstr) {
-                            $v['s_cover'] = str_replace($searchstr, "", $v['s_cover']);
+                            $oricover = str_replace($searchstr, "", $oricover);
                         }
-                        $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
+                        $r = $this->middle_upload($oricover, $v['id'], 2);
                         if (is_string($r)) {
                             $r = str_replace("story/", "", $r);
                             $story->update(array('cover' => $r, 'cover_time' => time()), "`cover` = '' and `s_cover`='{$v['s_cover']}'");
