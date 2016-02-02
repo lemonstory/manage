@@ -24,7 +24,7 @@ class ManageStory extends ModelBase
         
         $list = array();
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "SELECT * FROM `story` {$where} ORDER BY `view_order` ASC,`id` DESC LIMIT {$offset}, {$perPage}";
+        $sql = "SELECT * FROM `story` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
