@@ -6,7 +6,7 @@ include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_uploadOss extends DaemonBase
 {
     protected $home_url = 'http://m.idaddy.cn/mobile.php?etr=touch&mod=freeAudio&hidden=';
-    protected $replacelist = array("_web_large", "_s150", "_s540");
+    protected $replacelist = array("_web_large", "_mobile_large", "_s150", "_s540");
     protected $processnum = 1;
     protected $isWhile = false;
     protected function deal() {
