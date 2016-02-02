@@ -10,6 +10,7 @@
 //
 //  修复所有专辑[慎重]:
 //      php your_path/cron_updateStoryViewOrder.php -a all
+//  增加: -r 参数,强制更新某个特定故事辑的排序
 
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_updateStoryViewOrder extends DaemonBase
@@ -21,7 +22,7 @@ class cron_updateStoryViewOrder extends DaemonBase
 
         set_time_limit(0);
         $all = "all";
-        $options = getopt("a:l:");
+        $options = getopt("a:l:r");
         $condition = "(`view_order`=0 or `view_order`=10000) ";
         $orderby = "order by `id` ASC";
         $limit = 1000;
@@ -36,8 +37,10 @@ class cron_updateStoryViewOrder extends DaemonBase
 
             $optA = $options['a'];
             $optL = $options['l'];
-
+            $optR = $options['r'];
         }
+
+
 
         $repair_album_id = intval($optA);
         $len = intval($optL);
@@ -49,18 +52,23 @@ class cron_updateStoryViewOrder extends DaemonBase
 
         if($repair_album_id > 0) {
 
-            $condition .= "and `album_id` = {$repair_album_id}";
+            if(isset($optR)) {
+
+                $condition = " `album_id` = {$repair_album_id}";
+            } else {
+                $condition .= "and `album_id` = {$repair_album_id}";
+            }
         }
 
         $is_first_loop = true;
         $story_count = 0;
         $id_condition = "";
+        $story_obj = new Story();
 
         while($is_first_loop || $story_count > 0) {
 
             $where = $condition.$id_condition;
             $is_first_loop = false;
-            $story_obj = new Story();
             $story_list = $story_obj->get_filed_list("`id`,`title`,`album_id`", $where, $orderby, $limit);
             $story_count = count($story_list);
 
