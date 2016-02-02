@@ -61,7 +61,7 @@ class cron_updateStoryViewOrder extends DaemonBase
             $where = $condition.$id_condition;
             $is_first_loop = false;
             $story_obj = new Story();
-            $story_list = $story_obj->get_filed_list("`id`,`title`", $where, $orderby, $limit);
+            $story_list = $story_obj->get_filed_list("`id`,`title`,`album_id`", $where, $orderby, $limit);
             $story_count = count($story_list);
 
             if($story_count > 0) {
@@ -69,30 +69,29 @@ class cron_updateStoryViewOrder extends DaemonBase
                 $last_index = $story_count - 1;
                 $sub_story_id = $story_list[$last_index]['id'];
                 $id_condition = " and id > {$sub_story_id}";
-            }
 
+                foreach ($story_list as $story) {
 
-            foreach ($story_list as $story) {
+                    $count++;
+                    $view_order = $story_obj->get_view_order($story['title'], $len);
+                    $view_order = intval($view_order);
+                    if (0 != $view_order) {
 
-                $count++;
-                $view_order = $story_obj->get_view_order($story['title'], $len);
-                $view_order = intval($view_order);
-                if (0 != $view_order) {
+                        $repair_num++;
+                        $story_obj->update(array('view_order' => $view_order), "`id`={$story['id']}");
+                        fwrite($fp, "getStoryViewOrder: title: {$story['title']}, id: {$story['id']}, view_order: {$view_order}\n");
+                    } else {
 
-                    $repair_num++;
-                    $story_obj->update(array('view_order' => $view_order), "`id`={$story['id']}");
-                    fwrite($fp, "getStoryViewOrder: title: {$story['title']}, id: {$story['id']}, view_order: {$view_order}\n");
-                } else {
-
-                    $not_required_num++;
-                    //避免未修复的一直排在最前面,将序号更改为ID
-                    $story_obj->update(array('view_order' => $story['id']), "`id`={$story['id']}");
-                    fwrite($fp, "doNothing: title: {$story['title']}, id: {$story['id']}, view_order: {$view_order}\n");
+                        $not_required_num++;
+                        //避免未修复的一直排在最前面,将序号更改为ID
+                        $story_obj->update(array('view_order' => $story['id']), "`id`={$story['id']}");
+                        fwrite($fp, "doNothing: title: {$story['title']}, id: {$story['id']}, view_order: {$view_order}\n");
+                    }
+                    $story_obj->clearStoryCache($story['id']);
+                    //TODO:可优化
+                    $story_obj->clearAlbumStoryListCache($story['album_id']);
                 }
-                $story_obj->clearStoryCache($story['id']);
             }
-            $story_obj->clearAlbumStoryListCache($repair_album_id);
-
         }
 
         fwrite($fp, "Done! count:{$count}, repairNum:{$repair_num},  notRequiredNum:{$not_required_num}\n");
