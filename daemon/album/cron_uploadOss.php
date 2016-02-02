@@ -6,6 +6,7 @@ include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_uploadOss extends DaemonBase
 {
     protected $home_url = 'http://m.idaddy.cn/mobile.php?etr=touch&mod=freeAudio&hidden=';
+    protected $replacelist = array("_web_large", "_s150", "_s540");
     protected $processnum = 1;
     protected $isWhile = false;
     protected function deal() {
@@ -49,6 +50,9 @@ class cron_uploadOss extends DaemonBase
                 if (isset($image_cache[$v['s_cover']])) {
                     $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
                 } else {
+                    foreach ($this->replacelist as $searchstr) {
+                        $v['s_cover'] = str_replace($searchstr, "", $v['s_cover']);
+                    }
                     $r = $this->middle_upload($v['s_cover'], $v['id'], 1);
                     if (is_string($r)) {
                         $r = str_replace("album/", "", $r);
@@ -78,6 +82,9 @@ class cron_uploadOss extends DaemonBase
                     if (isset($image_cache[$v['s_cover']])) {
                         $this->writeLog("故事封面(重复) {$v['id']} => cover 更新成功");
                     } else {
+                        foreach ($this->replacelist as $searchstr) {
+                            $v['s_cover'] = str_replace($searchstr, "", $v['s_cover']);
+                        }
                         $r = $this->middle_upload($v['s_cover'], $v['id'], 2);
                         if (is_string($r)) {
                             $r = str_replace("story/", "", $r);
