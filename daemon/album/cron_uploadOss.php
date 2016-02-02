@@ -18,7 +18,7 @@ class cron_uploadOss extends DaemonBase
 
     protected function uploadOss() {
         // 更新分类封面
-        $category = new Category();
+        /* $category = new Category();
         $category_list = $category->get_list("cover=''", '', 20);
         if (!empty($category_list)) {
             // 存已经上传的缓存
@@ -38,7 +38,7 @@ class cron_uploadOss extends DaemonBase
                     }
                 }
             }
-        }
+        } */
         // 更新专辑封面
         $album = new Album();
         $album_list = $album->get_list("cover='' and s_cover!=''", 20);
