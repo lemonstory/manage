@@ -11,6 +11,7 @@
 //  修复所有专辑[慎重]:
 //      php your_path/cron_updateStoryViewOrder.php -a all
 //  增加: -r 参数,强制更新某个特定故事辑的排序
+//TODO:是否需要定期执行?
 
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_updateStoryViewOrder extends DaemonBase

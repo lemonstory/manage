@@ -17,7 +17,7 @@
 //
 //  修复所有专辑[慎重]:
 //      php your_path/cron_repairAlbumIntro.php -a all
-
+//TODO:是否需要定期执行?
 
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 
