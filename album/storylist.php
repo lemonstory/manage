@@ -37,7 +37,7 @@ class index extends controller
         }
         if ($title) {
             $search_filter['title'] = $title;
-            $where[] = " `title` like '%{$title}%' ";
+            $where[] = " `title` = '{$title}' ";
             $baseUri =  $baseUri . "title={$title}&";
         }
         
