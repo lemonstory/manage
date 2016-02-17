@@ -24,7 +24,7 @@ class cron_kdgsStory extends DaemonBase {
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='kdgs'", " {$limit},{$per_page}");
+            $album_list = $album->get_list("`from`='kdgs'", "order by `id` desc {$limit},{$per_page}");
             if (!$album_list) {
                 break;
             }
@@ -78,6 +78,7 @@ class cron_kdgsStory extends DaemonBase {
             }
 
             $p++;
+			sleep(3);
         }
         $this->writeLog("采集口袋故事结束");
     }
