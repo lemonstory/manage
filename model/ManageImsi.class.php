@@ -87,8 +87,11 @@ class ManageImsi extends ModelBase
     
         $statusWhere = "";
         $list = $resIds = array();
+        $actionlogobj = new ActionLog();
+        $month = date("Ym");
+        $tablename = $actionlogobj->getUserImsiActionLogTableName($month);
         $db = DbConnecter::connectMysql($this->DB_INSTANCE);
-        $sql = "SELECT * FROM `{$this->USER_ACTION_LOG_TABLE_NAME}`";
+        $sql = "SELECT * FROM `{$tablename}`";
         if (!empty($column)) {
             $sql .= " WHERE `{$column}` = '$value'";
             if (!empty($statusWhere)) {
@@ -100,7 +103,7 @@ class ManageImsi extends ModelBase
             }
         }
     
-        $sql .= " ORDER BY `addtime` DESC LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -112,9 +115,12 @@ class ManageImsi extends ModelBase
     public function getActionLogCountByColumnSearch($column = '', $value = '')
     {
         $statusWhere = "";
-         
+        $actionlogobj = new ActionLog();
+        $month = date("Ym");
+        $tablename = $actionlogobj->getUserImsiActionLogTableName($month);
+        
         $db = DbConnecter::connectMysql($this->DB_INSTANCE);
-        $sql = "SELECT COUNT(*) FROM `{$this->USER_ACTION_LOG_TABLE_NAME}`";
+        $sql = "SELECT COUNT(*) FROM `{$tablename}`";
         if (!empty($column)) {
             $sql .= " WHERE `{$column}` = '$value'";
             if (!empty($statusWhere)) {
