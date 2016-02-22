@@ -24,22 +24,17 @@ class cron_xmlyStory extends DaemonBase {
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='xmly' and `add_time` > '{$lastmonth}'", "order by `id` desc {$limit},{$per_page}");
+            $album_list = $album->get_list("`from`='xmly' and `add_time` > '{$lastmonth}' order by `id` desc", "{$limit},{$per_page}");
             if (!$album_list) {
                 break;
             }
             $time = time();
             $this->writeLog("采集喜马拉雅故事  {$limit},{$per_page}");
             foreach($album_list as $k => $v) {
-
 	        	$album_id = Http::sub_data($v['link_url'], 'album/');
 
 	        	// 获取专辑全部故事
-	        	$story_list = array();
-
         		$story_url_list = $xmly->get_story_url_list($album_id);
-        		$story_num = count($story_url_list);
-	        
 	        	// 如果故事的数量和专辑里面的故事数量相等则不再更新
 	        	if (count($story_url_list) == $v['story_num']) {
 	        		$this->writeLog("喜马拉雅专辑{$v['id']} 没有更新");
