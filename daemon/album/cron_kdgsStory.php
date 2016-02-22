@@ -21,10 +21,11 @@ class cron_kdgsStory extends DaemonBase {
         $this->writeLog("采集口袋故事开始");
         $p = 1;
         $per_page = 500;
+        $lastmonth = date("Y-m-d H:i:s", time() - 86400 * 30);
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='kdgs'", "order by `id` desc {$limit},{$per_page}");
+            $album_list = $album->get_list("`from`='kdgs' and `add_time` > '{$lastmonth}'", "order by `id` desc {$limit},{$per_page}");
             if (!$album_list) {
                 break;
             }

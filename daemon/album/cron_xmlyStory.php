@@ -20,10 +20,11 @@ class cron_xmlyStory extends DaemonBase {
         $this->writeLog("采集喜马拉雅故事开始");
         $p = 1;
         $per_page = 500;
+        $lastmonth = date("Y-m-d H:i:s", time() - 86400 * 30);
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='xmly'", "order by `id` desc {$limit},{$per_page}");
+            $album_list = $album->get_list("`from`='xmly' and `add_time` > '{$lastmonth}'", "order by `id` desc {$limit},{$per_page}");
             if (!$album_list) {
                 break;
             }
