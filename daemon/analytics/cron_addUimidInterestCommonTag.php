@@ -7,8 +7,9 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
     public $isWhile = false;
     protected function deal()
     {
-        $endtime = time();
-        $starttime = $endtime - 3600;
+        $nowtime = time();
+        $starttime = date("Y-m-d H:i:s", $nowtime - 3600);
+        $endtime = date("Y-m-d H:i:s", $nowtime);
         
         $uimidinterestobj = new UimidInterest();
         $tagnewobj = new TagNew();
