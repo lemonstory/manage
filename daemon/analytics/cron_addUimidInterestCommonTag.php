@@ -13,6 +13,7 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
         
         $uimidinterestobj = new UimidInterest();
         $tagnewobj = new TagNew();
+        $storyobj = new Story();
         $actionlogobj = new ActionLog();
         $actionloglist = $actionlogobj->getUserImsiActionLogListByTime($starttime, $endtime);
         
@@ -34,6 +35,28 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
             }
         }
         
+        // 设备，感兴趣的故事，所属的专辑
+        if (!empty($uimidstoryids)) {
+            foreach ($uimidstoryids as $uimid => $storyids) {
+                $storyids = array_unique($storyids);
+                $storyalbumids = array();
+                if (!empty($storyids)) {
+                    $storyidstr = implode(",", $storyids);
+                    $storyalbumids = $storyobj->get_list("`id` IN ($storyidstr)", 5000, 'album_id');
+                }
+                
+                if (!empty($storyalbumids)) {
+                    $storyalbumids = array_unique($storyalbumids);
+                    if (empty($uimidalbumids[$uimid])) {
+                        $uimidalbumids[$uimid] = $storyalbumids;
+                    } else {
+                        $uimidalbumids[$uimid] = array_merge($uimidalbumids[$uimid], $storyalbumids);
+                    }
+                }
+            }
+        }
+        
+        
         // 设备，感兴趣的专辑的标签
         if (!empty($uimidalbumids)) {
             foreach ($uimidalbumids as $uimid => $albumids) {
@@ -41,10 +64,10 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
                     $albumids = array_unique($albumids);
                     $relationlist = $tagnewobj->getAlbumTagRelationListByAlbumIds($albumids);
                     if (!empty($relationlist)) {
+                        $relationlist = current($relationlist);
                         foreach ($relationlist as $relationinfo) {
                             $tagid = $relationinfo['tagid'];
-                            echo "uimid={$uimid}##tagid={$tagid}";
-                            //$uimidinterestobj->updateUimidInterestTag($uimid, $tagid);
+                            $uimidinterestobj->updateUimidInterestTag($uimid, $tagid);
                         }
                     }
                 }
@@ -57,10 +80,7 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
             
         }
         
-        // 设备，感兴趣的故事的标签
-        if (!empty($uimidstoryids)) {
-            
-        }
+        
     }
     
     protected function checkLogPath() {
