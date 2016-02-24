@@ -57,6 +57,11 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
             }
         }
         
+        // 设备，感兴趣的搜索关键词的专辑
+        if (!empty($uimidsearchids)) {
+            
+        }
+        
         
         // 记录设备，感兴趣的专辑的标签
         if (!empty($uimidalbumids)) {
@@ -75,12 +80,6 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
                 
             }
         }
-        
-        // 设备，感兴趣的搜索关键词的专辑标签
-        if (!empty($uimidsearchids)) {
-            
-        }
-        
         
     }
     
