@@ -3,7 +3,7 @@
  * 分析1小时内的行为日志记录，筛选出uimid感兴趣的标签
  */
 include_once (dirname(dirname(__FILE__)) . "/DaemonBase.php");
-class cron_addUimidInterestCommonTag extends DaemonBase {
+class cron_addUimidInterestTag extends DaemonBase {
     public $isWhile = false;
     protected function deal()
     {
@@ -87,4 +87,4 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
     }
 
 }
-new cron_addUimidInterestCommonTag();
+new cron_addUimidInterestTag();
