@@ -45,6 +45,7 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
                     $storyalbumids = $storyobj->get_list("`id` IN ($storyidstr)", 5000, 'album_id');
                 }
                 
+                // 获得专辑后，追加到设备感兴趣的专辑数组中
                 if (!empty($storyalbumids)) {
                     $storyalbumids = array_unique($storyalbumids);
                     if (empty($uimidalbumids[$uimid])) {
@@ -57,7 +58,7 @@ class cron_addUimidInterestCommonTag extends DaemonBase {
         }
         
         
-        // 设备，感兴趣的专辑的标签
+        // 记录设备，感兴趣的专辑的标签
         if (!empty($uimidalbumids)) {
             foreach ($uimidalbumids as $uimid => $albumids) {
                 if (!empty($albumids)) {
