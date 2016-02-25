@@ -43,7 +43,7 @@ class cron_fixXmlyStoryCover extends DaemonBase {
 	        			continue;
 	        		}
                 	$story_info = $story->get_filed("`id` > 256132 and `album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
-                	var_dump($story_info);exit;
+                	var_dump($story_info);var_dump($v2);exit;
                 }
                 $this->writeLog("喜马拉雅专辑 {$v['id']} 新增 {$update_num}");
                 $album->update_story_num($v['id']);
