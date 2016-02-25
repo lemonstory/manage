@@ -36,17 +36,19 @@ class cron_fixXmlyStoryCover extends DaemonBase {
 	        	// 获取喜马拉雅的专辑故事
         		$story_url_list = $xmly->get_story_url_list($xmly_album_id);
 
-	        	$update_num = 0;
 	        	foreach ($story_url_list as $k2 => $v2) {
 	        		$v2 = $xmly->get_story_info($v2);
 	        		if (!$v2) {
 	        			continue;
 	        		}
                 	$story_info = $story->get_filed("`id` > 256132 and `album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
-                	var_dump($story_info);var_dump($v2);exit;
+                    if (isset($story_info['id']) && $story_info['id'] && $v2['s_cover']){var_dump($story_info['id']);exit;
+                        $story->update(array('s_cover' => $v2['s_cover']), " id={$story_info['id']}");exit;
+                        $this->writeLog("{$story_info['id']} 已更新");
+                    }
                 }
-                $this->writeLog("喜马拉雅专辑 {$v['id']} 新增 {$update_num}");
-                $album->update_story_num($v['id']);
+                
+                
 	        }
             $p++;
 			sleep(3);
