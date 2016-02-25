@@ -55,6 +55,8 @@
                             <tr>
                                 <th>ID</th>
                                 <th>UIMID</th>
+                                <th>UID/设备IMSI</th>
+                                <th>类型</th>
                                 <th>标签名称</th>
 						        <th>喜欢度</th>
                             </tr>
@@ -64,6 +66,8 @@
                             <tr>
                                 <td>{$value.id}</td>
                                 <td><a href="/interest/uimidinteresttaglist.php?searchCondition=uimid&searchContent={$value.uimid}">{$value.uimid}</a></td>
+                                <td>{$value.userimsiinfo.resid}</td>
+                                <td>{if $value.userimsiinfo.restype == 1}用户UID{elseif $value.userimsiinfo.restype == 2}设备IMSI{/if}</td>
                                 <td><a href="/interest/uimidinteresttaglist.php?searchCondition=tagid&searchContent={$value.tagid}">{$value.tagname}</a></td>
                                 <td>{$value.num}</td>
                             </tr>

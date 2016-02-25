@@ -32,14 +32,23 @@ class uimidinteresttaglist extends controller
         $resultList = $manageobj->getListByColumnSearch($column, $columnValue, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $tagids = array();
+            $uimids = array();
+            $userimsilist = array();
             foreach ($resultList as $value) {
+                $uimids[] = $value['uimid'];
                 $tagids[] = $value['tagid'];
             }
             if (!empty($tagids)) {
                 $tagnewobj = new TagNew();
                 $taglist = $tagnewobj->getTagInfoByIds($tagids);
             }
+            if (!empty($uimids)) {
+                $manageimsiobj = new ManageImsi();
+                $userimsilist = $manageimsiobj->getUserImsiListByUimids($uimids);
+            }
+            
             foreach ($resultList as $value) {
+                $value['userimsiinfo'] = $userimsilist[$value['uimid']];
                 $value['tagname'] = $taglist[$value['tagid']]['name'];
                 $uimidinteresttaglist[] = $value;
             }

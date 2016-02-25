@@ -171,6 +171,36 @@ class ManageImsi extends ModelBase
         }
         return $list;
     }
+    
+    public function getUserImsiListByUimids($uimids)
+    {
+        if (empty($uimids)) {
+            return array();
+        }
+        if (!is_array($uimids)) {
+            $uimids = array($uimids);
+        }
+        $uimidstr = "";
+        foreach ($uimids as $uimid) {
+            $uimidstr .= "'{$uimid}',";
+        }
+        $uimidstr = rtrim($uimidstr, ",");
+        
+        $db = DbConnecter::connectMysql("share_main");
+        $sql = "select * from {$this->USER_IMSI_TABLE_NAME} where `uimid` in ($uimidstr)";
+        $st = $db->prepare ( $sql );
+        $st->execute (array($restype));
+        $dbData = $st->fetchAll(PDO::FETCH_ASSOC);
+        $db = null;
+        if (empty($dbData)) {
+            return array();
+        }
+        $list = array();
+        foreach ($dbData as $value) {
+            $list[$value['uimid']] = $value;
+        }
+        return $list;
+    }
 }
 
 ?>
