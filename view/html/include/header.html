@@ -85,6 +85,9 @@
                         {php}if ($privObj->checkPrivilege('analytics')){{/php}
                         <li class="{$analyticsactive}"><a href="/analytics/searchcontentlist.php">统计管理</a></li>
                         {php}}{/php}
+                        {php}if ($privObj->checkPrivilege('interest')){{/php}
+                        <li class="{$interestactive}"><a href="/interest/uimidinteresttaglist.php">兴趣推荐</a></li>
+                        {php}}{/php}
                     </ul>
                 </div>
                 <!--/.nav-collapse -->
@@ -203,6 +206,12 @@
 	                         {php}if ($privObj->checkPrivilege('analytics.analyticscomment')){{/php}
 	                         <li class="{$analyticscommentside}"><a href="/analytics/analyticscomment.php"><i class="icon-chevron-right"></i>评论统计</a></li>
 	                         {php}}{/php}
+                         {php}}{/php}
+                     {elseif $interestactive}
+                         {php}if ($privObj->checkPrivilege('interest')){{/php}
+                             {php}if ($privObj->checkPrivilege('interest.uimidinteresttaglist')){{/php}
+                             <li class="{$uimidinteresttaglistside}"><a href="/interest/uimidinteresttaglist.php"><i class="icon-chevron-right"></i>设备感兴趣的标签列表</a></li>
+                             {php}}{/php}
                          {php}}{/php}
 			         {/if}
 			    </ul>
