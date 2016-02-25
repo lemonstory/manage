@@ -137,6 +137,40 @@ class ManageImsi extends ModelBase
         $count = $st->fetch(PDO::FETCH_COLUMN);
         return $count;
     }
+    
+    
+    public function getUserImsiListByUids($uids)
+    {
+        if (empty($uids)) {
+            return array();
+        }
+        if (!is_array($uids)) {
+            $uids = array($uids);
+        }
+        $residstr = "";
+        foreach ($uids as $uid) {
+            $residstr .= "'{$uid}',";
+        }
+        $residstr = rtrim($residstr, ",");
+        
+        $userimsiobj = new UserImsi();
+        $restype = $userimsiobj->USER_IMSI_INFO_RESTYPE_UID;
+        
+        $db = DbConnecter::connectMysql("share_main");
+        $sql = "select * from {$this->USER_IMSI_TABLE_NAME} where `resid` in ($residstr) and `restype` = ?";
+        $st = $db->prepare ( $sql );
+        $st->execute (array($restype));
+        $dbData = $st->fetchAll(PDO::FETCH_ASSOC);
+        $db = null;
+        if (empty($dbData)) {
+            return array();
+        }
+        $list = array();
+        foreach ($dbData as $value) {
+            $list[$value['resid']] = $value;
+        }
+        return $list;
+    }
 }
 
 ?>

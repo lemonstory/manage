@@ -17,7 +17,7 @@
                                     <select id="selectError" name="searchCondition">
                                         <option value="">全部</option>
                                         <option {if $searchCondition=="uid"}selected{/if} value="uid">用户UID</option>
-                                        <!-- <option {if $searchCondition=="nickname"}selected{/if} value="nickname">名称</option> -->
+                                        <option {if $searchCondition=="nickname"}selected{/if} value="nickname">用户昵称</option>
                                     </select>
                                     <p class="help-block"></p>
                                 </div>
@@ -55,9 +55,9 @@
                         <thead>
                             <tr>
                                 <th>uid</th>
+                                <th>uimid</th>
 						        <th>呢称</th>
 						        <th>头像</th>
-						        <th>手机号</th>
 						        <th>账号状态</th>
 						        <th>注册时间</th>
 						        <th>操作</th>
@@ -67,9 +67,9 @@
                             {foreach from=$userList item=value}
                             <tr>
                                 <td>{$value.uid}</td>
+                                <td>{$value.uimid}</td>
                                 <td>{$value.nickname}</td>
                                 <td><img src="{$value.avatar}" width="80" height="80" /></td>
-                                <td>{$value.phonenumber}</td>
                                 <td id="status_{$value.uid}">{$value.statusname}</td>
                                 <td>{$value.addtime}</td>
                                 <td id="option_{$value.uid}">
@@ -84,6 +84,8 @@
 						            <a href="/comment/commentlist.php?uid={$value.uid}" target="_blank">评论内容</a>
 						            &nbsp;
 						            <a href="/listen/getlistenlist.php?searchCondition=uid&searchContent={$value.uid}" target="_blank">收听历史</a>
+                                    &nbsp;
+                                    <a href="/user/userimsilist.php?searchCondition=uimid&searchContent={$value.uimid}" target="_blank">设备信息</a>
                                 </td>
                             </tr>
                             {/foreach}
