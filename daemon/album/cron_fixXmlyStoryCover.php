@@ -42,8 +42,11 @@ class cron_fixXmlyStoryCover extends DaemonBase {
 	        			continue;
 	        		}
                 	$story_info = $story->get_filed("`id` > 256132 and `album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
-                    if (isset($story_info['id']) && $story_info['id'] && $v2['s_cover']){var_dump($story_info['id']);exit;
-                        $story->update(array('s_cover' => $v2['s_cover']), " id={$story_info['id']}");exit;
+                    if (isset($story_info['s_cover']) && $story_info['s_cover']) {
+                        continue;
+                    }
+                    if (isset($story_info['id']) && $story_info['id'] && $v2['s_cover']){
+                        $story->update(array('s_cover' => $v2['s_cover']), " id={$story_info['id']}");
                         $this->writeLog("{$story_info['id']} 已更新");
                     }
                 }
@@ -51,7 +54,6 @@ class cron_fixXmlyStoryCover extends DaemonBase {
                 
 	        }
             $p++;
-			sleep(3);
         }
         $this->writeLog("采集喜马拉雅故事结束");
     }
