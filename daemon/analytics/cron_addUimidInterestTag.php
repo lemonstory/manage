@@ -11,24 +11,30 @@ class cron_addUimidInterestTag extends DaemonBase {
         $starttime = date("Y-m-d H:i:s", $nowtime - 3600);
         $endtime = date("Y-m-d H:i:s", $nowtime);
         
-        $uimidinterestobj = new UimidInterest();
-        $tagnewobj = new TagNew();
         $storyobj = new Story();
         $actionlogobj = new ActionLog();
         $actionloglist = $actionlogobj->getUserImsiActionLogListByTime($starttime, $endtime);
         
-        $uimidalbumids = array();
+        $uimidfavalbumids = array();
+        $uimiddownloadalbumids = array();
+        $uimidlistenalbumids = array();
+        
         $uimidstoryids = array();
+        $uimiddownloadstoryids = array();
+        $uimidlistenstoryids = array();
+        
         $uimidsearchids = array();
         foreach ($actionloglist as $value) {
             $uimid = $value['uimid'];
             $actionid = $value['actionid'];
             $actiontype = $value['actiontype'];
             if ($actiontype == $actionlogobj->ACTION_TYPE_FAV_ALBUM) {
-                $uimidalbumids[$uimid][] = $actionid;
+                $uimidfavalbumids[$uimid][] = $actionid;
             } elseif ($actiontype == $actionlogobj->ACTION_TYPE_DOWNLOAD_STORY) {
+                $uimiddownloadstoryids[$uimid][] = $actionid;
                 $uimidstoryids[$uimid][] = $actionid;
             } elseif ($actiontype == $actionlogobj->ACTION_TYPE_LISTEN_STORY) {
+                $uimidlistenstoryids[$uimid][] = $actionid;
                 $uimidstoryids[$uimid][] = $actionid;
             } elseif ($actiontype == $actionlogobj->ACTION_TYPE_SEARCH_CONTENT) {
                 $uimidsearchids[$uimid][] = $actionid;
@@ -48,10 +54,14 @@ class cron_addUimidInterestTag extends DaemonBase {
                 // 获得专辑后，追加到设备感兴趣的专辑数组中
                 if (!empty($storyalbumids)) {
                     $storyalbumids = array_unique($storyalbumids);
-                    if (empty($uimidalbumids[$uimid])) {
-                        $uimidalbumids[$uimid] = $storyalbumids;
-                    } else {
-                        $uimidalbumids[$uimid] = array_merge($uimidalbumids[$uimid], $storyalbumids);
+                    foreach ($storyalbumids as $storyalbumid) {
+                        if (in_array($storyalbumid, $uimiddownloadstoryids[$uimid])) {
+                            // 下载故事行为的专辑
+                            $uimiddownloadalbumids[$uimid][] = $storyalbumid;
+                        } elseif (in_array($storyalbumid, $uimiddownloadstoryids[$uimid])) {
+                            // 收听故事行为的专辑
+                            $uimidlistenalbumids[$uimid][] = $storyalbumid;
+                        }
                     }
                 }
             }
@@ -64,26 +74,42 @@ class cron_addUimidInterestTag extends DaemonBase {
         
         
         // 记录设备，感兴趣的专辑的标签
-        if (!empty($uimidalbumids)) {
-            foreach ($uimidalbumids as $uimid => $albumids) {
-                if (!empty($albumids)) {
-                    $albumids = array_unique($albumids);
-                    $relationlist = $tagnewobj->getAlbumTagRelationListByAlbumIds($albumids);
-                    if (!empty($relationlist)) {
-                        $relationlist = current($relationlist);
-                        foreach ($relationlist as $relationinfo) {
-                            $tagid = $relationinfo['tagid'];
-                            $uimidinterestobj->updateUimidInterestTag($uimid, $tagid);
-                        }
-                    }
-                }
-                
-            }
-        }
-        
+        $this->setUimidInterestTag($uimidfavalbumids, 2); // 收藏行为喜好度+2
+        $this->setUimidInterestTag($uimiddownloadalbumids, 2); // 下载行为喜好度+2
+        $this->setUimidInterestTag($uimidlistenalbumids, 1); // 收听行为喜好度+1
     }
     
     protected function checkLogPath() {
+    }
+    
+    // 记录设备，感兴趣的专辑的标签，以及喜好度
+    private function setUimidInterestTag($uimidalbumids, $incrnum)
+    {
+        if (!empty($uimidalbumids) || empty($incrnum)) {
+            return false;
+        }
+        $logfile = "/alidata1/rc.log";
+        $fp = @fopen($logfile, 'a+');
+        
+        $uimidinterestobj = new UimidInterest();
+        $tagnewobj = new TagNew();
+        foreach ($uimidalbumids as $uimid => $albumids) {
+            if (!empty($albumids)) {
+                continue;
+            }
+            $albumids = array_unique($albumids);
+            $relationlist = $tagnewobj->getAlbumTagRelationListByAlbumIds($albumids);
+            if (!empty($relationlist)) {
+                $relationlist = current($relationlist);
+                foreach ($relationlist as $relationinfo) {
+                    $tagid = $relationinfo['tagid'];
+                    $uimidinterestobj->updateUimidInterestTag($uimid, $tagid, $incrnum);
+                    @fwrite($fp, "uimid={$uimid}##tagid={$tagid}##incrnum={$incrnum}");
+                }
+            }
+        }
+        fclose($fp);
+        return true;
     }
 
 }
