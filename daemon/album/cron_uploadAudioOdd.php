@@ -20,6 +20,20 @@ class cron_uploadAudio extends DaemonBase
         $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 10);
         foreach ($story_list as $k => $v) {
         	if ($v['id']%2 == 1) {
+        	    $headerarr = get_headers($v['source_audio_url']);
+        	    if (!empty($headerarr)) {
+            	    $contentlengthheader = $headerarr[9];
+            	    if (!empty($contentlengthheader)) {
+                	    $contentlengtharr = explode(":", $contentlengthheader);
+                	    $length = trim($contentlengtharr[1]);
+                	    if (!empty($length) && $length > 50000000) {
+                	        // 大于50m的音频，记录报错，后台删除此故事，不下载
+                	        $this->writeLog("故事 {$v['id']} => mediapath 大于50M");
+                	        continue;
+                	    }
+            	    }
+        	    }
+        	    
         		$r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
                 if (is_array($r) && $r) {
                     $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
