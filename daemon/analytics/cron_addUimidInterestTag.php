@@ -19,7 +19,6 @@ class cron_addUimidInterestTag extends DaemonBase {
         $uimiddownloadalbumids = array();
         $uimidlistenalbumids = array();
         
-        $uimidstoryids = array();
         $uimiddownloadstoryids = array();
         $uimidlistenstoryids = array();
         
@@ -32,36 +31,48 @@ class cron_addUimidInterestTag extends DaemonBase {
                 $uimidfavalbumids[$uimid][] = $actionid;
             } elseif ($actiontype == $actionlogobj->ACTION_TYPE_DOWNLOAD_STORY) {
                 $uimiddownloadstoryids[$uimid][] = $actionid;
-                $uimidstoryids[$uimid][] = $actionid;
             } elseif ($actiontype == $actionlogobj->ACTION_TYPE_LISTEN_STORY) {
                 $uimidlistenstoryids[$uimid][] = $actionid;
-                $uimidstoryids[$uimid][] = $actionid;
             } elseif ($actiontype == $actionlogobj->ACTION_TYPE_SEARCH_CONTENT) {
                 $uimidsearchids[$uimid][] = $actionid;
             }
         }
         
-        // 设备，感兴趣的故事，所属的专辑
-        if (!empty($uimidstoryids)) {
-            foreach ($uimidstoryids as $uimid => $storyids) {
+        // 设备，下载的故事所属的专辑
+        if (!empty($uimiddownloadstoryids)) {
+            foreach ($uimiddownloadstoryids as $uimid => $storyids) {
                 $storyids = array_unique($storyids);
                 $storyalbumids = array();
                 if (!empty($storyids)) {
                     $storyidstr = implode(",", $storyids);
-                    $storyalbumids = $storyobj->get_list("`id` IN ($storyidstr)", 5000, 'album_id');
+                    $storyalbumids = $storyobj->get_list("`id` IN ($storyidstr)", 2000, 'album_id');
                 }
-                
                 // 获得专辑后，追加到设备感兴趣的专辑数组中
                 if (!empty($storyalbumids)) {
                     $storyalbumids = array_unique($storyalbumids);
                     foreach ($storyalbumids as $storyalbumid) {
-                        if (in_array($storyalbumid, $uimiddownloadstoryids[$uimid])) {
-                            // 下载故事行为的专辑
-                            $uimiddownloadalbumids[$uimid][] = $storyalbumid;
-                        } elseif (in_array($storyalbumid, $uimiddownloadstoryids[$uimid])) {
-                            // 收听故事行为的专辑
-                            $uimidlistenalbumids[$uimid][] = $storyalbumid;
-                        }
+                        // 下载故事行为的专辑
+                        $uimiddownloadalbumids[$uimid][] = $storyalbumid;
+                    }
+                }
+            }
+        }
+        
+        // 设备，收听的故事所属的专辑
+        if (!empty($uimidlistenstoryids)) {
+            foreach ($uimidlistenstoryids as $uimid => $storyids) {
+                $storyids = array_unique($storyids);
+                $storyalbumids = array();
+                if (!empty($storyids)) {
+                    $storyidstr = implode(",", $storyids);
+                    $storyalbumids = $storyobj->get_list("`id` IN ($storyidstr)", 2000, 'album_id');
+                }
+                // 获得专辑后，追加到设备感兴趣的专辑数组中
+                if (!empty($storyalbumids)) {
+                    $storyalbumids = array_unique($storyalbumids);
+                    foreach ($storyalbumids as $storyalbumid) {
+                        // 收听故事行为的专辑
+                        $uimidlistenalbumids[$uimid][] = $storyalbumid;
                     }
                 }
             }
@@ -85,7 +96,7 @@ class cron_addUimidInterestTag extends DaemonBase {
     // 记录设备，感兴趣的专辑的标签，以及喜好度
     private function setUimidInterestTag($uimidalbumids, $incrnum)
     {
-        if (!empty($uimidalbumids) || empty($incrnum)) {
+        if (empty($uimidalbumids) || empty($incrnum)) {
             return false;
         }
         $logfile = "/alidata1/rc.log";
@@ -94,7 +105,7 @@ class cron_addUimidInterestTag extends DaemonBase {
         $uimidinterestobj = new UimidInterest();
         $tagnewobj = new TagNew();
         foreach ($uimidalbumids as $uimid => $albumids) {
-            if (!empty($albumids)) {
+            if (empty($albumids)) {
                 continue;
             }
             $albumids = array_unique($albumids);
@@ -104,7 +115,7 @@ class cron_addUimidInterestTag extends DaemonBase {
                 foreach ($relationlist as $relationinfo) {
                     $tagid = $relationinfo['tagid'];
                     $uimidinterestobj->updateUimidInterestTag($uimid, $tagid, $incrnum);
-                    @fwrite($fp, "uimid={$uimid}##tagid={$tagid}##incrnum={$incrnum}");
+                    @fwrite($fp, "uimid={$uimid}##tagid={$tagid}##incrnum={$incrnum}\n");
                 }
             }
         }
