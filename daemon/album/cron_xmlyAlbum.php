@@ -52,6 +52,10 @@ class cron_xmlyAlbum extends DaemonBase {
                         $manageobj->addRecommendNewOnlineDb($album_id, 0);
                         // add album tag
                         $tagnewobj->addAlbumTag($album_id, $v['title'], $v['parent_id']);
+                        if (!empty($v['parent_id'])) {
+                            $tagnewobj->addAlbumTagRelationInfo($album_id, $v['parent_id']);
+                            $this->writeLog("喜马拉雅专辑{$album_id}的一级标签{$v['parent_id']} 入库");
+                        }
                     }
                     $story_url->insert(array(
                         'res_name' => 'album',
