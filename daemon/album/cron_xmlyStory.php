@@ -45,7 +45,7 @@ class cron_xmlyStory extends DaemonBase {
         		    $first_story_url = current($story_url_list);
         		    $first_story_info = $xmly->get_story_info($first_story_url);
         		    if (!empty($first_story_info['intro'])) {
-        		        $album->update(array("intro" => $first_story_info['intro']), "`id` = '{$xmly_album_id}'");
+        		        $album->update(array("intro" => $first_story_info['intro']), "`id` = '{$v['id']}'");
         		        $this->writeLog("喜马拉雅专辑{$v['id']} 简介更新成功");
         		    }
         		}
