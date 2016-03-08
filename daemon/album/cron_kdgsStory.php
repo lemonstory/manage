@@ -39,6 +39,16 @@ class cron_kdgsStory extends DaemonBase {
                 }
                 // 获取口袋故事专辑列表
                 $story_list = $kdgs->get_album_story_list($v['link_url']);
+                
+                // 判断专辑简介是否为空，若为空则读取故事专辑下第一个故事的简介
+                if (empty($v['intro'])) {
+                    $first_story_info = current($story_list);
+                    if (!empty($first_story_info['intro'])) {
+                        $album->update(array("intro" => $first_story_info['intro']), "`id` = '{$v['id']}'");
+                        $this->writeLog("口袋专辑{$v['id']} 简介更新成功");
+                    }
+                }
+                
                 // 如果故事数量没有更新 则不再查故事库
                 if (count($story_list) == $v['story_num']) {
                     $this->writeLog("口袋故事专辑{$v['id']} 没有更新");
