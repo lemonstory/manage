@@ -35,6 +35,21 @@ class cron_xmlyStory extends DaemonBase {
 
 	        	// 获取喜马拉雅的专辑故事
         		$story_url_list = $xmly->get_story_url_list($xmly_album_id);
+        		if (empty($story_url_list)) {
+        		    $this->writeLog("喜马拉雅专辑{$v['id']} 没有故事");
+        		    continue;
+        		}
+        		
+        		// 判断专辑简介是否为空，若为空则读取故事专辑下第一个故事的简介
+        		if (empty($v['intro'])) {
+        		    $first_story_url = current($story_url_list);
+        		    $first_story_info = $xmly->get_story_info($first_story_url);
+        		    if (!empty($first_story_info['intro'])) {
+        		        $album->update(array("intro" => $first_story_info['intro']), "`id` = '{$xmly_album_id}'");
+        		        $this->writeLog("喜马拉雅专辑{$v['id']} 简介更新成功");
+        		    }
+        		}
+        		
 	        	// 如果故事的数量和专辑里面的故事数量相等则不再更新
 	        	if (count($story_url_list) == $v['story_num']) {
 	        		$this->writeLog("喜马拉雅专辑{$v['id']} 没有更新");
