@@ -55,15 +55,24 @@ class cron_kdgsStory extends DaemonBase {
                     continue;
                 }
                 $update_num = 0;
+                $vieworder = 0;
                 foreach($story_list as $k2 => $v2) {
+                    // 默认故事的排序，按源页面故事排序
+                    $vieworder++;
+                    
                     $exists = $story->check_exists("`album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
                     if ($exists) {
                         continue;
                     }
+                    if (empty($vieworder)) {
+                        $vieworder = 10000;
+                    }
+                    
                     $story_id = $story->insert(array(
                         'album_id' => $v['id'],
                         'title' => addslashes($v2['title']),
                         'intro' => addslashes($v2['intro']),
+                        'view_order' => $vieworder,
                         's_cover' => $v2['cover'],
                         'source_audio_url' => $v2['source_audio_url'],
                         'add_time' => date('Y-m-d H:i:s'),

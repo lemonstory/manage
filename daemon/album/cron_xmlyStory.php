@@ -56,7 +56,11 @@ class cron_xmlyStory extends DaemonBase {
 	        		continue;
 	        	}
 	        	$update_num = 0;
+	        	$vieworder = 0;
 	        	foreach ($story_url_list as $k2 => $v2) {
+	        	    // 默认故事的排序，按源页面故事排序
+	        	    $vieworder++;
+	        	    
 	        		$v2 = $xmly->get_story_info($v2);
 	        		if (!$v2) {
 	        			continue;
@@ -65,10 +69,15 @@ class cron_xmlyStory extends DaemonBase {
 	                if ($exists) {
 	                    continue;
 	                }
+	                if (empty($vieworder)) {
+	                    $vieworder = 10000;
+	                }
+	                
 	                $story_id = $story->insert(array(
 	                    'album_id' => $v['id'],
 	                    'title' => addslashes($v2['title']),
 	                    'intro' => addslashes($v2['intro']),
+                        'view_order' => $vieworder,
 	                    's_cover' => $v2['s_cover'],
 	                    'source_audio_url' => $v2['source_audio_url'],
 	                    'add_time' => date('Y-m-d H:i:s'),
