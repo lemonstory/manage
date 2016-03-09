@@ -54,10 +54,6 @@ class cron_kdgsAlbum extends DaemonBase {
                         $manageobj->addRecommendNewOnlineDb($album_id, $age_type);
                         // add album tag
                         $tagnewobj->addAlbumTag($album_id, $v['title'], $v['parent_id']);
-                        if (!empty($v['parent_id'])) {
-                            $tagnewobj->addAlbumTagRelationInfo($album_id, $v['parent_id']);
-                            $this->writeLog("口袋专辑{$album_id}的一级标签{$v['parent_id']} 入库");
-                        }
                     }
 
                     $story_url->insert(array(
