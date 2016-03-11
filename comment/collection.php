@@ -9,6 +9,10 @@ class collection extends controller
         $album       = new Album();
         $comment     = new Comment();
         $commenttask = new CommentTask();
+        $useralbumlog = new UserAlbumLog();
+        $useralbumlastlog = new UserAlbumLastlog();
+        $userimsiobj = new UserImsi();
+        $storyobj = new Story();
         $albumid     = (int)$this->getRequest('albumid', 0);
 
         if ($_POST) {
@@ -74,6 +78,30 @@ class collection extends controller
                                 'status'     => 2,
                                 'addtime'    => $this->get_rand_time()
                             ));
+                            
+                            $storyinfo = current($storyobj->get_album_story_list($albumid));
+                            if (!empty($storyinfo)) {
+                                $uimid = $userimsiobj->getUimid($uid);
+                                $storyid = $storyinfo['id'];
+                                $lastid = $useralbumlog->insert(array(
+                                        'uimid'     => $uimid,
+                                        'albumid'   => $albumid,
+                                        'storyid'   => $storyid,
+                                        'playtimes' => 1,
+                                        'datetimes' => date("Y"),
+                                        'addtime'   => date('Y-m-d H:i:s'),
+                                ));
+                                if ($lastid) {
+                                    $useralbumlastlog->replace(array(
+                                        'uimid'     => $uimid,
+                                        'albumid'   => $albumid,
+                                        'lastlogid' => $lastid,
+                                    ));
+                                }
+                                // 添加收听处理队列
+                                MnsQueueManager::pushListenStoryQueue($uimid, $storyid, getClientIp());
+                            }
+                            
                             $start ++;
                             if ($start >= $count) {
                                 break 2;
