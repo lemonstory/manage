@@ -21,10 +21,11 @@ class cron_kdgsStory extends DaemonBase {
         $this->writeLog("采集口袋故事开始");
         $p = 1;
         $per_page = 500;
+        $lastmonth = date("Y-m-d H:i:s", time() - 86400 * 30);
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='kdgs'", " {$limit},{$per_page}");
+            $album_list = $album->get_list("`from`='kdgs' and `add_time` > '{$lastmonth}' order by `id` desc", "{$limit},{$per_page}");
             if (!$album_list) {
                 break;
             }
@@ -38,21 +39,40 @@ class cron_kdgsStory extends DaemonBase {
                 }
                 // 获取口袋故事专辑列表
                 $story_list = $kdgs->get_album_story_list($v['link_url']);
+                
+                // 判断专辑简介是否为空，若为空则读取故事专辑下第一个故事的简介
+                if (empty($v['intro'])) {
+                    $first_story_info = current($story_list);
+                    if (!empty($first_story_info['intro'])) {
+                        $album->update(array("intro" => $first_story_info['intro']), "`id` = '{$v['id']}'");
+                        $this->writeLog("口袋专辑{$v['id']} 简介更新成功");
+                    }
+                }
+                
                 // 如果故事数量没有更新 则不再查故事库
                 if (count($story_list) == $v['story_num']) {
                     $this->writeLog("口袋故事专辑{$v['id']} 没有更新");
                     continue;
                 }
                 $update_num = 0;
+                $vieworder = 0;
                 foreach($story_list as $k2 => $v2) {
+                    // 默认故事的排序，按源页面故事排序
+                    $vieworder++;
+                    
                     $exists = $story->check_exists("`album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
                     if ($exists) {
                         continue;
                     }
+                    if (empty($vieworder)) {
+                        $vieworder = 10000;
+                    }
+                    
                     $story_id = $story->insert(array(
                         'album_id' => $v['id'],
                         'title' => addslashes($v2['title']),
                         'intro' => addslashes($v2['intro']),
+                        'view_order' => $vieworder,
                         's_cover' => $v2['cover'],
                         'source_audio_url' => $v2['source_audio_url'],
                         'add_time' => date('Y-m-d H:i:s'),
@@ -78,6 +98,7 @@ class cron_kdgsStory extends DaemonBase {
             }
 
             $p++;
+			sleep(3);
         }
         $this->writeLog("采集口袋故事结束");
     }

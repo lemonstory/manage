@@ -19,24 +19,24 @@ class getuserlist extends controller
         $pageBanner = "";
         $baseUri = "/user/getuserlist.php?perPage={$perPage}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         
-        $ssoList = array();
-        $ssoObj = new Sso();
+        $userList = array();
+        $userObj = new User();
+        $manageimsiobj = new ManageImsi();
         $totalCount = 1;
         if (!empty($searchContent)) {
             // 搜索
             if ($searchCondition == 'uid') {
                 $uid = intval($searchContent);
-                $ssoInfo = $ssoObj->getInfoWithUid($uid);
-                if (empty($ssoInfo)) {
-                    $this->showErrorJson(ErrorConf::userNoExist());
-                }
-                $userObj = new User();
-                $userList = $userObj->getUserInfo($uid);
+            } elseif ($searchCondition == 'nickname') {
+                $nicknamemd5obj = new NicknameMd5();
+                $uid = $nicknamemd5obj->checkNameIsExist($searchContent);
             }
+            
+            $userList = $userObj->getUserInfo($uid);
             if(empty($userList)) {
                 $this->showErrorJson(ErrorConf::userNoExist());
             }
-            $ssoList = array($ssoInfo['uid'] => $ssoInfo);
+            $userimsilist = $manageimsiobj->getUserImsiListByUids($uid);
         } else {
             $manageUserObj = new ManageUser();
             $userList = $manageUserObj->getUserList($currentPage + 1, $perPage);
@@ -50,7 +50,7 @@ class getuserlist extends controller
                 $uids[] = $userValue['uid'];
             }
             if (!empty($uids)) {
-                $ssoList = $ssoObj->getInfoWithUids($uids);
+                $userimsilist = $manageimsiobj->getUserImsiListByUids($uids);
             }
             
             if ($totalCount > $perPage) {
@@ -66,7 +66,7 @@ class getuserlist extends controller
         foreach ($userList as $value) {
             $value['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 80);
             $value['statusname'] = $statusnamelist[$value['status']];
-            //$value['phone'] = substr($ssoList[$value['uid']]['phonenumber'], 2);
+            $value['uimid'] = $userimsilist[$value['uid']]['uimid'];
             $dealUserList[] = $value;
         }
         
