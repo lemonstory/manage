@@ -52,6 +52,10 @@ class savesameage extends controller
                 $this->showErrorJson($managetagnewobj->getError());
             }
         }
+
+        //清除故事专辑与标签及是否被推荐至{热门,同龄,最新}的cache
+        $tagnewobj = new TagNew();
+        $tagnewobj->clearAlbumTagRelationCacheByAlbumIds($albumid);
         
         // 添加推荐语
         $recommenddescobj = new RecommendDesc();

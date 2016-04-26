@@ -7,6 +7,7 @@ class index extends controller
     {
         $op_name = $this->getRequest('op_name', '');
         $op_id = $this->getRequest('op_id', 0);
+        $open_search_obj = new OpenSearch();
 
         if (!in_array($op_name, array('delete', 'recover', 'view_order', 'show', 'notshow'))) {
             $this->showErrorJson("专辑数据为空");
@@ -19,8 +20,10 @@ class index extends controller
 
         if ($op_name == 'delete') {
             $album->update(array('status' => 0), "`id`={$op_id}");
+            $ret = $open_search_obj->removeAlbumFromSearch($op_id);
         } else if ($op_name == 'recover') {
             $album->update(array('status' => 1), "`id`={$op_id}");
+            $ret = $open_search_obj->addAlbumToSearchWithAlbumid($op_id);
         } else if ($op_name == 'view_order') {
             $value = (int)$this->getRequest('value', 0);
             $album->update(array('view_order' => $value), "`id`={$op_id}");
@@ -31,7 +34,7 @@ class index extends controller
             $value = (int)$this->getRequest('value', 0);
             $album->update(array('is_show' => 0), "`id`={$op_id}");
         }
-        return $this->showSuccJson('操作成功');
+        return $this->showSuccJson("操作成功 : ret = {$ret}");
 
     }
 }
