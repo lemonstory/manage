@@ -83,7 +83,9 @@ class cron_uploadAudio extends DaemonBase
 
         $savedir = $savedir.date("Y_m_d_{$type}_{$id}");
 
-        if(!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio'))){
+        if(!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio', 'm4a'))){
+
+            $this->writeLog("故事 {$id} => 下载失败,不支持扩展名 {$ext}");
             return false;
         }
 
