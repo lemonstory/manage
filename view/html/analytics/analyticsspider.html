@@ -1,0 +1,70 @@
+{include file="include/header.html"}
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">oss</div>
+                    <!--<div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>-->
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>专辑图片未上传总量: {$album_cover_not_upload_oss_count}</td>
+                            <td>故事图片未上传总量: {$story_cover_not_upload_oss_count}</td>
+                            <td>故事音频未上传总量: {$story_media_not_upload_oss_count}</td>
+                            <td>错误总量: {$upload_oss_fail_count}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">kdgs 今日新增</div>
+                    <!--<div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>-->
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>分类: {$add_kdgs_category_sucess_today}</td>
+                            <td>专辑: {$add_kdgs_album_sucess_today}</td>
+                            <td>声音: {$add_kdgs_story_sucess_today}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    {literal}
+    $(function() {
+
+    });
+    {/literal}
+</script>
+{include file="include/footer.html"}

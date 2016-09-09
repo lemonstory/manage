@@ -16,23 +16,52 @@
                             <div class="control-group">
                                 <label class="control-label" for="date01">专辑名称<span class="required">*</span></label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" name="title" value="{$albuminfo.title}">
+                                    <input type="text" class="input-xxlarge datepicker" name="title" value="{$albuminfo.title}">
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="control-label">简介<span class="required">*</span></label>
                                 <div class="controls">
-                                    <textarea class="span6 m-wrap" name="intro">{$albuminfo.intro}</textarea>
+                                    <textarea rows="8%" class="span6 m-wrap" name="intro">{$albuminfo.intro}</textarea>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="control-label">年龄段</label>
                                 <div class="controls">
-                                    <select id="select01" class="chzn-select chzn-done" style="" name="age_type">
-                                        <option value="0">无</option>
-                                        <option value="1" {if $albuminfo.age_type eq 1}selected{/if}>0 ~ 2 岁</option>
-                                        <option value="2" {if $albuminfo.age_type eq 2}selected{/if}>3 ~ 6 岁</option>
-                                        <option value="3" {if $albuminfo.age_type eq 3}selected{/if}>7 ~ 10 岁</option>
+                                    <select id="min_age" style="width: 80px"  name="min_age">
+                                        <option value="0" {if $albuminfo.min_age eq 0}selected{/if}>0 岁</option>
+                                        <option value="1" {if $albuminfo.min_age eq 1}selected{/if}>1 岁</option>
+                                        <option value="2" {if $albuminfo.min_age eq 2}selected{/if}>2 岁</option>
+                                        <option value="3" {if $albuminfo.min_age eq 3}selected{/if}>3 岁</option>
+                                        <option value="4" {if $albuminfo.min_age eq 4}selected{/if}>4 岁</option>
+                                        <option value="5" {if $albuminfo.min_age eq 5}selected{/if}>5 岁</option>
+                                        <option value="6" {if $albuminfo.min_age eq 6}selected{/if}>6 岁</option>
+                                        <option value="7" {if $albuminfo.min_age eq 7}selected{/if}>7 岁</option>
+                                        <option value="8" {if $albuminfo.min_age eq 8}selected{/if}>8 岁</option>
+                                        <option value="9" {if $albuminfo.min_age eq 9}selected{/if}>9 岁</option>
+                                        <option value="10" {if $albuminfo.min_age eq 10}selected{/if}>10 岁</option>
+                                        <option value="11" {if $albuminfo.min_age eq 11}selected{/if}>11 岁</option>
+                                        <option value="12" {if $albuminfo.min_age eq 12}selected{/if}>12 岁</option>
+                                        <option value="13" {if $albuminfo.min_age eq 13}selected{/if}>13 岁</option>
+                                        <option value="14" {if $albuminfo.min_age eq 14}selected{/if}>14 岁</option>
+                                    </select>
+                                    <span>至</span>
+                                    <select id="max_age" style="width: 80px"  name="max_age">
+                                        <option value="0" {if $albuminfo.max_age eq 0}selected{/if}>0 岁</option>
+                                        <option value="1" {if $albuminfo.max_age eq 1}selected{/if}>1 岁</option>
+                                        <option value="2" {if $albuminfo.max_age eq 2}selected{/if}>2 岁</option>
+                                        <option value="3" {if $albuminfo.max_age eq 3}selected{/if}>3 岁</option>
+                                        <option value="4" {if $albuminfo.max_age eq 4}selected{/if}>4 岁</option>
+                                        <option value="5" {if $albuminfo.max_age eq 5}selected{/if}>5 岁</option>
+                                        <option value="6" {if $albuminfo.max_age eq 6}selected{/if}>6 岁</option>
+                                        <option value="7" {if $albuminfo.max_age eq 7}selected{/if}>7 岁</option>
+                                        <option value="8" {if $albuminfo.max_age eq 8}selected{/if}>8 岁</option>
+                                        <option value="9" {if $albuminfo.max_age eq 9}selected{/if}>9 岁</option>
+                                        <option value="10" {if $albuminfo.max_age eq 10}selected{/if}>10 岁</option>
+                                        <option value="11" {if $albuminfo.max_age eq 11}selected{/if}>11 岁</option>
+                                        <option value="12" {if $albuminfo.max_age eq 12}selected{/if}>12 岁</option>
+                                        <option value="13" {if $albuminfo.max_age eq 13}selected{/if}>13 岁</option>
+                                        <option value="14" {if $albuminfo.max_age eq 14}selected{/if}>14 岁</option>
                                     </select>
                                 </div>
                             </div>
@@ -96,7 +125,7 @@ $(function() {
     {
         if (json && json.code == 10000) {
             alert('操作成功');
-            window.location.href = '/album/index.php';
+            //window.location.href = '/album/index.php';
         } else {
             var name = json.desc.split('-')[0];
             var msg  = json.desc.split('-')[1];
@@ -151,6 +180,25 @@ $(function() {
     		}, "json");
     	}
     });
+
+    $("#max_age").on('change',function (e) {
+        check_age_input()
+    });
+
+    $("#min_age").on('change',function (e) {
+        check_age_input()
+    });
+
+    function check_age_input() {
+        var min_age = parseInt($("#min_age").val());
+        var max_age = parseInt($("#max_age").val());
+        var msg = '年龄段输入错误 : ' +  min_age + " 至 " + max_age + "岁?";
+
+        if(max_age <= min_age) {
+            alert(msg);
+        }
+    }
+
 });
 {/literal}
 </script>
