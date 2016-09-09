@@ -17,13 +17,18 @@ class cron_xmlyCategory extends DaemonBase {
         $category = new Category();
         $xmly = new Xmly();
         $story_url = new StoryUrl();
+        $manageCollectionCronLog = new ManageCollectionCronLog();
         $current_time = date('Y-m-d H:i:s');
-        $this->writeLog("采集喜马拉雅分类开始");
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, ManageCollectionCronLog::TYPE_XMLY_CATEGORY, "采集喜马拉雅分类开始");
         // 分类
         $category_list = $xmly->get_category($this->home_url);
+        $category_count = count($category_list);
+        $ignore_count = 0;
+        $add_count = 0;
         foreach ($category_list as $k => $v) {
             $exist = $category->check_exists("`res_name`='xmly' and `title`='{$v['title']}'");
             if ($exist) {
+                $ignore_count++;
                 continue;
             }
         	$category_id = $category->insert(array(
@@ -44,25 +49,19 @@ class cron_xmlyCategory extends DaemonBase {
                 'add_time' => date('Y-m-d H:i:s'),
             ));
             if ($category_id) {
+                $add_count++;
                 $tagnewobj = new TagNew();
                 $tagnewobj->addTag($v['title'], 0);
-                $this->writeLog("{$category_id} 入库");
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_XMLY_CATEGORY, "{$category_id} 入库");
             } else {
-                $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
+                $content = '没有写入成功'.var_export($v, true);
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_XMLY_CATEGORY, $content);
             }
         }
-        $this->writeLog("采集喜马拉雅分类结束");
-    }
 
-    protected function writeLog($content = '')
-    {
-        static $manageCollectionCronLog = null;
-        if (!$manageCollectionCronLog) {
-            $manageCollectionCronLog = new ManageCollectionCronLog();
-        }
-        $manageCollectionCronLog->insert(array('type' => 'xmly_category', 'content' => $content));
-        
+        $content = sprintf("分类总数量:%d, 已忽略 %d, 新增 %d", $category_count, $ignore_count, $add_count);
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_CATEGORY, $content);
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_END, ManageCollectionCronLog::TYPE_XMLY_CATEGORY, "采集喜马拉雅分类结束");
     }
-
 }
 new cron_xmlyCategory();

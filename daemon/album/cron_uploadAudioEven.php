@@ -15,6 +15,7 @@ class cron_uploadAudio extends DaemonBase
 
 
     protected function uploadAudio() {
+        $manageCollectionCronLog = new ManageCollectionCronLog();
         // 更新故事为本地地址
         $story = new Story();
         $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 10);
@@ -22,13 +23,15 @@ class cron_uploadAudio extends DaemonBase
         	if ($v['id']%2 == 0) {
         	    $headerarr = get_headers($v['source_audio_url']);
         	    if (!empty($headerarr)) {
-        	        $contentlengthheader = $headerarr[9];
+                    $contentlengthheader = $headerarr[3];
         	        if (!empty($contentlengthheader)) {
         	            $contentlengtharr = explode(":", $contentlengthheader);
-        	            $length = trim($contentlengtharr[1]);
+                        $length = intval(trim($contentlengtharr[1]));
         	            if (!empty($length) && $length > 50000000) {
         	                // 大于50m的音频，记录报错，后台删除此故事，不下载
-        	                $this->writeLog("故事 {$v['id']} => mediapath 大于50M");
+                            $content = "故事 {$v['id']} => mediapath[{$length}] 大于50M";
+                            echo $content."\r\n";
+                            $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
         	                continue;
         	            }
         	        }
@@ -38,9 +41,13 @@ class cron_uploadAudio extends DaemonBase
                 if (is_array($r) && $r) {
                     $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
                     MnsQueueManager::pushAlbumToSearchQueue($v['id']);
-                    $this->writeLog("故事 {$v['id']} => mediapath 更新成功");
+                    $content = "故事 {$v['id']} => mediapath 更新成功";
+                    echo $content."\r\n";
+                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 } else {
-                    $this->writeLog("故事 {$v['id']} => mediapath 更新失败");
+                    $content = "故事 {$v['id']} => mediapath 更新失败";
+                    echo $content."\r\n";
+                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 }
         	}
         }
@@ -52,6 +59,9 @@ class cron_uploadAudio extends DaemonBase
      * type 1 专辑封面 2 故事封面 3 故事音频
      */
     private function middle_upload($url = '', $id = '', $type = ''){
+
+        $manageCollectionCronLog = new ManageCollectionCronLog();
+
         // 默认图片不上传
         if (strstr($url, 'default/album.jpg')) {
             return '';
@@ -60,10 +70,12 @@ class cron_uploadAudio extends DaemonBase
             return '';
         }
         // 控制上传频率
-        sleep(1);
+        usleep(200);
 
         if (!$url || !$id || !$type) {
-            $this->writeLog("{middle_upload} 参数错误");
+            $content = "{middle_upload} 参数错误";
+            echo $content."\r\n";
+            $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
             return false;
         }
 
@@ -84,7 +96,9 @@ class cron_uploadAudio extends DaemonBase
 
         if(!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio', 'm4a'))){
 
-            $this->writeLog("{middle_upload}故事 {$id} => 下载失败,不支持扩展名 {$ext}");
+            $content = "故事 {$id} => 下载失败,不支持扩展名 {$ext}";
+            echo $content."\r\n";
+            $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
             return false;
         }
 
@@ -106,17 +120,6 @@ class cron_uploadAudio extends DaemonBase
         }
 
         return '';
-
-    }
-
-    protected function writeLog($content = '')
-    {
-        static $manageCollectionCronLog = null;
-        if (!$manageCollectionCronLog) {
-            $manageCollectionCronLog = new ManageCollectionCronLog();
-        }
-        $manageCollectionCronLog->insert(array('type' => 'upload_oss', 'content' => $content));
-        
     }
 }
 new cron_uploadAudio();

@@ -89,7 +89,6 @@ class cron_kdgsStory extends DaemonBase
                     $exists = $story->check_exists("`album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
                     if ($exists) {
                         $ignore_count++;
-
                         continue;
                     }
                     if (empty($vieworder)) {
@@ -125,7 +124,6 @@ class cron_kdgsStory extends DaemonBase
                     }
                 }
                 $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_KDGS_STORY, "口袋故事专辑 {$v['id']} 新增 {$add_count}");
-
                 $album->update_story_num($v['id']);
 
                 $content = sprintf("[{$v['title']}] 故事总数量:%d, 已忽略 %d, 新增 %d", $story_list_count, $ignore_count, $add_count);
