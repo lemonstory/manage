@@ -12,12 +12,15 @@ class ManageCollectionCronLog extends ModelBase
      */
     const TYPE_KDGS_ALBUM = 'kdgs_album';
     const TYPE_XMLY_ALBUM = 'xmly_album';
+    const TYPE_LRTS_ALBUM = 'lrts_album';
 
     const TYPE_KDGS_CATEGORY = 'kdgs_category';
     const TYPE_XMLY_CATEGORY = 'xmly_category';
+    const TYPE_LRTS_CATEGORY = 'lrts_category';
 
     const TYPE_KDGS_STORY = 'kdgs_story';
     const TYPE_XMLY_STORY = 'xmly_story';
+    const TYPE_LRTS_STORY = 'lrts_story';
 
     const TYPE_PUSH_ALBUM = 'push_album';
 
