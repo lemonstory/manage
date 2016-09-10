@@ -1,5 +1,51 @@
 {include file="include/header.html"}
 <div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">标签对应专辑筛选</div>
+            </div>
+            <div class="block-content collapse in">
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
 
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <form class="form-horizontal" method="post">
+                    <div class="navbar navbar-inner block-header">
+                        <div class="muted pull-left">标签对应专辑列表</div>
+                        <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                    </div>
+                    <div class="block-content collapse in">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>标题</th>
+                                <th>标题</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$albumTagList item=value}
+                                <tr>
+                                    <td>{$value.id}</td>
+                                    <td>{$value.tagid}</td>
+                                    <td>{$value.albumid}</td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    <input type="hidden" name="albumid" id="albumid" value="{$albumid}" />
+                </form>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
 </div>
 {include file="include/footer.html"}
