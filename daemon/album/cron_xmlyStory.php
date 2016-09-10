@@ -17,26 +17,37 @@ class cron_xmlyStory extends DaemonBase {
         $story = new Story();
         $xmly  = new Xmly();
         $story_url = new StoryUrl();
-        $this->writeLog("采集喜马拉雅故事开始");
         $p = 1;
         $per_page = 500;
-        $lastmonth = date("Y-m-d H:i:s", time() - 86400 * 30);
+		//http://www.ximalaya.com/2987462/album/254575?page=1
+		//这个专辑从14年至16年一直在更新
+		//取添加时间为5年前添加至系统的专辑(连续更新一个专辑5年以上,是件很牛的事情)
+		$end_time = date("Y-m-d H:i:s", time() - 86400 * 30 * 12 * 5);
+		$manageCollectionCronLog = new ManageCollectionCronLog();
+		$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, ManageCollectionCronLog::TYPE_XMLY_STORY, "采集喜马拉雅故事开始 添加时间大于 {{$end_time}}");
 
         while (true) {
             $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='xmly' and `add_time` > '{$lastmonth}' order by `id` desc", "{$limit},{$per_page}");
+            $album_list = $album->get_list("`from`='xmly' and `add_time` > '{$end_time}' order by `id` desc", "{$limit},{$per_page}");
+            //$album_list = $album->get_list("`id`=13747");
             if (!$album_list) {
                 break;
             }
             $time = time();
-            $this->writeLog("采集喜马拉雅故事  {$limit},{$per_page}");
+            $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, "采集喜马拉雅故事  {$limit},{$per_page}");
             foreach($album_list as $k => $v) {
+
+				$story_list_count = 0;
+				$ignore_count = 0;
+				$add_count = 0;
 	        	$xmly_album_id = Http::sub_data($v['link_url'], 'album/');
 
 	        	// 获取喜马拉雅的专辑故事
         		$story_url_list = $xmly->get_story_url_list($xmly_album_id);
+
+				$story_list_count = count($story_url_list);
         		if (empty($story_url_list)) {
-        		    $this->writeLog("喜马拉雅专辑{$v['id']} 没有故事");
+					$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, "喜马拉雅专辑{$v['id']} 没有故事");
         		    continue;
         		}
         		
@@ -46,16 +57,18 @@ class cron_xmlyStory extends DaemonBase {
         		    $first_story_info = $xmly->get_story_info($first_story_url);
         		    if (!empty($first_story_info['intro'])) {
         		        $album->update(array("intro" => $first_story_info['intro']), "`id` = '{$v['id']}'");
-        		        $this->writeLog("喜马拉雅专辑{$v['id']} 简介更新成功");
+						$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, "喜马拉雅专辑{$v['id']} 简介更新成功");
         		    }
         		}
         		
 	        	// 如果故事的数量和专辑里面的故事数量相等则不再更新
 	        	if (count($story_url_list) == $v['story_num']) {
-	        		$this->writeLog("喜马拉雅专辑{$v['id']} 没有更新");
+
+					$ignore_count = $ignore_count + $v['story_num'];
+					$content = sprintf("[{$v['title']}] 故事总数量:%d, 已忽略 %d, 新增 %d", $story_list_count, $ignore_count, $add_count);
+					$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
 	        		continue;
 	        	}
-	        	$update_num = 0;
 	        	$vieworder = 0;
 	        	foreach ($story_url_list as $k2 => $v2) {
 	        	    // 默认故事的排序，按源页面故事排序
@@ -67,10 +80,11 @@ class cron_xmlyStory extends DaemonBase {
 	        		}
                 	$exists = $story->check_exists("`album_id` = {$v['id']} and `source_audio_url`='{$v2['source_audio_url']}'");
 	                if ($exists) {
+						$ignore_count++;
 	                    continue;
 	                }
 	                if (empty($vieworder)) {
-	                    $vieworder = 10000;
+	                    $vieworder = $k2;
 	                }
 	                
 	                $story_id = $story->insert(array(
@@ -79,7 +93,7 @@ class cron_xmlyStory extends DaemonBase {
 	                    'intro' => addslashes($v2['intro']),
                         'view_order' => $vieworder,
 	                    's_cover' => $v2['s_cover'],
-	                    'source_audio_url' => $v2['source_audio_url'],
+						'source_audio_url' => $v2['source_audio_url'],
 	                    'add_time' => date('Y-m-d H:i:s'),
 	                ));
 	                $story_url->insert(array(
@@ -91,34 +105,23 @@ class cron_xmlyStory extends DaemonBase {
 	                    'add_time'         => date('Y-m-d H:i:s'),
 	                ));
 	                if ($story_id) {
-	                	$update_num ++;
+						$add_count ++;
 	                	//MnsQueueManager::pushAlbumToSearchQueue($story_id);
-                        $this->writeLog("{$story_id} 入库");
+						$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_XMLY_STORY,"{$story_id} 入库");
                     } else {
-                        $this->writeLog('没有写入成功'.var_export($v, true).var_export($v2, true));
+
+						$content = '没有写入成功' . var_export($v, true) . var_export($v2, true);
+						$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_XMLY_STORY,$content);
                     }
                 }
-                $this->writeLog("喜马拉雅专辑 {$v['id']} 新增 {$update_num}");
+
+				$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, "喜马拉雅专辑 {$v['id']} 新增 {$add_count}");
                 $album->update_story_num($v['id']);
 	        }
             $p++;
-			sleep(3);
+			sleep(1);
         }
-        $this->writeLog("采集喜马拉雅故事结束");
+ 		$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_END, ManageCollectionCronLog::TYPE_XMLY_STORY, "采集喜马拉雅故事结束");
     }
-
-    protected function writeLog($content = '')
-    {
-    	echo $content;
-    	echo "\n";
-    	return true;
-        static $manageCollectionCronLog = null;
-        if (!$manageCollectionCronLog) {
-            $manageCollectionCronLog = new ManageCollectionCronLog();
-        }
-        $manageCollectionCronLog->insert(array('type' => 'xmly_story', 'content' => $content));
-        
-    }
-
 }
 new cron_xmlyStory();

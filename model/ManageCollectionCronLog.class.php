@@ -86,10 +86,11 @@ class ManageCollectionCronLog extends ModelBase
         return $ret;
     }
 
-    private function count($time,$type) {
+    private function count($time,$action) {
 
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "select COUNT(*) as count,`type`  FROM `collection_cron_log` WHERE {$time} AND `action` = {$type}  GROUP BY `type` ";
+        //
+        $sql = "select COUNT(*) as count,`type`  FROM `collection_cron_log` WHERE {$time} AND `action` = {$action}  GROUP BY `type` ";
         $st = $db->prepare($sql);
         $st->execute();
         $res = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -115,9 +116,11 @@ class ManageCollectionCronLog extends ModelBase
             $arr = $this->count("date_format(`addtime`,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d')", ManageCollectionCronLog::ACTION_SPIDER_SUCESS);
         }
 
-        if(is_array($arr) && !empty($arr)) {
+        //var_dump($arr);
+        if(is_array($arr) && !empty($arr) && isset($arr[$type])) {
             $add_album_count_today = $arr[$type];
         }
+        //var_dump($add_album_count_today);
         return $add_album_count_today;
     }
 

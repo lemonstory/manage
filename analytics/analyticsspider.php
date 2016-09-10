@@ -5,9 +5,15 @@ class analyticsspider extends controller
     public function action()
     {
         $manageCollectionCronLog = new ManageCollectionCronLog();
+        //kdgs今日新增
         $add_kdgs_category_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_KDGS_CATEGORY);
         $add_kdgs_album_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_KDGS_ALBUM);
         $add_kdgs_story_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_KDGS_STORY);
+
+        //xmly今日新增
+        $add_xmly_category_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_XMLY_CATEGORY);
+        $add_xmly_album_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_XMLY_ALBUM);
+        $add_xmly_story_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_XMLY_STORY);
 
         //未上传至oss的专辑图片数量
         $album = new Album();
@@ -28,6 +34,10 @@ class analyticsspider extends controller
         $smartyobj->assign("add_kdgs_category_sucess_today", $add_kdgs_category_sucess_today);
         $smartyobj->assign("add_kdgs_album_sucess_today", $add_kdgs_album_sucess_today);
         $smartyobj->assign("add_kdgs_story_sucess_today", $add_kdgs_story_sucess_today);
+
+        $smartyobj->assign("add_xmly_category_sucess_today", $add_xmly_category_sucess_today);
+        $smartyobj->assign("add_xmly_album_sucess_today", $add_xmly_album_sucess_today);
+        $smartyobj->assign("add_xmly_story_sucess_today", $add_xmly_story_sucess_today);
 
         $smartyobj->assign("album_cover_not_upload_oss_count", $album_cover_not_upload_oss_count);
         $smartyobj->assign("story_cover_not_upload_oss_count", $story_cover_not_upload_oss_count);
