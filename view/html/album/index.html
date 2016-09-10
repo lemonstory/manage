@@ -27,6 +27,21 @@
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
+                            <div class="control-group">
+                                <label class="control-label">平台</label>
+                                <div class="controls">
+                                    <select id="from" class="span6" name="from">
+                                        <option value="">全部</option>
+                                        <option {if $search_filter.from=="kdgs"}selected{/if} value="kdgs">口袋故事</option>
+                                        <option {if $search_filter.from=="xmly"}selected{/if} value="xmly">喜马拉雅</option>
+                                        <option {if $search_filter.from=="lrts"}selected{/if} value="lrts">懒人听书</option>
+                                        <option {if $search_filter.from=="lizhi"}selected{/if} value="lizhi">荔枝fm</option>
+                                        <option {if $search_filter.from=="ishuyin"}selected{/if} value="ishuyin">爱书音</option>
+                                        <option {if $search_filter.from=="kaola"}selected{/if} value="kaola">考拉fm</option>
+                                    </select>
+                                    <p class="help-block">选择来源平台</p>
+                                </div>
+                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="list-filter">确定</button>
                             </div>
@@ -69,6 +84,7 @@
                                     <a href="javascript:void(0);" id="op_album_view_{$value.id}_title">{$value.title}
                                     </a>
                                     <span class="badge">{$value.story_num}</span>
+                                    <span class="badge"><a href="{$value.link_url}" target="_blank">{$value.from}</a></span>
                                     <br><br>
                                     {foreach from=$value.taglist item=taginfo}<span class="badge">{$taginfo.name}</span>{/foreach}
                                 </td>
@@ -161,7 +177,13 @@ $(function() {
     		var v = $(v).attr('value');
             params += k + '='+v+'&'
     		
-    	})
+    	});
+
+        //添加平台下拉框条件
+        var from_id = $("#from").val();
+        if(from_id==undefined || from_id=="" || from_id==null){
+            params += 'from=' + from_id;
+        }
         window.location.href = url+'?'+params;
     })
     $("[name='view_order']").on('change', function(){

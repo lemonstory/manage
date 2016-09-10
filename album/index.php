@@ -18,6 +18,7 @@ class index extends controller
 
         $albumid = $this->getRequest('albumid', '');
         $title   = $this->getRequest('title', '');
+        $from   = $this->getRequest('from', '');
 
         $search_filter = array();
 
@@ -29,9 +30,13 @@ class index extends controller
             $search_filter['albumid'] = $albumid;
             $where[] = "`id` ='{$albumid}' ";
         }
+        if ($from) {
+            $search_filter['from'] = $from;
+            $where[] = "`from` ='{$from}' ";
+        }
 
         $pageBanner = "";
-        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}";
+        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}";
         
         $manageAlbumObj = new ManageAlbum();
         // where 处理
