@@ -208,6 +208,10 @@
                 <li class="{$addtaginfoside}"><a href="/tag/addtaginfo.php"><i class="icon-chevron-right"></i>添加标签</a>
                 </li>
                 {php}}{/php}
+                {php}if ($privObj->checkPrivilege('tag.albumtaglist')){{/php}
+                <li class="{$albumtaglistside}"><a href="/tag/albumtaglist.php"><i class="icon-chevron-right"></i>标签对应专辑</a>
+                </li>
+                {php}}{/php}
                 {php}}{/php}
                 {elseif $analyticsactive}
                 {php}if ($privObj->checkPrivilege('analytics')){{/php}
