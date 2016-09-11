@@ -7,6 +7,35 @@
                 <div class="muted pull-left">标签对应专辑筛选</div>
             </div>
             <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/tag/albumtaglist.php">
+                        <fieldset>
+                            <legend></legend>
+                            <div class="control-group">
+                                <label class="control-label">条件</label>
+                                <div class="controls">
+                                    <select id="selectError" name="searchCondition">
+                                        <option {if $searchCondition=="tag_id"}selected{/if} value="tag_id">标签ID</option>
+                                        <option {if $searchCondition=="tag_name"}selected{/if} value="tag_name">标签名称</option>
+                                    </select>
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">内容</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
             </div>
         </div>
         <!-- /block -->
@@ -18,30 +47,27 @@
             <div class="block">
                 <form class="form-horizontal" method="post">
                     <div class="navbar navbar-inner block-header">
-                        <div class="muted pull-left">标签对应专辑列表</div>
+                        <div class="muted pull-left"><span style="color: green;">{$tagInfo.name}</span>标签对应专辑列表</div>
                         <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
                     </div>
                     <div class="block-content collapse in">
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>id</th>
-                                <th>标题</th>
-                                <th>标题</th>
+                                <th>专辑标题</th>
+                                <th>albumlistennum</th>
                             </tr>
                             </thead>
                             <tbody>
                                 {foreach from=$albumTagList item=value}
                                 <tr>
-                                    <td>{$value.id}</td>
-                                    <td>{$value.tagid}</td>
-                                    <td>{$value.albumid}</td>
+                                    <td>{$value.album_title}</td>
+                                    <td>{$value.albumlistennum}</td>
                                 </tr>
                                 {/foreach}
                             </tbody>
                         </table>
                     </div>
-                    <input type="hidden" name="albumid" id="albumid" value="{$albumid}" />
                 </form>
             </div>
             <!-- /block -->

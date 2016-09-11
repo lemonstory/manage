@@ -7,9 +7,27 @@ class albumtaglist extends controller
     {
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
-        $albumTagList = $where = array();
+        $searchCondition = $this->getRequest('searchCondition', '');
+        $searchContent = $this->getRequest('searchContent', '');
+
+        $albumTagList = $where = $tagInfo = array();
 
         $tagId   = $this->getRequest('tag_id', '');
+        $manageTagInfoObj = new ManageTagInfo();
+
+        if($searchCondition == 'tag_id'){
+            $tagId = $searchContent;
+            $tagInfo = $manageTagInfoObj->getTagInfoById($tagId);
+        }elseif($searchCondition == 'tag_name'){
+            $tagInfo = $manageTagInfoObj->getTagInfoByName($searchContent);
+            $tagId = $tagInfo['id'];
+        }else{
+            $searchContent = $tagId;
+            $searchCondition = 'tag_id';
+            if ($tagId) {
+                $tagInfo = $manageTagInfoObj->getTagInfoById($tagId);
+            }
+        }
 
         if (empty($currentPage)) {
             $currentPage = 0;
@@ -19,7 +37,6 @@ class albumtaglist extends controller
         }
 
         if ($tagId) {
-            //$search_filter['from'] = $from;
             $where['tagid'] = $tagId;
         }
 
@@ -33,9 +50,13 @@ class albumtaglist extends controller
             $albumTagList = $manageAlbumTagRelationObj->getAlbumListByTagId($where, $currentPage + 1, $perPage);
         }
         //var_dump($albumTagList);
+        $manageAlbumObj = new ManageAlbum();
         if (count($albumTagList)) {
             foreach ($albumTagList as $k => $v) {
-
+                //获取专辑名称
+                $albumInfo = $manageAlbumObj->getAlbumInfo($v['albumid']);
+                $v['album_title'] = $albumInfo['title'];
+                $albumTagList[$k]=$v;
             }
         }
         if ($totalCount > $perPage) {
@@ -43,7 +64,10 @@ class albumtaglist extends controller
         }
 
         $smartyObj = $this->getSmartyObj();
+        $smartyObj->assign('searchCondition', $searchCondition);
+        $smartyObj->assign('searchContent', $searchContent);
         $smartyObj->assign('totalCount', $totalCount);
+        $smartyObj->assign('tagInfo', $tagInfo);
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('pageBanner', $pageBanner);
