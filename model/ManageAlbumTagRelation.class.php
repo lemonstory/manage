@@ -18,18 +18,21 @@ class ManageAlbumTagRelation extends ModelBase
             $perPage = 50;
         }
         if ($where) {
-            $where = " where {$where} ";
+            $whereStr = ' WHERE 1 ';
+            foreach ($where as $key=>$val){
+                $whereStr .= " and `{$key}`=:{$key}";
+            }
         } else {
-            $where = '';
+            $whereStr = '';
         }
         $offset = ($currentPage - 1) * $perPage;
         
         $list = array();
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "SELECT * FROM `album_tag_relation` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
+        $sql = "SELECT * FROM `album_tag_relation` {$whereStr} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
 
         $st = $db->prepare($sql);
-        $st->execute();
+        $st->execute($where);
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
         return $list;
     }
@@ -38,14 +41,17 @@ class ManageAlbumTagRelation extends ModelBase
     {
         $db = DbConnecter::connectMysql('share_story');
         if ($where) {
-            $where = " where {$where} ";
+            $whereStr = ' WHERE 1 ';
+            foreach ($where as $key=>$val){
+                $whereStr .= " and `{$key}`=:{$key}";
+            }
         } else {
-            $where = '';
+            $whereStr = '';
         }
-        $sql = "SELECT COUNT(*) FROM `album_tag_relation` {$where}";
+        $sql = "SELECT COUNT(*) FROM `album_tag_relation` $whereStr";
 
         $st = $db->prepare($sql);
-        $st->execute();
+        $st->execute($where);
         $count = $st->fetch(PDO::FETCH_COLUMN);
         return $count;
     }

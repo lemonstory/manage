@@ -20,12 +20,7 @@ class albumtaglist extends controller
 
         if ($tagId) {
             //$search_filter['from'] = $from;
-            $where[] = "`tagid` ='{$tagId}' ";
-        }
-
-        // where 处理
-        if ($where) {
-            $where = implode(" AND ", $where);
+            $where['tagid'] = $tagId;
         }
 
         $pageBanner = "";
