@@ -15,6 +15,17 @@ class analyticsspider extends controller
         $add_xmly_album_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_XMLY_ALBUM);
         $add_xmly_story_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_XMLY_STORY);
 
+        //lrts今日新增
+        $add_lrts_category_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_LRTS_CATEGORY);
+        $add_lrts_album_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_LRTS_ALBUM);
+        $add_lrts_story_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_LRTS_STORY);
+
+        //lizhi今日新增
+        $add_lizhi_category_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_LIZHI_CATEGORY);
+        $add_lizhi_album_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_LIZHI_ALBUM);
+        $add_lizhi_story_sucess_today =  $manageCollectionCronLog->addSucessCountToday(ManageCollectionCronLog::TYPE_LIZHI_STORY);
+
+
         //未上传至oss的专辑图片数量
         $album = new Album();
         $album_cover_not_upload_oss_count = $album->coverNotUploadOssCount();
@@ -39,6 +50,14 @@ class analyticsspider extends controller
         $smartyobj->assign("add_xmly_album_sucess_today", $add_xmly_album_sucess_today);
         $smartyobj->assign("add_xmly_story_sucess_today", $add_xmly_story_sucess_today);
 
+        $smartyobj->assign("add_lrts_category_sucess_today", $add_lrts_category_sucess_today);
+        $smartyobj->assign("add_lrts_album_sucess_today", $add_lrts_album_sucess_today);
+        $smartyobj->assign("add_lrts_story_sucess_today", $add_lrts_story_sucess_today);
+
+        $smartyobj->assign("add_lizhi_category_sucess_today", $add_lizhi_category_sucess_today);
+        $smartyobj->assign("add_lizhi_album_sucess_today", $add_lizhi_album_sucess_today);
+        $smartyobj->assign("add_lizhi_story_sucess_today", $add_lizhi_story_sucess_today);
+
         $smartyobj->assign("album_cover_not_upload_oss_count", $album_cover_not_upload_oss_count);
         $smartyobj->assign("story_cover_not_upload_oss_count", $story_cover_not_upload_oss_count);
         $smartyobj->assign("story_media_not_upload_oss_count", $story_media_not_upload_oss_count);
@@ -48,7 +67,6 @@ class analyticsspider extends controller
         $smartyobj->assign('analyticsspiderside', 'active');
         $smartyobj->assign("headerdata", $this->headerCommonData());
         $smartyobj->display('analytics/analyticsspider.html');
-
     }
 }
 new analyticsspider();
