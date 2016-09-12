@@ -72,7 +72,7 @@ class cron_uploadOss extends DaemonBase
                         // 更新cover字段
                         $album->update(array('cover' => $r, 'cover_time' => time()), "`s_cover`='{$v['s_cover']}' and `cover`=''");
                         $image_cache[$v['s_cover']] = $r;
-                        $this->writeLog("专辑封面(重复) {$v['id']} => cover 更新成功");
+                        $content = "专辑封面(重复) {$v['id']} => cover 更新成功";
                         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                         $album->clearAlbumCache($v['id']);
                     } else {
@@ -142,6 +142,10 @@ class cron_uploadOss extends DaemonBase
         if (strstr($url, 'default/sound.jpg')) {
             return '';
         }
+
+        if (strstr($url, 'default/bg_player.jpg')) {
+            return '';
+        }
         // 控制上传频率
         sleep(1);
 
@@ -162,9 +166,11 @@ class cron_uploadOss extends DaemonBase
         }
 
         $ext = strtolower(ltrim(strrchr($url, '.'), '.'));
-
+        $length = strpos($ext,"?");
+        if($length &&  $length > 0) {
+            $ext = substr($ext,0,$length);
+        }
         $filename = date("Y_m_d_{$type}_{$id}");
-
         $savedir = $savedir . date("Y_m_d_{$type}_{$id}");
 
         if (!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio', 'bmp'))) {
