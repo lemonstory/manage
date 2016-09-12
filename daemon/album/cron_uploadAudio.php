@@ -23,13 +23,13 @@ class cron_uploadAudio extends DaemonBase
 
     protected function uploadAudio($mod, $rem)
     {
-
         // 更新故事为本地地址
         $story = new Story();
         $manageCollectionCronLog = new ManageCollectionCronLog();
-        $story_list = $story->get_list("`mediapath`='' and `status`=1 ", 10);
+        $story_list = $story->get_list("`mediapath`='' and `status`=1 and MOD(`id`,{$mod})={$rem}", 10);
         foreach ($story_list as $k => $v) {
-            if ($v['id'] % $mod == $rem) {
+
+            //if ($v['id'] % $mod == $rem) {
                 $headerarr = get_headers($v['source_audio_url']);
                 if (!empty($headerarr)) {
                     $contentlengthheader = $headerarr[3];
@@ -37,7 +37,8 @@ class cron_uploadAudio extends DaemonBase
                         $contentlengtharr = explode(":", $contentlengthheader);
                         $length = intval(trim($contentlengtharr[1]));
                         if (!empty($length) && $length > 50000000) {
-                            $content = "故事 {$v['id']} => mediapath[{$length}] 大于50M";
+                            $time = date('Y-m-d H:i:s');
+                            $content = sprintf("[%s] 故事 %s => mediapath[%d] 大于50M\r\n",$time,$v['id'],$length);
                             echo $content . "\r\n";
                             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                             continue;
@@ -46,18 +47,22 @@ class cron_uploadAudio extends DaemonBase
                 }
 
                 $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
+
                 if (is_array($r) && $r) {
                     $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
                     MnsQueueManager::pushAlbumToSearchQueue($v['id']);
-                    $content = "故事 {$v['id']} => mediapath 更新成功";
+                    $time = date('Y-m-d H:i:s');
+                    $content = sprintf("[%s] 故事 %s => mediapath 更新成功\r\n",$time,$v['id']);
                     echo $content . "\r\n";
                     $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 } else {
-                    $content = "故事 {$v['id']} => mediapath 更新失败";
+                    $time = date('Y-m-d H:i:s');
+                    $content = sprintf("[%s] 故事 %s => mediapath 更新失败\r\n",$time,$v['id']);
                     echo $content . "\r\n";
                     $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 }
-            }
+
+            //}
         }
     }
 
@@ -69,7 +74,9 @@ class cron_uploadAudio extends DaemonBase
     private function middle_upload($url = '', $id = '', $type = '')
     {
 
-        echo sprintf("url : %s, id : %s, type: %s \r\n", $url, $id, $type);
+        $time = date('Y-m-d H:i:s');
+        echo sprintf("[%s] url : %s, id : %s, type: %s \r\n",$time, $url, $id, $type);
+
         $manageCollectionCronLog = new ManageCollectionCronLog();
         // 默认图片不上传
         if (strstr($url, 'default/album.jpg')) {
@@ -79,10 +86,12 @@ class cron_uploadAudio extends DaemonBase
             return '';
         }
         // 控制上传频率
-        usleep(200);
+        usleep(20);
 
         if (!$url || !$id || !$type) {
-            $content = "{middle_upload} 参数错误";
+            $time = date('Y-m-d H:i:s');
+
+            $content = sprintf("[%s] {middle_upload} 参数错误",$time);
             echo $content . "\r\n";
             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
             return false;
@@ -105,8 +114,9 @@ class cron_uploadAudio extends DaemonBase
 
         if (!in_array($ext, array('png', 'gif', 'jpg', 'jpeg', 'mp3', 'audio', 'm4a'))) {
 
-            $content = "故事 {$id} => 下载失败,不支持扩展名 {$ext}";
-            echo $content . "\r\n";
+            $time = date('Y-m-d H:i:s');
+            $content = sprintf("[%s] 故事 %s => 下载失败,不支持扩展名 %s\r\n",$id,$ext);
+            echo $content;
             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
             return false;
         }
@@ -129,6 +139,7 @@ class cron_uploadAudio extends DaemonBase
         }
 
         return '';
+
     }
 }
 
