@@ -6,7 +6,7 @@ include_once(dirname(dirname(__FILE__)) . "/DaemonBase.php");
 
 class cron_uploadAudio extends DaemonBase
 {
-    protected $processnum = 10;
+    protected $processnum = 5;
 
     protected function deal()
     {
