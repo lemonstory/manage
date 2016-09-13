@@ -104,7 +104,7 @@
                                     {if $displaycheckbox == 1}<td><input type="checkbox" name="tagids" value="{$secondtaginfo.id}" {if $secondtaginfo.checked == 1}checked{/if}></td>{/if}
 	                                <td>{$secondtaginfo.id}</td>
 	                                <td>{$value.name}</td>
-	                                <td style="color:green;">{$secondtaginfo.name}</td>
+	                                <td style="color:green;"><a href="/tag/albumtaglist.php?tag_id={$secondtaginfo.id}">{$secondtaginfo.name}</a></td>
                                     <td>&nbsp;</td>
 	                                <td><input type="text" name="order" class="form-control" op_id="{$secondtaginfo.id}" old_val="{$secondtaginfo.ordernum}" value="{$secondtaginfo.ordernum}" style="width: 60px;" /></td>
 	                                <td id="status_{$secondtaginfo.id}">
