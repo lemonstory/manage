@@ -15,8 +15,16 @@ class cron_albumStoryBooter extends DaemonBase {
 	private function getProcessList()
 	{
 		$list = array(
-		        	'album/cron_uploadAudioOdd.php',
-		        	'album/cron_uploadAudioEven.php'
+		        	'album/cron_uploadAudio.php -m 10 -r 1',
+		        	'album/cron_uploadAudio.php -m 10 -r 2',
+		        	'album/cron_uploadAudio.php -m 10 -r 3',
+		        	'album/cron_uploadAudio.php -m 10 -r 4',
+		        	'album/cron_uploadAudio.php -m 10 -r 5',
+		        	'album/cron_uploadAudio.php -m 10 -r 6',
+		        	'album/cron_uploadAudio.php -m 10 -r 7',
+		        	'album/cron_uploadAudio.php -m 10 -r 8',
+		        	'album/cron_uploadAudio.php -m 10 -r 9',
+		        	'album/cron_uploadAudio.php -m 10 -r 10',
 				);
 		return $list;
 	}
