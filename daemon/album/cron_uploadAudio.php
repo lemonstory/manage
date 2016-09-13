@@ -50,7 +50,7 @@ class cron_uploadAudio extends DaemonBase
                 if (is_array($r) && $r) {
                     $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
                     MnsQueueManager::pushAlbumToSearchQueue($v['id']);
-                    $content = sprintf("[%s] 故事 %s => mediapath 更新成功\r\n",$v['id']);
+                    $content = sprintf("故事 %s => mediapath 更新成功\r\n",$v['id']);
                     echo $content . "\r\n";
                     $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 } else {
