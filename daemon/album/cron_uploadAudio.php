@@ -6,7 +6,7 @@ include_once(dirname(dirname(__FILE__)) . "/DaemonBase.php");
 
 class cron_uploadAudio extends DaemonBase
 {
-    protected $processnum = 5;
+    protected $processnum = 10;
 
     protected function deal()
     {
@@ -26,10 +26,11 @@ class cron_uploadAudio extends DaemonBase
         // 更新故事为本地地址
         $story = new Story();
         $manageCollectionCronLog = new ManageCollectionCronLog();
-        $story_list = $story->get_list("`mediapath`='' and `status`=1 and MOD(`id`,{$mod})={$rem}", 10);
+        #TODO source_audio_url 可能为空
+        //select * from story  where `mediapath`=''  and `status`=1 and length(`source_audio_url`) > 1 and MOD(`id`,10)=0 LIMIT 10
+        $story_list = $story->get_list("`mediapath`='' and `status`=1 and length(`source_audio_url`) > 1 and MOD(`id`,{$mod})={$rem}", 10);
         foreach ($story_list as $k => $v) {
 
-            //if ($v['id'] % $mod == $rem) {
                 $headerarr = get_headers($v['source_audio_url']);
                 if (!empty($headerarr)) {
                     $contentlengthheader = $headerarr[3];
@@ -45,21 +46,24 @@ class cron_uploadAudio extends DaemonBase
                     }
                 }
 
-                $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
-
-                if (is_array($r) && $r) {
-                    $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
-                    MnsQueueManager::pushAlbumToSearchQueue($v['id']);
-                    $content = sprintf("故事 %s => mediapath 更新成功\r\n",$v['id']);
-                    echo $content . "\r\n";
-                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
-                } else {
-                    $content = sprintf("[%s] 故事 %s => mediapath 更新失败\r\n",$v['id']);
-                    echo $content . "\r\n";
+                if(!empty($v['source_audio_url']) && !empty($v['id'])) {
+                    $r = $this->middle_upload($v['source_audio_url'], $v['id'], 3);
+                    if (is_array($r) && $r) {
+                        $story->update(array('mediapath' => $r['mediapath'], 'times' => $r['times'], 'file_size' => $r['size']), "`id`={$v['id']}");
+                        MnsQueueManager::pushAlbumToSearchQueue($v['id']);
+                        $content = sprintf("故事 %s => mediapath 更新成功\r\n",$v['id']);
+                        echo $content . "\r\n";
+                        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
+                    } else {
+                        $content = sprintf("[%s] 故事 %s => mediapath 更新失败\r\n",$v['id']);
+                        echo $content . "\r\n";
+                        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
+                    }
+                }else {
+                    $content = sprintf("source_audio_url : 为空, id : %s,  \r\n",$v['id']);
+                    echo $content;
                     $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 }
-
-            //}
         }
     }
 
@@ -122,6 +126,7 @@ class cron_uploadAudio extends DaemonBase
 
         if ($type == 3) {
             $res = $uploadobj->uploadStoryMedia($filename, $ext, $id);
+            @unlink($full_file);
             return $res;
         } else {
             $res = $uploadobj->uploadAlbumImage($filename, $ext, $id);

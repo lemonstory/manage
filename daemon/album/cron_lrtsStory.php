@@ -4,8 +4,15 @@
  */
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 class cron_lrtsStory extends DaemonBase {
+
     protected $processnum = 1;
+    protected $circulation_process = true;
+    protected $target_url = "";
+
     protected function deal() {
+
+        $options = getopt("u:");
+        $this->target_url = $options['u'];
         $this->c_lrts_story();
         exit;
     }
@@ -27,13 +34,18 @@ class cron_lrtsStory extends DaemonBase {
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, ManageCollectionCronLog::TYPE_LRTS_STORY, "采集懒人听书故事开始 添加时间大于 {{$end_time}}");
 
         while (true) {
-            $limit = ($p - 1) * $per_page;
-            $album_list = $album->get_list("`from`='lrts' and `add_time` > '{$end_time}' order by `id` desc", "{$limit},{$per_page}");
-            //$album_list = $album->get_list("`id`=15098");
+
+            if($this->circulation_process && empty($this->target_url)) {
+                $limit = ($p - 1) * $per_page;
+                $album_list = $album->get_list("`from`='lrts' and `add_time` > '{$end_time}' order by `id` desc", "{$limit},{$per_page}");
+                //$album_list = $album->get_list("`id`=15098");
+            }else {
+                $album_list[] = array("link_url" => $this->target_url);
+            }
+
             if (!$album_list) {
                 break;
             }
-            $time = time();
             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_LRTS_STORY, "采集懒人听书故事  {$limit},{$per_page}");
             foreach($album_list as $k => $v) {
 
