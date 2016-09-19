@@ -73,6 +73,8 @@
                                 <th>添加时间</th>
                                 <th>是否显示</th>
 						        <th>状态</th>
+                                <th>连载</th>
+                                <th>上架</th>
 						        <th>操作</th>
                             </tr>
                         </thead>
@@ -107,6 +109,16 @@
                                 <td>
                                     {if $value.status eq '0'}已删除
                                     {elseif $value.status eq 1}正常
+                                    {/if}
+                                </td>
+                                <td>
+                                    {if $value.serial_status eq '0'}完结
+                                    {elseif $value.serial_status eq 1}连载中
+                                    {/if}
+                                </td>
+                                <td>
+                                    {if $value.serial_status eq '0'}未上架
+                                    {elseif $value.serial_status eq 1}已上架
                                     {/if}
                                 </td>
                                 <td>

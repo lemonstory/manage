@@ -26,7 +26,7 @@ class ManageAlbum extends ModelBase
         
         $list = array();
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "SELECT * FROM `album` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
+        $sql = "SELECT * FROM `album` {$where} ORDER BY `view_order` DESC,`status` DESC ,`id` DESC LIMIT {$offset}, {$perPage}";
         
         $st = $db->prepare($sql);
         $st->execute();
