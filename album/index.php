@@ -21,6 +21,7 @@ class index extends controller
         $from   = $this->getRequest('from', '');
         $online_status   = $this->getRequest('online_status', '');
         $serial_status   = $this->getRequest('serial_status', '');
+        $tag_id   = $this->getRequest('tag_id', '');
 
         $search_filter = array();
 
@@ -50,14 +51,26 @@ class index extends controller
             $search_filter['serial_status'] = $serial_status;
             $where['serial_status'] = $serial_status;
         }
+        if ($tag_id) {
+            $search_filter['tag_id'] = $tag_id;
+            $where['tagid'] = $tag_id;
+        }
 
         $pageBanner = "";
-        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}&online_status={$online_status}&serial_status={$serial_status}";
-        
-        $manageAlbumObj = new ManageAlbum();
-        $totalCount = $manageAlbumObj->getAlbumTotalCount($where);
-        if ($totalCount) {
-            $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
+        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}&online_status={$online_status}&serial_status={$serial_status}&tag_id={$tag_id}";
+
+        if(!empty($where['tagid'])){
+            $manageAlbumTagRelationObj = new ManageAlbumTagRelation();
+            $totalCount = $manageAlbumTagRelationObj->getAlbumTagRelationTotalCount($where);
+            if ($totalCount) {
+                $albumList = $manageAlbumTagRelationObj->getAlbumListByTagId($where, $currentPage + 1, $perPage);
+            }
+        }else{
+            $manageAlbumObj = new ManageAlbum();
+            $totalCount = $manageAlbumObj->getAlbumTotalCount($where);
+            if ($totalCount) {
+                $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
+            }
         }
 
         if (count($albumList)) {

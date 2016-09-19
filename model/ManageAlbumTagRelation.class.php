@@ -48,7 +48,7 @@ class ManageAlbumTagRelation extends ModelBase
         } else {
             $whereStr = '';
         }
-        $sql = "SELECT COUNT(*) FROM `album_tag_relation` $whereStr";
+        $sql = "SELECT COUNT(*) FROM `album_tag_relation` AS a_t LEFT JOIN `album` AS a ON a_t.albumid=a.id $whereStr";
 
         $st = $db->prepare($sql);
         $st->execute($where);

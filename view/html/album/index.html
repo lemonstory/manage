@@ -28,6 +28,13 @@
                                 </div>
                             </div>
                             <div class="control-group">
+                                <label class="control-label">标签ID</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="tag_id" value="{$search_filter.tag_id}">
+                                    <p class="help-block">输入查询内容</p>
+                                </div>
+                            </div>
+                            <div class="control-group">
                                 <label class="control-label">上架状态</label>
                                 <div class="controls">
                                     <select id="online_status" class="span6" name="online_status">
@@ -107,7 +114,7 @@
                                     <span class="badge">{$value.story_num}</span>
                                     <span class="badge"><a href="{$value.link_url}" target="_blank">{$value.from}</a></span>
                                     <br><br>
-                                    {foreach from=$value.taglist item=taginfo}<span class="badge"><a href="/tag/albumtaglist.php?tag_id={$taginfo.id}">{$taginfo.name}</a></span>{/foreach}
+                                    {foreach from=$value.taglist item=taginfo}<span class="badge"><a href="/album/index.php?tag_id={$taginfo.id}">{$taginfo.name}</a></span>{/foreach}
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);" id="op_album_view_{$value.id}_cover">
