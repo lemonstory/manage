@@ -28,6 +28,26 @@
                                 </div>
                             </div>
                             <div class="control-group">
+                                <label class="control-label">上架状态</label>
+                                <div class="controls">
+                                    <select id="online_status" class="span6" name="online_status">
+                                        <option value="">全部</option>
+                                        <option {if $search_filter.online_status eq 1}selected{/if} value="1">已上架</option>
+                                        <option {if $search_filter.online_status eq '0'}selected{/if} value="0">未上架</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">连载状态</label>
+                                <div class="controls">
+                                    <select id="serial_status" class="span6" name="serial_status">
+                                        <option value="">全部</option>
+                                        <option {if $search_filter.serial_status eq 1}selected{/if} value="1">连载中</option>
+                                        <option {if $search_filter.serial_status eq '0'}selected{/if} value="0">完结</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
                                 <label class="control-label">平台</label>
                                 <div class="controls">
                                     <select id="from" class="span6" name="from">
@@ -71,7 +91,7 @@
 						        <th>封面</th>
 						        <th>排序</th>
                                 <th>添加时间</th>
-                                <th>是否显示</th>
+                                <th>上架状态</th>
 						        <th>状态</th>
                                 <th>连载</th>
                                 <th>上架</th>
@@ -100,10 +120,10 @@
                                 </td>
                                 <td>{$value.add_time}</td>
                                 <td>
-                                    {if $value.is_show}
-                                    <a href="javascript:void(0);" id="op_album_notshow_{$value.id}">取消</a>
-                                    {else}
-                                    <a href="javascript:void(0);" id="op_album_show_{$value.id}">显示</a>
+                                    {if $value.online_status eq '0'}
+                                    <a href="javascript:void(0);" id="op_album_online_{$value.id}">未上架</a>
+                                    {elseif $value.online_status eq 1}
+                                    <a href="javascript:void(0);" id="op_album_notonline_{$value.id}">已上架</a>
                                     {/if}
                                 </td>
                                 <td>

@@ -102,7 +102,7 @@ class ManagePrivilege extends ModelBase
         return false;
     }
     
-    public function getUserList($page=1, $len=10)
+    public function getUserList($page=1, $length=10)
     {
         $page = $page>0 ? $page : 1;
         $length = $length ? $length : 20;
