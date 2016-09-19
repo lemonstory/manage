@@ -86,7 +86,7 @@
                                     <span class="badge">{$value.story_num}</span>
                                     <span class="badge"><a href="{$value.link_url}" target="_blank">{$value.from}</a></span>
                                     <br><br>
-                                    {foreach from=$value.taglist item=taginfo}<span class="badge">{$taginfo.name}</span>{/foreach}
+                                    {foreach from=$value.taglist item=taginfo}<span class="badge"><a href="/tag/albumtaglist.php?tag_id={$taginfo.id}">{$taginfo.name}</a></span>{/foreach}
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);" id="op_album_view_{$value.id}_cover">
