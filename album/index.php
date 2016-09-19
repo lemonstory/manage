@@ -26,15 +26,15 @@ class index extends controller
 
         if ($title) {
             $search_filter['title'] = $title;
-            $where[] = "`title` like '%{$title}%' ";
+            $where['title'] = '%'.$title.'%';
         }
         if ($albumid) {
             $search_filter['albumid'] = $albumid;
-            $where[] = "`id` ='{$albumid}' ";
+            $where['id'] = $albumid;
         }
         if ($from) {
             $search_filter['from'] = $from;
-            $where[] = "`from` ='{$from}' ";
+            $where['from'] = $from;
         }
 
 //        $a = "";
@@ -43,22 +43,18 @@ class index extends controller
 
         if (is_string($online_status) && strcmp("",$online_status) != 0) {
             $search_filter['online_status'] = $online_status;
-            $where[] = "`online_status` ='{$online_status}' ";
+            $where['online_status'] = $online_status;
         }
 
         if (is_string($serial_status) && strcmp("",$serial_status) != 0) {
             $search_filter['serial_status'] = $serial_status;
-            $where[] = "`serial_status` ='{$serial_status}' ";
+            $where['serial_status'] = $serial_status;
         }
 
         $pageBanner = "";
         $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}&online_status={$online_status}&serial_status={$serial_status}";
         
         $manageAlbumObj = new ManageAlbum();
-        // where 处理
-        if ($where) {
-            $where = implode(" AND ", $where);
-        }
         $totalCount = $manageAlbumObj->getAlbumTotalCount($where);
         if ($totalCount) {
             $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
