@@ -19,6 +19,8 @@ class index extends controller
         $albumid = $this->getRequest('albumid', '');
         $title   = $this->getRequest('title', '');
         $from   = $this->getRequest('from', '');
+        $online_status   = $this->getRequest('online_status', '');
+        $serial_status   = $this->getRequest('serial_status', '');
 
         $search_filter = array();
 
@@ -35,8 +37,22 @@ class index extends controller
             $where[] = "`from` ='{$from}' ";
         }
 
+//        $a = "";
+//        $a = intval($a);
+//        var_dump($a);
+
+        if (is_string($online_status) && strcmp("",$online_status) != 0) {
+            $search_filter['online_status'] = $online_status;
+            $where[] = "`online_status` ='{$online_status}' ";
+        }
+
+        if (is_string($serial_status) && strcmp("",$serial_status) != 0) {
+            $search_filter['serial_status'] = $serial_status;
+            $where[] = "`serial_status` ='{$serial_status}' ";
+        }
+
         $pageBanner = "";
-        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}";
+        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}&online_status={$online_status}&serial_status={$serial_status}";
         
         $manageAlbumObj = new ManageAlbum();
         // where 处理

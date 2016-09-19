@@ -9,7 +9,7 @@ class index extends controller
         $op_id = $this->getRequest('op_id', 0);
         $open_search_obj = new OpenSearch();
 
-        if (!in_array($op_name, array('delete', 'recover', 'view_order', 'show', 'notshow'))) {
+        if (!in_array($op_name, array('delete', 'recover', 'view_order', 'online', 'notonline'))) {
             $this->showErrorJson("专辑数据为空");
         }
         $album = new Album();
@@ -27,12 +27,12 @@ class index extends controller
         } else if ($op_name == 'view_order') {
             $value = (int)$this->getRequest('value', 0);
             $album->update(array('view_order' => $value), "`id`={$op_id}");
-        } else if ($op_name == 'show') {
+        } else if ($op_name == 'online') {
             $value = (int)$this->getRequest('value', 0);
-            $album->update(array('is_show' => 1), "`id`={$op_id}");
-        } else if ($op_name == 'notshow') {
+            $album->update(array('online_status' => 1), "`id`={$op_id}");
+        } else if ($op_name == 'notonline') {
             $value = (int)$this->getRequest('value', 0);
-            $album->update(array('is_show' => 0), "`id`={$op_id}");
+            $album->update(array('online_status' => 0), "`id`={$op_id}");
         }
         return $this->showSuccJson("操作成功 : ret = {$ret}");
 
