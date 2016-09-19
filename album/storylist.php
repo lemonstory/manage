@@ -49,7 +49,8 @@ class index extends controller
             $where = implode(" AND ", $where);
         }
 
-        $totalCount = $manageStoryObj->getStoryTotalCount($where);
+        $totalCountArr = $manageStoryObj->getStoryTotalCount($where);
+        $totalCount = $totalCountArr[0] + $totalCountArr[1];
         if ($totalCount) {
             $aliossobj = new AliOss();
             $album     = new Album();
@@ -76,6 +77,7 @@ class index extends controller
 
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('totalCount', $totalCount);
+        $smartyObj->assign('totalCountArr', $totalCountArr);
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('search_filter', $search_filter);
