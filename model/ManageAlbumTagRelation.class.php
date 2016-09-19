@@ -29,7 +29,7 @@ class ManageAlbumTagRelation extends ModelBase
         
         $list = array();
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "SELECT * FROM `album_tag_relation` {$whereStr} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
+        $sql = "SELECT a_t.*,a.`title` FROM `album_tag_relation` AS a_t LEFT JOIN `album` AS a ON a_t.albumid=a.id {$whereStr} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
 
         $st = $db->prepare($sql);
         $st->execute($where);
