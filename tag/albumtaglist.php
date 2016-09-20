@@ -49,16 +49,6 @@ class albumtaglist extends controller
         if ($totalCount) {
             $albumTagList = $manageAlbumTagRelationObj->getAlbumListByTagId($where, $currentPage + 1, $perPage);
         }
-        //var_dump($albumTagList);
-        $manageAlbumObj = new ManageAlbum();
-        if (count($albumTagList)) {
-            foreach ($albumTagList as $k => $v) {
-                //获取专辑名称
-                $albumInfo = $manageAlbumObj->getAlbumInfo($v['albumid']);
-                $v['album_title'] = $albumInfo['title'];
-                $albumTagList[$k]=$v;
-            }
-        }
         if ($totalCount > $perPage) {
             $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
         }

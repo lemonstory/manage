@@ -64,11 +64,11 @@ class ManageStory extends ModelBase
         } else {
             $where = '';
         }
-        $sql = "SELECT COUNT(*) FROM `story` {$where}";
+        $sql = "SELECT COUNT(`id`) FROM `story` {$where} GROUP BY `status`";
         
         $st = $db->prepare($sql);
         $st->execute();
-        $count = $st->fetch(PDO::FETCH_COLUMN);
+        $count = $st->fetchAll(PDO::FETCH_COLUMN);
         return $count;
     }
     

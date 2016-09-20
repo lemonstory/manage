@@ -21,20 +21,21 @@ class index extends controller
         $from   = $this->getRequest('from', '');
         $online_status   = $this->getRequest('online_status', '');
         $serial_status   = $this->getRequest('serial_status', '');
+        $tag_id   = $this->getRequest('tag_id', '');
 
         $search_filter = array();
 
         if ($title) {
             $search_filter['title'] = $title;
-            $where[] = "`title` like '%{$title}%' ";
+            $where['title'] = '%'.$title.'%';
         }
         if ($albumid) {
             $search_filter['albumid'] = $albumid;
-            $where[] = "`id` ='{$albumid}' ";
+            $where['id'] = $albumid;
         }
         if ($from) {
             $search_filter['from'] = $from;
-            $where[] = "`from` ='{$from}' ";
+            $where['from'] = $from;
         }
 
 //        $a = "";
@@ -43,25 +44,33 @@ class index extends controller
 
         if (is_string($online_status) && strcmp("",$online_status) != 0) {
             $search_filter['online_status'] = $online_status;
-            $where[] = "`online_status` ='{$online_status}' ";
+            $where['online_status'] = $online_status;
         }
 
         if (is_string($serial_status) && strcmp("",$serial_status) != 0) {
             $search_filter['serial_status'] = $serial_status;
-            $where[] = "`serial_status` ='{$serial_status}' ";
+            $where['serial_status'] = $serial_status;
+        }
+        if ($tag_id) {
+            $search_filter['tag_id'] = $tag_id;
+            $where['tagid'] = $tag_id;
         }
 
         $pageBanner = "";
-        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}&online_status={$online_status}&serial_status={$serial_status}";
-        
-        $manageAlbumObj = new ManageAlbum();
-        // where 处理
-        if ($where) {
-            $where = implode(" AND ", $where);
-        }
-        $totalCount = $manageAlbumObj->getAlbumTotalCount($where);
-        if ($totalCount) {
-            $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
+        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}&online_status={$online_status}&serial_status={$serial_status}&tag_id={$tag_id}";
+
+        if(!empty($where['tagid'])){
+            $manageAlbumTagRelationObj = new ManageAlbumTagRelation();
+            $totalCount = $manageAlbumTagRelationObj->getAlbumTagRelationTotalCount($where);
+            if ($totalCount) {
+                $albumList = $manageAlbumTagRelationObj->getAlbumListByTagId($where, $currentPage + 1, $perPage);
+            }
+        }else{
+            $manageAlbumObj = new ManageAlbum();
+            $totalCount = $manageAlbumObj->getAlbumTotalCount($where);
+            if ($totalCount) {
+                $albumList = $manageAlbumObj->getAlbumList($where, $currentPage + 1, $perPage);
+            }
         }
 
         if (count($albumList)) {
