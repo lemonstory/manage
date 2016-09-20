@@ -19,9 +19,11 @@ class index extends controller
         $albumid = $this->getRequest('albumid', '');
         $title   = $this->getRequest('title', '');
         $from   = $this->getRequest('from', '');
+        $status   = $this->getRequest('status', '');
         $online_status   = $this->getRequest('online_status', '');
         $serial_status   = $this->getRequest('serial_status', '');
         $tag_id   = $this->getRequest('tag_id', '');
+        $story_num   = $this->getRequest('story_num', '');
 
         $search_filter = array();
 
@@ -38,9 +40,10 @@ class index extends controller
             $where['from'] = $from;
         }
 
-//        $a = "";
-//        $a = intval($a);
-//        var_dump($a);
+        if (is_string($status) && strcmp("",$status) != 0) {
+            $search_filter['status'] = $status;
+            $where['status'] = $status;
+        }
 
         if (is_string($online_status) && strcmp("",$online_status) != 0) {
             $search_filter['online_status'] = $online_status;
@@ -55,9 +58,14 @@ class index extends controller
             $search_filter['tag_id'] = $tag_id;
             $where['tagid'] = $tag_id;
         }
+        if($story_num) {
+            $search_filter['story_num'] = $story_num;
+            $where['story_num'] = $story_num;
+        }
+
 
         $pageBanner = "";
-        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&from={$from}&online_status={$online_status}&serial_status={$serial_status}&tag_id={$tag_id}";
+        $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&status={$status}&from={$from}&online_status={$online_status}&serial_status={$serial_status}&tag_id={$tag_id}&story_num=$story_num";
 
         if(!empty($where['tagid'])){
             $manageAlbumTagRelationObj = new ManageAlbumTagRelation();
