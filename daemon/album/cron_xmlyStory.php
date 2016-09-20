@@ -164,7 +164,9 @@ class cron_xmlyStory extends DaemonBase
                         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
                     }
                 }
-                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, "喜马拉雅专辑 {$album_info['id']} 新增 {$add_count}");
+                $content = "喜马拉雅专辑 {$album_info['id']} 新增 {$add_count}";
+                echo $content;
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY,$content);
                 $album->update_story_num($album_info['id']);
             }
         }
