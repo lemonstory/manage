@@ -55,7 +55,7 @@ class index extends controller
             $search_filter['serial_status'] = $serial_status;
             $where['serial_status'] = $serial_status;
         }
-        if ($tag_name&&$tag_id) {
+        if ($tag_id) {
             $search_filter['tag_name'] = $tag_name;
             $search_filter['tag_id'] = $tag_id;
             $where['tagid'] = $tag_id;
