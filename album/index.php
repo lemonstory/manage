@@ -57,7 +57,7 @@ class index extends controller
         }
         if ($tag_name&&$tag_id) {
             $search_filter['tag_name'] = $tag_name;
-            $search_filter['tag_id'] = $tag_name;
+            $search_filter['tag_id'] = $tag_id;
             $where['tagid'] = $tag_id;
         }
         if($story_num) {
