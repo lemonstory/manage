@@ -25,7 +25,7 @@
                             <div class="control-group">
                                 <label class="control-label">内容</label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
+                                    <input type="text" class="span6" id="searchContent" name="searchContent" value="{$searchContent}">
                                     <p class="help-block"></p>
                                 </div>
                             </div>
@@ -75,4 +75,37 @@
     </div>
     {$pageBanner}
 </div>
+<link href="/static/vendors/jquery-ui/smoothness/jquery-ui.min.css" rel="stylesheet" media="screen">
+<script src="/static/vendors/jquery-ui-1.10.3.js"></script>
+<script>
+    {literal}
+    function log( message ) {
+        $( "#searchContent" ).val( '123456' );
+    }
+    $( function() {
+        $( "#searchContent" ).autocomplete({
+            source: function( request, response ) {
+                $.ajax( {
+                    url: "/tag/gettaglistbyname.php",
+                    dataType: "jsonp",
+                    data: {
+                        tag_name: request.term
+                    },
+                    success: function( data ) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label:item.name,
+                                value:item.name,
+                            }}) );
+                    }
+                } );
+            },
+            minLength: 2,
+            select: function( event, ui ) {
+                $( "#searchContent" ).val( ui.item.label );
+            }
+        } );
+    } );
+    {/literal}
+</script>
 {include file="include/footer.html"}
