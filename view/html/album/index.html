@@ -26,9 +26,10 @@
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">标签ID</label>
+                                <label class="control-label">标签名称</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" name="tag_id" value="{$search_filter.tag_id}">
+                                    <input type="text" class="span6 auto_submit" id="tag_name" name="tag_name" value="{$search_filter.tag_name}">
+                                    <input type="hidden" id="tag_id" name="tag_id" value="{$search_filter.tag_id}">
                                 </div>
                             </div>
                             <div class="control-group">
@@ -185,7 +186,8 @@
     {$pageBanner}
 </div>
 
-
+<link href="/static/vendors/jquery-ui/smoothness/jquery-ui.min.css" rel="stylesheet" media="screen">
+<script src="/static/vendors/jquery-ui-1.10.3.js"></script>
 <script>
 {literal}
 $(function() {
@@ -212,7 +214,7 @@ $(function() {
                 alert(json);
             }
     	},'json')
-    })
+    });
     $("#list-filter").on('click', function(){
     	var url = window.location.href.split('?')[0];
         var params = '';
@@ -231,7 +233,7 @@ $(function() {
             params += 'from=' + from_id;
         }
         window.location.href = url+'?'+params;
-    })
+    });
     $("[name='view_order']").on('change', function(){
         var old_val = parseInt($(this).attr('old_val'));
         var op_id   = parseInt($(this).attr('op_id'));
@@ -253,7 +255,32 @@ $(function() {
                 }
             },'json');
         }
-    })
+    });
+    $( "#tag_name" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "/tag/gettaglistbyname.php",
+                dataType: "jsonp",
+                data: {
+                    tag_name: request.term
+                },
+                success: function( data ) {
+                    response( $.map( data, function( item ) {
+                        return {
+                            label:item.name,
+                            value:item.name,
+                            id:item.id,
+                        }}) );
+                }
+            } );
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            $( "#tag_name" ).val( ui.item.label );
+            $( "#tag_id" ).val( ui.item.id );
+        }
+    });
+
     
     /* $(".recomment_hot").on('click', function(){
     	$(".modal-body").text("");
