@@ -56,8 +56,9 @@ class cron_uploadOss extends DaemonBase
             $image_cache = array();
             foreach ($album_list as $k => $v) {
                 if (isset($image_cache[$v['s_cover']])) {
-                    $content = "专辑封面(重复) {$v['id']} => cover 更新成功";
-                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
+                    $content = "专辑封面(重复) {$v['id']} => cover 更新成功\r\n";
+                    echo $content;
+                    //$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 } else {
                     // 获取原图地址
                     $oricover = $v['s_cover'];
@@ -72,11 +73,13 @@ class cron_uploadOss extends DaemonBase
                         // 更新cover字段
                         $album->update(array('cover' => $r, 'cover_time' => time()), "`s_cover`='{$v['s_cover']}' and `cover`=''");
                         $image_cache[$v['s_cover']] = $r;
-                        $content = "专辑封面(重复) {$v['id']} => cover 更新成功";
+                        $content = "专辑封面 {$v['id']} => cover 更新成功\r\n";
+                        echo $content;
                         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                         $album->clearAlbumCache($v['id']);
                     } else {
-                        $content = "专辑封面 {$v['id']} => cover 更新失败";
+                        $content = "专辑封面 {$v['id']} => cover 更新失败\r\n";
+                        echo $content;
                         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                     }
                 }
@@ -85,23 +88,18 @@ class cron_uploadOss extends DaemonBase
 
         // 更新故事封面
         $story = new Story();
-        //$default_story_cover_list字符串需在一行
-        $default_story_cover_list = "http://s1.xmcdn.com/wap/css/img/default/bg_player.jpg?v=20160202125906,http://s1.xmcdn.com/wap/css/img/default/sound.jpg";
-        //SELECT * FROM `story` WHERE cover='' and find_in_set(`s_cover`,'http://s1.xmcdn.com/wap/css/img/default/bg_player.jpg?v=20160202125906,http://s1.xmcdn.com/wap/css/img/default/sound.jpg')=0 and `status` = 1 LIMIT 20
-        $story_list = $story->get_list("cover='' and find_in_set(`s_cover`,'{$default_story_cover_list}')=0 and `status` = 1", 5000);
-        if (!empty($story_list)) {
-            // 存已经上传的缓存
-            $image_cache = array();
-            foreach ($story_list as $k => $v) {
-                if (strstr($v['s_cover'], 'default/sound.jpg')) {
-                    $cover = Http::sub_data($v['s_cover'], '', '?');
-                    $story->update(array('s_cover' => $cover), "`id` = {$v['id']}");
-                    $content = "故事封面 {$v['id']} => cover 默认图片";
-                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
-                } else {
+        //TODO:有10w+的图片未上传
+        for($i=0;$i<20;$i++) {
+            $story_list = $story->get_list("s_cover!='' AND cover='' AND LOCATE ('default/bg_player.jpg',`s_cover`) = 0 AND LOCATE ('default/sound.jpg',`s_cover`) = 0 AND `status` = 1", 5000);
+            if (!empty($story_list)) {
+                // 存已经上传的缓存
+                $image_cache = array();
+                foreach ($story_list as $k => $v) {
+
                     if (isset($image_cache[$v['s_cover']])) {
-                        $content = "故事封面(重复) {$v['id']} => cover 更新成功";
-                        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
+                        $content = "故事封面(重复) {$v['id']} => cover 更新成功\r\n";
+                        echo $content;
+                        //$manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                     } else {
                         $oricover = $v['s_cover'];
                         foreach ($this->replacelist as $searchstr) {
@@ -112,12 +110,14 @@ class cron_uploadOss extends DaemonBase
                             $r = str_replace("story/", "", $r);
                             $story->update(array('cover' => $r, 'cover_time' => time()), "`cover` = '' and `s_cover`='{$v['s_cover']}'");
                             $image_cache[$v['s_cover']] = $r;
-                            $content = "故事封面 {$v['id']} => cover 更新成功";
+                            $content = "故事封面 {$v['id']} => cover 更新成功\r\n";
+                            echo $content;
                             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                             $story->clearAlbumStoryListCache($v['album_id']);
                             $story->clearStoryCache($v['id']);
                         } else {
-                            $content = "故事封面 {$v['id']} => cover 更新失败";
+                            $content = "故事封面 {$v['id']} => cover 更新失败\r\n";
+                            echo $content;
                             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                         }
                     }
@@ -151,7 +151,7 @@ class cron_uploadOss extends DaemonBase
 
         if (!$url || !$id || !$type) {
             $content = "{middle_upload} 参数错误";
-            echo $content."\r\n";
+            echo $content . "\r\n";
             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
             return false;
         }
@@ -166,9 +166,9 @@ class cron_uploadOss extends DaemonBase
         }
 
         $ext = strtolower(ltrim(strrchr($url, '.'), '.'));
-        $length = strpos($ext,"?");
-        if($length &&  $length > 0) {
-            $ext = substr($ext,0,$length);
+        $length = strpos($ext, "?");
+        if ($length && $length > 0) {
+            $ext = substr($ext, 0, $length);
         }
         $filename = date("Y_m_d_{$type}_{$id}");
         $savedir = $savedir . date("Y_m_d_{$type}_{$id}");
@@ -177,12 +177,12 @@ class cron_uploadOss extends DaemonBase
             if (strstr($url, 'mobile_large')) {
                 $ext = 'jpg';
             } else {
-                
+
                 $content = "故事 {$id} => 下载失败,不支持扩展名 {$ext}";
-                echo $content."\r\n";
+                echo $content . "\r\n";
                 $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_UPLOAD_OSS, $content);
                 return false;
-                
+
             }
         }
 
