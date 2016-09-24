@@ -1,0 +1,76 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">添加焦点图分类</div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" method="post" action="/system/savefocus.php" enctype="multipart/form-data">
+                        <fieldset>
+                            <div class="control-group">
+                                <label class="control-label" for="fileInput">上传图片</label>
+                                <div class="controls">
+                                    {if $focusinfo.cover}
+                                    <img src="{$focusinfo.cover}" /><br />
+                                    {/if}
+                                    <input class="input-file uniform_on" id="fileInput" type="file" name="focuspic">
+                                    <p class="help-block">图片尺寸：640x260</p>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">链接类型</label>
+                                <div class="controls">
+                                    <select id="selectError" name="linktype">
+                                        <option {if $focusinfo.linktype=="http"}selected{/if} value="http">网址跳转</option>
+                                        <option {if $focusinfo.linktype=="album"}selected{/if} value="album">故事辑跳转</option>
+                                    </select>
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">链接地址</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" id="typeahead" name="linkurl" placeholder="" value="{$focusinfo.linkurl}">
+                                    <p class="help-block">网址格式：http://www.a.com</p>
+                                    <p class="help-block">故事辑格式：xnm://www.xiaoningmeng.net/album/info.php?albumid=100【100为故事辑ID】</p>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <label class="control-label">排序</label>
+                                <div class="controls">
+                                    <input type="text" class="span6" name="ordernum" value="{if $focusinfo.ordernum}{$focusinfo.ordernum}{else}100{/if}">
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="focusid" name="focusid" value="{$focusinfo.id}" />
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+
+</div>
+
+
+<script>
+    {literal}
+    $(function() {
+
+    });
+    {/literal}
+</script>
+{include file="include/footer.html"}
