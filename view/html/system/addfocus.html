@@ -32,6 +32,19 @@
                                     <p class="help-block"></p>
                                 </div>
                             </div>
+
+                            <div class="control-group">
+                                <label class="control-label">所属分类</label>
+                                <div class="controls">
+                                    <select id="select_category_en_name" name="select_category_en_name">
+                                        <option value="0">无</option>
+                                        {foreach from=$categoryList item=val}
+                                        <option {if $focusinfo.catefory==$val.en_name}selected{/if} value="{$val.en_name}">{$val.name}</option>
+                                        {/foreach}
+                                    </select>
+                                    <p class="help-block"></p>
+                                </div>
+                            </div>
                             
                             <div class="control-group">
                                 <label class="control-label">链接地址</label>

@@ -9,48 +9,24 @@
             </div>
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/system/savefocus.php" enctype="multipart/form-data">
+                    <form class="form-horizontal" method="post" action="/system/savefocuscategory.php" enctype="multipart/form-data">
                         <fieldset>
                             <div class="control-group">
-                                <label class="control-label" for="fileInput">上传图片</label>
+                                <label class="control-label">分类描述</label>
                                 <div class="controls">
-                                    {if $focusinfo.cover}
-                                    <img src="{$focusinfo.cover}" /><br />
-                                    {/if}
-                                    <input class="input-file uniform_on" id="fileInput" type="file" name="focuspic">
-                                    <p class="help-block">图片尺寸：640x260</p>
+                                    <input type="text" class="span6" id="name" name="name" placeholder="" value="{$focusinfo.linkurl}">
                                 </div>
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label">链接类型</label>
+                                <label class="control-label">英文简称</label>
                                 <div class="controls">
-                                    <select id="selectError" name="linktype">
-                                        <option {if $focusinfo.linktype=="http"}selected{/if} value="http">网址跳转</option>
-                                        <option {if $focusinfo.linktype=="album"}selected{/if} value="album">故事辑跳转</option>
-                                    </select>
-                                    <p class="help-block"></p>
+                                    <input type="text" class="span6" id="en_name" name="en_name" placeholder="" value="{$focusinfo.linkurl}">
+                                    <p class="help-block">做为前台读取的标识</p>
                                 </div>
                             </div>
 
-                            <div class="control-group">
-                                <label class="control-label">链接地址</label>
-                                <div class="controls">
-                                    <input type="text" class="span6" id="typeahead" name="linkurl" placeholder="" value="{$focusinfo.linkurl}">
-                                    <p class="help-block">网址格式：http://www.a.com</p>
-                                    <p class="help-block">故事辑格式：xnm://www.xiaoningmeng.net/album/info.php?albumid=100【100为故事辑ID】</p>
-                                </div>
-                            </div>
-
-                            <div class="control-group">
-                                <label class="control-label">排序</label>
-                                <div class="controls">
-                                    <input type="text" class="span6" name="ordernum" value="{if $focusinfo.ordernum}{$focusinfo.ordernum}{else}100{/if}">
-                                    <p class="help-block"></p>
-                                </div>
-                            </div>
-
-                            <input type="hidden" id="focusid" name="focusid" value="{$focusinfo.id}" />
+                            <input type="hidden" id="focus_category_id" name="focus_category_id" value="{$focusinfo.id}" />
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">提交</button>
                             </div>

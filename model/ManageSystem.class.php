@@ -32,7 +32,7 @@ class ManageSystem extends ModelBase
 	 * @param S $linkurl
 	 * @return boolean
 	 */
-	public function addFocusDb($linktype, $linkurl, $ordernum)
+	public function addFocusDb($linktype, $linkurl, $ordernum,$categoryEnName=0)
 	{
 		if (empty($linktype) || empty($linkurl) || !in_array($linktype, $this->FOCUS_LINKTYPE_LIST)) {
 			return false;
@@ -44,9 +44,9 @@ class ManageSystem extends ModelBase
 		    $ordernum = 100;
 	    }
 		$db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
-        $sql = "INSERT INTO `{$this->FOCUS_TABLE_NAME}` (`covertime`, `linktype`, `linkurl`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `{$this->FOCUS_TABLE_NAME}` (`covertime`, `linktype`, `linkurl`, `ordernum`, `status`, `category`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
-        $result = $st->execute(array(time(), $linktype, $linkurl, $ordernum, $status, $addtime));
+        $result = $st->execute(array(time(), $linktype, $linkurl, $ordernum, $status, $categoryEnName, $addtime));
         if (empty($result)) {
             return false;
         }
@@ -78,6 +78,9 @@ class ManageSystem extends ModelBase
 	    if (!empty($data['status'])) {
 	        $setstr .= "`status` = '{$data['status']}',";
 	    }
+		if (!empty($data['category'])) {
+			$setstr .= "`category` = '{$data['category']}',";
+		}
 	    $setstr = rtrim($setstr, ",");
 	    
 	    $db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
