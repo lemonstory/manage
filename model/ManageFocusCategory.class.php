@@ -6,18 +6,22 @@
  * Time: 下午5:12
  */
 
-class ManageFav extends ModelBase
+class ManageFocusCategory extends ModelBase
 {
-    private $MANAGE_DB_INSTANCE = 'share_manage';
     private $table = 'focus_category';
 
 
     public function getList(){
-        
+        $db = DbConnecter::connectMysql('share_manage');
+        $sql="SELECT `id`,`name`,`en_name` FROM `{$this->table}` WHERE `status`=0";
+        $st = $db->prepare($sql);
+        $st->execute();
+        $result = $st->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
     
     public function add($data){
-        $db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
+        $db = DbConnecter::connectMysql('share_manage');
         $sql = "INSERT INTO `{$this->table}` (`name`, `en_name`, `status`, `create_time`) 
                 VALUES (:name, :en_name, :status, :create_time)";
         $st = $db->prepare($sql);
