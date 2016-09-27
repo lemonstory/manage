@@ -1,6 +1,6 @@
 <?php
 /**
- * 根据作者与专辑的关系表,定时统计出作者的专辑数量
+ * 根据专辑的作者数据,定时统计出作者的专辑数量
  */
 
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
@@ -36,14 +36,16 @@ class cron_genAuthorAlbumNum extends DaemonBase
 
         //根据作者与专辑的关系表,定时统计作者的专辑数量
         $author = new Author();
-        $author_all_arr = $author->getAllAuthors();
+        $author_all_arr = $author->get_list("1 = 1","","uid","");
+
         if(is_array($author_all_arr) && !empty($author_all_arr)) {
 
             $db = DbConnecter::connectMysql('share_story');
-            foreach ($author_all_arr as $k => $author_item) {
+            foreach ($author_all_arr as $k => $author_item_uid) {
 
-                //$author_item['uid'] = 14940;
-                $sql = "SELECT COUNT(*) as count FROM `album_author_relation` WHERE `author_uid`={$author_item['uid']}";
+                //$author_item_uid = 14940;
+                $where = " ( FIND_IN_SET({$author_item_uid},`author_uid`) OR FIND_IN_SET({$author_item_uid},`translator_uid`) OR FIND_IN_SET({$author_item_uid},`illustrator_uid`) ) AND `online_status` = 1 AND `status` = 1";
+                $sql = "SELECT COUNT(*) as count FROM `album` WHERE {$where}";
                 $st = $db->query($sql);
                 $r = $st->fetchAll();
                 $count = intval($r[0]['count']);
@@ -51,12 +53,12 @@ class cron_genAuthorAlbumNum extends DaemonBase
                 if($count > 0) {
                     $data = array();
                     $data['album_num'] = $count;
-                    $where = "uid = {$author_item['uid']}";
+                    $where = "uid = {$author_item_uid}";
                     $ret = $author->update($data,$where);
-                    $content = sprintf("更新作者[%s] 专辑数量为 %d ret = %d\r\n", $author_item['uid'],$count,$ret);
+                    $content = sprintf("更新作者[%s] 专辑数量为 %d ret = %d\r\n", $author_item_uid,$count,$ret);
                     echo $content;
                 }else {
-                    $content = sprintf("作者[%s] 专辑数量为 0\r\n", $author_item['uid']);
+                    $content = sprintf("作者[%s] 专辑数量为 0\r\n", $author_item_uid);
                     echo $content;
                 }
             }
