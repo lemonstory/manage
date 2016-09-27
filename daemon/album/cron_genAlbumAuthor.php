@@ -130,22 +130,6 @@ class cron_genAlbumAuthor extends DaemonBase
                     $content = sprintf("[%s]专辑[%s] 作者[%s] 译者[%s] 插画[%s] 均为空,不做处理\r\n", $v['id'],$v['title'],$data['author_uid'],$data['translator_uid'],$data['illustrator_uid']);
                     echo $content;
                 }
-
-
-                //更新作者和专辑的关联信息
-                if(!empty($story_author_all_arr)) {
-                    $values = "";
-                    foreach ($story_author_all_arr as $author_uid) {
-
-                        $values .= sprintf("( {$album_id},{$author_uid}),");
-                    }
-                    $values = trim($values,",");
-                    $db = DbConnecter::connectMysql('share_story');
-                    $sql = "REPLACE INTO `album_author_relation` (`album_id`, `author_uid`) VALUES {$values}";
-                    $st = $db->query($sql);
-                    $content = sprintf("[%s]专辑[%s] 作者 关系数据更新\r\n", $v['id'],$v['title']);
-                    echo $content;
-                }
             }
             $p++;
             //sleep(1);
