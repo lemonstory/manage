@@ -3,7 +3,7 @@
  * 生成专辑作者{作者包括:原著,翻译者,插画者}
  * 专辑的作者是专辑下故事的作者的合
  * 每15分钟定时执行
- * 
+ *
  */
 
 include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
@@ -16,8 +16,6 @@ class cron_genAlbumAuthor extends DaemonBase
 
     protected function deal()
     {
-
-
         $all = "all";
         $options = getopt("a:");
 
@@ -54,7 +52,7 @@ class cron_genAlbumAuthor extends DaemonBase
             if ($this->circulation_process) {
                 $limit = ($p - 1) * $per_page;
                 $album_list = $album->get_list("`story_num` > 0 order by `id` asc", "{$limit},{$per_page}");
-                //$album_list = $album->get_list("`id`=14997");
+                //$album_list = $album->get_list("`id`=15144");
             }
 
             if (!$album_list) {
@@ -68,6 +66,7 @@ class cron_genAlbumAuthor extends DaemonBase
                 $story_author_uid_arr = array();
                 $story_translator_uid_arr = array();
                 $story_illustrator_uid_arr = array();
+                $story_author_all_arr = array();
                 //遍历专辑下的故事
                 //获取每个故事的作者
                 $album_id = $v['id'];
@@ -77,20 +76,40 @@ class cron_genAlbumAuthor extends DaemonBase
                 $story_list = $story->get_filed_list($filed,$story_where,$order);
                 foreach ($story_list as $sk => $story_item) {
 
-                    $author_uid = $story_item['author_uid'];
-                    $translator_uid = $story_item['translator_uid'];
-                    $illustrator_uid = $story_item['illustrator_uid'];
+                    $author_uid_item_arr = explode(",",$story_item['author_uid']);
 
-                    if(!in_array($author_uid,$story_author_uid_arr)) {
-                        $story_author_uid_arr[] = $author_uid;
+
+                    foreach ($author_uid_item_arr as $author_uid) {
+                        if(!in_array($author_uid,$story_author_uid_arr) && $author_uid) {
+                            $story_author_uid_arr[] = $author_uid;
+                        }
+
+                        if(!in_array($author_uid,$story_author_all_arr) && $author_uid) {
+                            $story_author_all_arr[] = $author_uid;
+                        }
                     }
 
-                    if(!in_array($translator_uid,$story_translator_uid_arr)) {
-                        $story_translator_uid_arr[] = $translator_uid;
+                    $translator_uid_item_arr = explode(",",$story_item['translator_uid']);
+                    foreach ($translator_uid_item_arr as $translator_uid) {
+                        if(!in_array($translator_uid,$story_translator_uid_arr) && !empty($translator_uid)) {
+                            $story_translator_uid_arr[] = $translator_uid;
+                        }
+
+                        if(!in_array($translator_uid,$story_author_all_arr) && !empty($translator_uid)) {
+                            $story_author_all_arr[] = $translator_uid;
+                        }
                     }
 
-                    if(!in_array($illustrator_uid,$story_illustrator_uid_arr)) {
-                        $story_illustrator_uid_arr[] = $illustrator_uid;
+                    $illustrator_uid_item_arr = explode(",",$story_item['illustrator_uid']);
+                    foreach ($illustrator_uid_item_arr as $illustrator_uid) {
+
+                        if(!in_array($illustrator_uid,$story_illustrator_uid_arr) && !empty($illustrator_uid)) {
+                            $story_illustrator_uid_arr[] = $illustrator_uid;
+                        }
+
+                        if(!in_array($illustrator_uid,$story_author_all_arr) && !empty($illustrator_uid)) {
+                            $story_author_all_arr[] = $illustrator_uid;
+                        }
                     }
                 }
 
@@ -111,6 +130,22 @@ class cron_genAlbumAuthor extends DaemonBase
                     $content = sprintf("[%s]专辑[%s] 作者[%s] 译者[%s] 插画[%s] 均为空,不做处理\r\n", $v['id'],$v['title'],$data['author_uid'],$data['translator_uid'],$data['illustrator_uid']);
                     echo $content;
                 }
+
+
+                //更新作者和专辑的关联信息
+                if(!empty($story_author_all_arr)) {
+                    $values = "";
+                    foreach ($story_author_all_arr as $author_uid) {
+
+                        $values .= sprintf("( {$album_id},{$author_uid}),");
+                    }
+                    $values = trim($values,",");
+                    $db = DbConnecter::connectMysql('share_story');
+                    $sql = "REPLACE INTO `album_author_relation` (`album_id`, `author_uid`) VALUES {$values}";
+                    $st = $db->query($sql);
+                    $content = sprintf("[%s]专辑[%s] 作者 关系数据更新\r\n", $v['id'],$v['title']);
+                    echo $content;
+                }
             }
             $p++;
             //sleep(1);
@@ -122,7 +157,7 @@ class cron_genAlbumAuthor extends DaemonBase
 
     protected function checkLogPath()
     {
-
+        
     }
 }
 new cron_genAlbumAuthor ();
