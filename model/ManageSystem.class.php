@@ -34,7 +34,7 @@ class ManageSystem extends ModelBase
 	 */
 	public function addFocusDb($linktype, $linkurl, $ordernum,$categoryEnName=0)
 	{
-		if (empty($linktype) || empty($linkurl) || !in_array($linktype, $this->FOCUS_LINKTYPE_LIST)) {
+		if (empty($linktype) || empty($linkurl) || !in_array($linktype, $this->FOCUS_LINKTYPE_LIST) || empty($categoryEnName)) {
 			return false;
 		}
 		
@@ -44,7 +44,7 @@ class ManageSystem extends ModelBase
 		    $ordernum = 100;
 	    }
 		$db = DbConnecter::connectMysql($this->MANAGE_DB_INSTANCE);
-        $sql = "INSERT INTO `{$this->FOCUS_TABLE_NAME}` (`covertime`, `linktype`, `linkurl`, `ordernum`, `status`, `category`, `addtime`) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `{$this->FOCUS_TABLE_NAME}` (`covertime`, `linktype`, `linkurl`, `ordernum`, `status`, `category`, `addtime`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $st = $db->prepare($sql);
         $result = $st->execute(array(time(), $linktype, $linkurl, $ordernum, $status, $categoryEnName, $addtime));
         if (empty($result)) {

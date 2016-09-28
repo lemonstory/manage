@@ -28,6 +28,8 @@ class focuslist extends controller
             $column = $columnValue = '';
         }
         $managesysobj = new ManageSystem();
+        $manageFocusCategoryObj = new ManageFocusCategory();
+        $categoryList = $manageFocusCategoryObj->getList();
         $resultList = $managesysobj->getRecommendListByColumnSearch("share_manage", "focus", $column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $aliossobj = new AliOss();
@@ -52,7 +54,8 @@ class focuslist extends controller
         $smartyObj->assign('indexactive', "active");
         $smartyObj->assign('focusside', "active");
         $smartyObj->assign("headerdata", $this->headerCommonData());
-        $smartyObj->display("system/focuslist.html"); 
+        $smartyObj->assign("categoryList", $categoryList);
+        $smartyObj->display("system/focuslist.html");
     }
 }
 new focuslist();
