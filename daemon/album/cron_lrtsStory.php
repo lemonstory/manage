@@ -34,6 +34,7 @@ class cron_lrtsStory extends DaemonBase
         $story = new Story();
         $lrts = new Lrts();
         $creator = new Creator();
+        $user = new User();
         $p = 1;
         $per_page = 500;
         $limit = 0;
@@ -91,9 +92,10 @@ class cron_lrtsStory extends DaemonBase
                 }
 
                 //处理创作者(主播,翻译,插画,主播)
-                $album_author_str = $album_story_info_list['album']['author'];
-                $album_anchor_str = $album_story_info_list['album']['anchor'];
-                $content = sprintf("[%s]专辑[%s] 作者[%s] 主播[%s] \r\n", $album_item['id'], $album_item['title'], $album_author_str, $album_anchor_str);
+                $album_author_str = $album_story_info_list['album']['author']['name'];
+                $album_anchor_str = $album_story_info_list['album']['anchor']['name'];
+                $album_anchor_avatar_url = substr($album_story_info_list['album']['anchor']['avatar'],0,strpos($album_story_info_list['album']['anchor']['avatar'],'?'));
+                $content = sprintf("[%s]专辑[%s] 作者[%s] 主播[%s] 主播头像[%s] \r\n", $album_item['id'], $album_item['title'], $album_author_str, $album_anchor_str,$album_anchor_avatar_url);
                 echo $content;
 
 
@@ -149,6 +151,8 @@ class cron_lrtsStory extends DaemonBase
                                 break;
                             case $lrts->ANCHOR:
                                 $anchor_uid_arr[] = $creator_uid;
+                                //TODO:目前主播只有一个,但是有两个时,此处会出现错误
+                                $user->setAvatarWithUrl($album_anchor_avatar_url,$creator_uid);
                                 break;
                         }
                     }
