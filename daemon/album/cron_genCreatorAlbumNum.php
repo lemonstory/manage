@@ -40,13 +40,18 @@ class cron_genCreatorAlbumNum extends DaemonBase
         //根据作者与专辑的关系表,定时统计作者的专辑数量
         $creator = new Creator();
         $album = new Album();
-        $creator_all_arr = $creator->get_list("1 = 1","","uid","");
+
+        #TODO:数据量大的时候这里要做根据页码做分批处理
+        $whereArr = array();
+        $currentPage = 1;
+        $creator_all_arr = $creator->getCreatorList($whereArr,$currentPage,100000);
 
         if(is_array($creator_all_arr) && !empty($creator_all_arr)) {
 
             $db = DbConnecter::connectMysql('share_story');
-            foreach ($creator_all_arr as $k => $creator_item_uid) {
+            foreach ($creator_all_arr as $k => $creator_item) {
 
+                $creator_item_uid = $creator_item['uid'];
                 //$creator_item_uid = 14992;
                 $where = " ( FIND_IN_SET({$creator_item_uid},`author_uid`) OR FIND_IN_SET({$creator_item_uid},`translator_uid`) OR FIND_IN_SET({$creator_item_uid},`illustrator_uid`) OR FIND_IN_SET({$creator_item_uid},`anchor_uid`) ) AND `online_status` = 1 AND `status` = 1";
                 $sql = "SELECT `id`,`min_age`,`max_age` FROM `album` WHERE {$where}";
