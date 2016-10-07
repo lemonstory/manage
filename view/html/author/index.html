@@ -1,0 +1,231 @@
+{include file="include/header.html"}
+
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">作者筛选</div>
+                <!--<div class="pull-right"><a href="/album/album_add.php" class="badge badge-info">添加</a></div>-->
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <legend>作者查询</legend>
+                            <div class="control-group">
+                                <label class="control-label">作者UID</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$anchor_uid}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">作者姓名</label>
+                                <div class="controls">
+                                    <input type="text" class="span6 auto_submit" name="title" value="{$name}">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">作者状态</label>
+                                <div class="controls">
+                                    <select id="status" class="span6" name="status">
+                                        <option value="">全部</option>
+                                        <option {if $status eq 1}selected{/if} value="1">正常</option>
+                                        <option {if $status eq '0'}selected{/if} value="0">已删除</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="list-filter">确定</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">作者列表</div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                </div>
+                <div class="block-content collapse in">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>uid</th>
+                            <th>姓名</th>
+                            <th>头像</th>
+                            <th>排序</th>
+                            <th>添加时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$authorList item=value}
+                        <tr>
+                            <td>{$value.uid}</td>
+                            <td>
+                                <a href="javascript:void(0);" id="op_album_view_{$value.uid}_nickname">{$value.nickname}
+                                </a>
+                                <span class="badge">{$value.album_num}</span>
+                            </td>
+                            <td>
+                                <a href="javascript:void(0);" id="op_album_view_{$value.uid}_cover">
+                                    <img src="{$value.avatar}" width="100" height="100" alt="作者头像" class="img-rounded">
+                                </a>
+                            </td>
+                            <td>
+                                <!--<input type="text" name="view_order" class="form-control" op_id="{$value.id}" old_val="{$value.view_order}" value="{$value.view_order}" style="width: 60px;" />-->
+                            </td>
+                            <!--<td>{$value.add_time}</td>-->
+                            <td>无</td>
+                            <td>
+                                <!--{if $value.status eq '0'}-->
+                                <!--<a href="javascript:void(0);" id="op_album_recover_{$value.id}">已删除</a>-->
+                                <!--{elseif $value.status eq 1}-->
+                                <!--<a href="javascript:void(0);" id="op_album_delete_{$value.id}">正常</a>-->
+                                <!--{/if}-->
+                                正常
+                            </td>
+                            <td>
+                                无
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /block -->
+        </div>
+    </div>
+
+    {$pageBanner}
+</div>
+
+<link href="/static/vendors/jquery-ui/smoothness/jquery-ui.min.css" rel="stylesheet" media="screen">
+<script src="/static/vendors/jquery-ui-1.10.3.js"></script>
+<script>
+    {literal}
+    $(function() {
+        $("[id^='op_album']").on('click', function(){
+            var data = {};
+            var op = $(this).attr('id');
+            data.op_name = op.split('_')[2];
+            data.op_id   = op.split('_')[3];
+
+            if (data.op_name == 'edit') {
+                window.location.href = '/album/album_edit.php?id='+data.op_id+'&gourl='+window.location.href;
+                return false;
+            } else if (data.op_name == 'view') {
+                window.open('/album/storylist.php?albumid='+data.op_id);
+                return false;
+            }
+            console.log(data);
+
+            $.post('/album/album_op.php', data, function(json){
+                if (json && json.code == 10000) {
+                    alert('操作成功');
+                    window.location.reload();
+                } else {
+                    alert(json);
+                }
+            },'json')
+        });
+        $("#list-filter").on('click', function(){
+            var url = window.location.href.split('?')[0];
+            var params = '';
+            var data = {};
+            var form_element = $(this).closest("form").find('.auto_submit');
+            $.each(form_element, function(k,v){
+                var k = $(v).attr('name');
+                var v = $(v).attr('value');
+                params += k + '='+v+'&'
+
+            });
+
+            //添加平台下拉框条件
+            var from_id = $("#from").val();
+            if(from_id==undefined || from_id=="" || from_id==null){
+                params += 'from=' + from_id;
+            }
+            window.location.href = url+'?'+params;
+        });
+        $("[name='view_order']").on('change', function(){
+            var old_val = parseInt($(this).attr('old_val'));
+            var op_id   = parseInt($(this).attr('op_id'));
+            var new_val = parseInt($(this).val());
+            if (old_val == new_val) {
+                alert('没有变化');
+                return false;
+            } else {
+                var data = {};
+                data.op_name = 'view_order';
+                data.op_id   = op_id;
+                data.value   = new_val;
+                $.post('/album/album_op.php', data, function(json){
+                    if (json && json.code == 10000) {
+                        alert('操作成功');
+                        window.location.reload();
+                    } else {
+                        alert(json);
+                    }
+                },'json');
+            }
+        });
+        $( "#tag_name" ).autocomplete({
+            source: function( request, response ) {
+                $.ajax( {
+                    url: "/tag/gettaglistbyname.php",
+                    dataType: "jsonp",
+                    data: {
+                        tag_name: request.term
+                    },
+                    success: function( data ) {
+                        response( $.map( data, function( item ) {
+                            return {
+                                label:item.name,
+                                value:item.name,
+                                id:item.id,
+                            }}) );
+                    }
+                } );
+            },
+            minLength: 2,
+            select: function( event, ui ) {
+                $( "#tag_name" ).val( ui.item.label );
+                $( "#tag_id" ).val( ui.item.id );
+            }
+        });
+
+
+        /* $(".recomment_hot").on('click', function(){
+         $(".modal-body").text("");
+         var data = {};
+         var op = $(this).attr('id');
+         data.albumid   = op.split('_')[3];
+         $.post('/system/savehotrecommend.php', data, function(json){
+         if (json.code == 10000) {
+         $(".modal-body").text("加入成功");
+         $("#myModal").modal({show:true});
+         $("#modal_closebtn").click(function(){
+         location.href=location.href;
+         });
+         } else {
+         $(".modal-body").text(json.desc);
+         $("#myModal").modal({show:true});
+         }
+         },'json')
+         }) */
+    });
+    {/literal}
+</script>
+{include file="include/footer.html"}

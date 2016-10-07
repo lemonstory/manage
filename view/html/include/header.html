@@ -82,9 +82,19 @@
                         </ul>
                     </li>
                     {php}}{/php}
+
                     {php}if ($privObj->checkPrivilege('tag')){{/php}
                     <li class="{$tagactive}"><a href="/tag/gettaglist.php">标签管理</a></li>
                     {php}}{/php}
+
+                    {php}if ($privObj->checkPrivilege('author')){{/php}
+                    <li class="{$authoractive}"><a href="/author/index.php">作者管理</a></li>
+                    {php}}{/php}
+
+                    {php}if ($privObj->checkPrivilege('anchor')){{/php}
+                    <li class="{$anchoractive}"><a href="/anchor/index.php">主播管理</a></li>
+                    {php}}{/php}
+
                     {php}if ($privObj->checkPrivilege('analytics')){{/php}
                     <li class="{$analyticsactive}"><a href="/analytics/searchcontentlist.php">统计管理</a></li>
                     {php}}{/php}
