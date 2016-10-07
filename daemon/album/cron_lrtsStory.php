@@ -51,7 +51,7 @@ class cron_lrtsStory extends DaemonBase
             if ($this->circulation_process && empty($this->target_url)) {
                 $limit = ($p - 1) * $per_page;
                 $album_list = $album->get_list("`from`='lrts' and `add_time` > '{$end_time}' order by `id` asc", "{$limit},{$per_page}");
-                //$album_list = $album->get_list("`id`=14807");
+                //$album_list = $album->get_list("`id`=15253");
             } else {
                 $album_list[] = array("link_url" => $this->target_url);
             }
@@ -94,7 +94,11 @@ class cron_lrtsStory extends DaemonBase
                 //处理创作者(主播,翻译,插画,主播)
                 $album_author_str = $album_story_info_list['album']['author']['name'];
                 $album_anchor_str = $album_story_info_list['album']['anchor']['name'];
-                $album_anchor_avatar_url = substr($album_story_info_list['album']['anchor']['avatar'],0,strpos($album_story_info_list['album']['anchor']['avatar'],'?'));
+                $album_anchor_avatar_url = $album_story_info_list['album']['anchor']['avatar'];
+                $pos = strpos($album_story_info_list['album']['anchor']['avatar'],'?');
+                if($pos > 0) {
+                    $album_anchor_avatar_url = substr($album_story_info_list['album']['anchor']['avatar'],0,$pos);
+                }
                 $content = sprintf("[%s]专辑[%s] 作者[%s] 主播[%s] 主播头像[%s] \r\n", $album_item['id'], $album_item['title'], $album_author_str, $album_anchor_str,$album_anchor_avatar_url);
                 echo $content;
 
@@ -152,7 +156,9 @@ class cron_lrtsStory extends DaemonBase
                             case $lrts->ANCHOR:
                                 $anchor_uid_arr[] = $creator_uid;
                                 //TODO:目前主播只有一个,但是有两个时,此处会出现错误
-                                $user->setAvatarWithUrl($album_anchor_avatar_url,$creator_uid);
+                                if(!strpos($album_anchor_avatar_url,"default_user_head")) {
+                                    $user->setAvatarWithUrl($album_anchor_avatar_url,$creator_uid);
+                                }
                                 break;
                         }
                     }
