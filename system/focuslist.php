@@ -18,7 +18,7 @@ class focuslist extends controller
         }
         
         $pageBanner = "";
-        $baseUri = "/user/focuslist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
+        $baseUri = "/system/focuslist.php?perPage={$perPage}&status={$status}&searchCondition={$searchCondition}&searchContent={$searchContent}";
         
     	$focuslist = array();
     	if (!empty($searchContent)) {
