@@ -24,11 +24,9 @@ class story_edit extends controller
         	} else {
                 $newstoryinfo['title'] = $title;
             }
-        	if (!$intro) {
-				return $this->showErrorJson(ErrorConf::storyIntroNotEmpty());
-        	} else {
-                $newstoryinfo['intro'] = addslashes($intro);
-            }
+
+            $newstoryinfo['intro'] = addslashes($intro);
+
 
             $story->update($newstoryinfo, "`id`={$storyid}");
             // 清故事列表缓存
