@@ -86,7 +86,7 @@ class cron_kdgsStory extends DaemonBase
                     $content = sprintf("[{$v['id']}]{$v['title']} 故事总数量:%d, 可获取 %d, 或为收费内容\r\n", $story_count, $story_list_count);
                     echo $content;
                     $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_KDGS_STORY, $content);
-                    $album->update(array('status' => 0,'online_status' => 0), "`id`={$v['id']}");
+                    //$album->update(array('status' => 0,'online_status' => 0), "`id`={$v['id']}");
                     continue;
 
                 }else{
