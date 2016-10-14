@@ -63,15 +63,16 @@
 
     {$pageBanner}
 </div>
-
-
 <script>
     {literal}
     $(function () {
         function result(json) {
             if (json && json.code == 10000) {
                 alert('操作成功');
-                window.location.href = '/album/storylist.php';
+                {/literal}
+                window.location.href = '/album/storylist.php?albumid={$storyinfo.album_id}';
+                {literal}
+
             } else {
                 var name = json.desc.split('-')[0];
                 var msg = json.desc.split('-')[1];
