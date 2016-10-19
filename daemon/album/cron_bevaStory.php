@@ -117,7 +117,7 @@ class cron_bevaStory extends DaemonBase
                 //更新专辑收听数量
                 $listenObj = new Listen();
                 $albumListenArr = $listenObj->getAlbumListenNum($album['id']);
-                if(empty($albumListenArr[$album['id']]) && $album_listen_num > 0) {
+                if(empty($albumListenArr[$album['id']]['num']) && $album_listen_num > 0) {
                     $listenObj->addAlbumListenCountDb($album['id'],$album_listen_num);
                 }
 
