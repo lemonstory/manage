@@ -55,8 +55,8 @@ class cron_xmlyStory extends DaemonBase
 
             while (true) {
                 $limit = ($p - 1) * $per_page;
-                $album_list = $album->get_list("`from`='xmly' and `add_time` > '{$end_time}' order by `id` desc", "{$limit},{$per_page}");
-                //$album_list = $album->get_list("`id`=13747");
+                //$album_list = $album->get_list("`from`='xmly' and `add_time` > '{$end_time}' order by `id` desc", "{$limit},{$per_page}");
+                $album_list = $album->get_list("`id`=15286");
                 if (!$album_list) {
                     break;
                 }
@@ -90,6 +90,8 @@ class cron_xmlyStory extends DaemonBase
         // 获取喜马拉雅的专辑故事
         $story_url_list = $xmly->get_story_url_list($xmly_album_id);
         $story_list_count = count($story_url_list);
+        var_dump($story_url_list);
+        var_dump($story_list_count);
         if (empty($story_url_list)) {
             $content = "喜马拉雅专辑{$album_info['id']} 没有故事\r\n";
             echo $content;
@@ -120,10 +122,12 @@ class cron_xmlyStory extends DaemonBase
                 $vieworder = 0;
                 foreach ($story_url_list as $k2 => $v2) {
                     // 默认故事的排序，按源页面故事排序
+                    var_dump($k2);
                     $vieworder++;
-
                     $v2 = $xmly->get_story_info($v2);
                     if (!$v2) {
+                        $content = "$story_url_list[$k2] 获取故事信息失败 \r\n";
+                        echo $content;
                         continue;
                     }
                     $source_audio_path_arr = parse_url($v2['source_audio_url']);
@@ -131,6 +135,8 @@ class cron_xmlyStory extends DaemonBase
                     $exists = $story->check_exists("`album_id` = {$album_info['id']} and LOCATE('{$source_audio_path_arr['path']}',`source_audio_url`) > 0");
                     if ($exists) {
                         $ignore_count++;
+                        $content = "$story_url_list[$k2] 已存在 \r\n";
+                        echo $content;
                         continue;
                     }
                     if (empty($vieworder)) {
@@ -161,6 +167,7 @@ class cron_xmlyStory extends DaemonBase
                     } else {
 
                         $content = '没有写入成功' . var_export($album_info, true) . var_export($v2, true);
+                        echo $content;
                         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
                     }
                 }

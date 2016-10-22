@@ -30,11 +30,12 @@ class cron_lrtsStory extends DaemonBase
     protected function c_lrts_story()
     {
 
-        $album = new Album();
-        $story = new Story();
-        $lrts = new Lrts();
-        $creator = new Creator();
-        $user = new User();
+        $albumObj = new Album();
+        $storyObj = new Story();
+        $lrtsObj = new Lrts();
+        $creatorObj = new Creator();
+        $userObj = new User();
+        $configVar = new ConfigVar();
         $p = 1;
         $per_page = 500;
         $limit = 0;
@@ -50,8 +51,9 @@ class cron_lrtsStory extends DaemonBase
 
             if ($this->circulation_process && empty($this->target_url)) {
                 $limit = ($p - 1) * $per_page;
-                $album_list = $album->get_list("`from`='lrts' and `add_time` > '{$end_time}' order by `id` asc", "{$limit},{$per_page}");
-                //$album_list = $album->get_list("`id`=15253");
+                //and `serial_status`={$configVar->ALBUM_SERIAL_STATUS_ON}
+                $album_list = $albumObj->get_list("`from`='lrts' and `add_time` > '{$end_time}' order by `id` asc", "{$limit},{$per_page}");
+                //$album_list = $albumObj->get_list("`id`=14402");
             } else {
                 $album_list[] = array("link_url" => $this->target_url);
             }
@@ -72,7 +74,8 @@ class cron_lrtsStory extends DaemonBase
                 $add_count = 0;
 
                 // 获取懒人听书的专辑故事
-                $album_story_info_list = $lrts->get_album_story_info_list($album_item['link_url']);
+                $album_story_info_list = $lrtsObj->get_album_story_info_list($album_item['link_url']);
+
                 //处理故事业务
                 $story_list_count = $album_story_info_list['album']['story_total_count'];
                 $story_content_list = $album_story_info_list['story'];
@@ -86,25 +89,37 @@ class cron_lrtsStory extends DaemonBase
                 // 判断专辑简介是否为空，若为空则读取故事专辑下第一个故事的简介
                 if (empty($album_item['intro'])) {
                     if (!empty($album_story_info_list['album']['intro'])) {
-                        $album->update(array("intro" => $album_story_info_list['album']['intro']), "`id` = '{$album_item['id']}'");
+                        $albumObj->update(array("intro" => $album_story_info_list['album']['intro']), "`id` = '{$album_item['id']}'");
                         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_LRTS_STORY, "懒人听书专辑{$album_item['id']} 简介更新成功");
                     }
+                }
+
+                //更新专辑收听次数
+                $listenObj = new Listen();
+                $albumListenArr = $listenObj->getAlbumListenNum($album_item['id']);
+                $listen_num = intval(str_replace("万","0000",$album_story_info_list['album']['listen_num']));
+
+                //empty($albumListenArr[$album_item['id']]['num']) &&
+                if ( $listen_num > 0) {
+                    $content = sprintf("更新专辑 [%s] 收听次数 [%s] \r\n", $album_item['title'], $listen_num);
+                    echo $content;
+                    $listenObj->addAlbumListenCountDb($album_item['id'], $listen_num);
                 }
 
                 //处理创作者(主播,翻译,插画,主播)
                 $album_author_str = $album_story_info_list['album']['author']['name'];
                 $album_anchor_str = $album_story_info_list['album']['anchor']['name'];
                 $album_anchor_avatar_url = $album_story_info_list['album']['anchor']['avatar'];
-                $pos = strpos($album_story_info_list['album']['anchor']['avatar'],'?');
-                if($pos > 0) {
-                    $album_anchor_avatar_url = substr($album_story_info_list['album']['anchor']['avatar'],0,$pos);
+                $pos = strpos($album_story_info_list['album']['anchor']['avatar'], '?');
+                if ($pos > 0) {
+                    $album_anchor_avatar_url = substr($album_story_info_list['album']['anchor']['avatar'], 0, $pos);
                 }
-                $content = sprintf("[%s]专辑[%s] 作者[%s] 主播[%s] 主播头像[%s] \r\n", $album_item['id'], $album_item['title'], $album_author_str, $album_anchor_str,$album_anchor_avatar_url);
+                $content = sprintf("[%s]专辑[%s] 作者[%s] 主播[%s] 主播头像[%s] \r\n", $album_item['id'], $album_item['title'], $album_author_str, $album_anchor_str, $album_anchor_avatar_url);
                 echo $content;
 
 
                 if (!empty($album_author_str) || !empty($album_anchor_str)) {
-                    $album_creator_arr = $lrts->get_album_creator($album_author_str, $album_anchor_str);
+                    $album_creator_arr = $lrtsObj->get_album_creator($album_author_str, $album_anchor_str);
                     foreach ($album_creator_arr as $k => $album_creator_item) {
 
                         $name = $album_creator_item['name'];
@@ -116,48 +131,46 @@ class cron_lrtsStory extends DaemonBase
                         $album_creator_data['is_anchor'] = 0;
 
                         switch ($type) {
-                            case $lrts->AUTHOR:
+                            case $lrtsObj->AUTHOR:
                                 $album_creator_data['is_author'] = 1;
                                 break;
-                            case $lrts->TRANSLATOR:
+                            case $lrtsObj->TRANSLATOR:
                                 $album_creator_data['is_translator'] = 1;
                                 break;
-                            case $lrts->ILLUSTRATOR:
+                            case $lrtsObj->ILLUSTRATOR:
                                 $album_creator_data['is_illustrator'] = 1;
                                 break;
-                            case $lrts->ANCHOR:
+                            case $lrtsObj->ANCHOR:
                                 $album_creator_data['is_anchor'] = 1;
                                 break;
                         }
-                        $creator_uid = $creator->getCreatorUid($name);
+                        $creator_uid = $creatorObj->getCreatorUid($name);
                         if (empty($creator_uid)) {
-//                            echo "haha";
-//                            exit;
-                            $creator_uid = $creator->addCreator($name, "", "", $album_creator_data['is_author'], $album_creator_data['is_translator'], $album_creator_data['is_illustrator'], $album_creator_data['is_anchor']);
+                            $creator_uid = $creatorObj->addCreator($name, "", "", $album_creator_data['is_author'], $album_creator_data['is_translator'], $album_creator_data['is_illustrator'], $album_creator_data['is_anchor']);
                             $content = sprintf("新增创作者[%s] : uid = %d \r\n", $name, $album_creator_data);
                             echo $content;
 
                         } else {
                             $where = "uid = {$creator_uid}";
-                            $ret = $creator->update($album_creator_data, $where);
+                            $ret = $creatorObj->update($album_creator_data, $where);
                             $content = sprintf("修复创作者[%s] : uid = %d,is_author = %d, is_translator =  %d, is_illustrator =  %d, is_anchor = %d, ret = %d\r\n", $name, $creator_uid, $album_creator_data['is_author'], $album_creator_data['is_translator'], $album_creator_data['is_illustrator'], $album_creator_data['is_anchor'], $ret);
-                            echo $content;
+                            //echo $content;
                         }
                         switch ($type) {
-                            case $lrts->AUTHOR:
+                            case $lrtsObj->AUTHOR:
                                 $author_uid_arr[] = $creator_uid;
                                 break;
-                            case $lrts->TRANSLATOR:
+                            case $lrtsObj->TRANSLATOR:
                                 $translator_uid_arr[] = $creator_uid;
                                 break;
-                            case $lrts->ILLUSTRATOR:
+                            case $lrtsObj->ILLUSTRATOR:
                                 $illustrator_uid_arr[] = $creator_uid;
                                 break;
-                            case $lrts->ANCHOR:
+                            case $lrtsObj->ANCHOR:
                                 $anchor_uid_arr[] = $creator_uid;
                                 //TODO:目前主播只有一个,但是有两个时,此处会出现错误
-                                if(!strpos($album_anchor_avatar_url,"default_user_head")) {
-                                    $user->setAvatarWithUrl($album_anchor_avatar_url,$creator_uid);
+                                if (!strpos($album_anchor_avatar_url, "default_user_head")) {
+                                    $userObj->setAvatarWithUrl($album_anchor_avatar_url, $creator_uid);
                                 }
                                 break;
                         }
@@ -179,80 +192,96 @@ class cron_lrtsStory extends DaemonBase
 
                 // 如果故事的数量和专辑里面的故事数量相等则不再更新
                 if ($story_list_count == $album_item['story_num']) {
-                    $story_item_list = $story->get_filed_list("id,author_uid,translator_uid,illustrator_uid,anchor_uid", "`album_id` = {$album_item['id']}");
+
+                    $story_item_list = $storyObj->get_filed_list("id,author_uid,translator_uid,illustrator_uid,anchor_uid", "`album_id` = {$album_item['id']}");
                     //检查作者信息
                     if (is_array($story_item_list) && !empty($story_item_list) && !empty($data)) {
                         foreach ($story_item_list as $k => $story_item) {
-//                            if (empty($story_item['author_id'])) {
+                            if (empty($story_item['author_id'])) {
                             $story_id = $story_item['id'];
                             $where = "`id` = {$story_id}";
-                            $ret = $story->update($data, $where);
+                            $ret = $storyObj->update($data, $where);
                             $content = sprintf("[%d]故事整体为最新,只更新作者[%s] %d\r\n", $story_id, var_export($data, true), $ret);
-                            echo $content;
-//                            }
+                            //echo $content;
+                            }
                         }
                     }
+
+                    //更新专辑连载状态
+                    $serial_status = $configVar->ALBUM_SERIAL_STATUS_ON;
+                    if(strcmp($album_story_info_list["album"]["serial_status"],"完结") == 0) {
+                        $serial_status = $configVar->ALBUM_SERIAL_STATUS_OFF;
+                    }
+                    $albumObj->update(array("serial_status" => $serial_status), "`id` = '{$album_item['id']}'");
+                    $serial_status_str = $serial_status == 0 ? "完结" : "连载中";
+                    $content = sprintf("更新专辑 [%s] 连载状态 [%s] \r\n", $album_item['title'], $serial_status_str);
+                    echo $content;
 
                     $ignore_count = $ignore_count + $album_item['story_num'];
                     $content = sprintf("[{$album_item['title']}] 故事总数量:%d, 已忽略 %d, 新增 %d", $story_list_count, $ignore_count, $add_count);
                     $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_LRTS_STORY, $content);
-                    continue;
-                }
-                $vieworder = 0;
-                foreach ($story_content_list as $k2 => $story_item) {
 
-                    //检查故事是否已存在
-                    $vieworder = $story_item['view_order'];
-                    $story_item_list = $story->get_filed_list("id,author_uid,translator_uid,illustrator_uid,anchor_uid", "`album_id` = {$album_item['id']} and `source_audio_url`='{$story_item['source_audio_url']}'", "", 1);
-                    //检查作者信息
-                    if (is_array($story_item_list) && !empty($story_item_list) && !empty($data)) {
-                        foreach ($story_item_list as $k => $story_item) {
-//                            if(empty($story_item['author_id'])) {
-                            $story_id = $story_item['id'];
-                            $where = "`id` = {$story_id}";
-                            $ret = $story->update($data, $where);
-                            $content = sprintf("[%d]故事已存在,只更新作者[%s] %d\r\n", $story_id, var_export($data, true), $ret);
-                            echo $content;
-//                            }
+                } else {
+
+                    $vieworder = 0;
+                    foreach ($story_content_list as $k2 => $story_item) {
+
+                        //检查故事是否已存在
+                        $vieworder = $story_item['view_order'];
+                        $story_item_list = $storyObj->get_filed_list("id,author_uid,translator_uid,illustrator_uid,anchor_uid", "`album_id` = {$album_item['id']} and `source_audio_url`='{$story_item['source_audio_url']}'", "", 1);
+                        //检查作者信息
+                        if (is_array($story_item_list) && !empty($story_item_list) && !empty($data)) {
+                            foreach ($story_item_list as $k => $story_item) {
+                                if(empty($story_item['author_id'])) {
+                                    $story_id = $story_item['id'];
+                                    $where = "`id` = {$story_id}";
+                                    $ret = $storyObj->update($data, $where);
+                                    $content = sprintf("[%d]故事已存在,只更新作者[%s] %d\r\n", $story_id, var_export($data, true), $ret);
+                                    echo $content;
+                                }
+                            }
+                            $ignore_count++;
+                            continue;
                         }
-                        $ignore_count++;
-                        continue;
-                    }
-                    if (empty($vieworder)) {
-                        $vieworder = $k2;
-                    }
+                        if (empty($vieworder)) {
+                            $vieworder = $k2;
+                        }
 
-                    $story_id = $story->insert(array(
-                        'album_id' => $album_item['id'],
-                        'title' => addslashes($story_item['title']),
-                        'intro' => '',
-                        'view_order' => $vieworder,
-                        'times' => $story_item['times'],
-                        's_cover' => '',
-                        'source_audio_url' => $story_item['source_audio_url'],
-                        'author_uid' => isset($data['author_uid']) ? $data['author_uid'] : null,
-                        'translator_uid' => isset($data['translator_uid']) ? $data['translator_uid'] : null,
-                        'illustrator_uid' => isset($data['illustrator_uid']) ? $data['illustrator_uid'] : null,
-                        'anchor_uid' => isset($data['anchor_uid']) ? $data['anchor_uid'] : null,
-                        'add_time' => date('Y-m-d H:i:s'),
-                    ));
+                        $story_id = $storyObj->insert(array(
+                            'album_id' => $album_item['id'],
+                            'title' => addslashes($story_item['title']),
+                            'intro' => '',
+                            'view_order' => $vieworder,
+                            'times' => $story_item['times'],
+                            's_cover' => '',
+                            'source_audio_url' => $story_item['source_audio_url'],
+                            'author_uid' => isset($data['author_uid']) ? $data['author_uid'] : null,
+                            'translator_uid' => isset($data['translator_uid']) ? $data['translator_uid'] : null,
+                            'illustrator_uid' => isset($data['illustrator_uid']) ? $data['illustrator_uid'] : null,
+                            'anchor_uid' => isset($data['anchor_uid']) ? $data['anchor_uid'] : null,
+                            'add_time' => date('Y-m-d H:i:s'),
+                        ));
 
-                    //lrts故事没有封面(和专辑封面相同)
-                    if ($story_id) {
-                        $add_count++;
-                        //MnsQueueManager::pushAlbumToSearchQueue($story_id);
-                        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_LRTS_STORY, "{$story_id} 入库");
-                    } else {
-
-                        $content = '没有写入成功' . var_export($album_item, true) . var_export($story_item, true);
-                        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_LRTS_STORY, $content);
+                        //lrts故事没有封面(和专辑封面相同)
+                        if ($story_id) {
+                            $add_count++;
+                            //MnsQueueManager::pushAlbumToSearchQueue($story_id);
+                            $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_LRTS_STORY, "{$story_id} 入库");
+                        } else {
+                            $isSuccess = false;
+                            $content = '没有写入成功' . var_export($album_item, true) . var_export($story_item, true);
+                            $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_LRTS_STORY, $content);
+                        }
                     }
                 }
 
+                if($story_list_count != $album_item['story_num']) {
+                    //更新专辑内故事数量
+                    $albumObj->update_story_num($album_item['id']);
+                }
                 $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_LRTS_STORY, "懒人听书专辑 {$album_item['id']} 新增 {$add_count}");
-                //更新专辑内故事数量
-                $album->update_story_num($album_item['id']);
             }
+
             $p++;
             sleep(1);
             //exit;
