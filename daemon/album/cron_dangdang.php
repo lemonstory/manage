@@ -18,7 +18,7 @@ class cron_dangdang extends DaemonBase {
         $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageCollectionDdLog = new ManageCollectionDdLog();
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', "test_dangdang开始");
-        for($i=27074;$i<100000;$i++){
+        for($i=282791;$i<500000;$i++){
             $url = 'http://product.dangdang.com/'.$i.'.html';
             $content = $httpObj->get($url);
             $tmp = $httpObj->sub_data($content,'<li class="clearfix fenlei"','</li>');
