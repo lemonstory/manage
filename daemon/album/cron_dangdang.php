@@ -18,7 +18,7 @@ class cron_dangdang extends DaemonBase {
         $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageCollectionDdLog = new ManageCollectionDdLog();
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', "test_dangdang开始");
-        for($i=282791;$i<500000;$i++){
+        for($i=591757;$i<800000;$i++){
             $url = 'http://product.dangdang.com/'.$i.'.html';
             $content = $httpObj->get($url);
             $tmp = $httpObj->sub_data($content,'<li class="clearfix fenlei"','</li>');
@@ -46,6 +46,9 @@ class cron_dangdang extends DaemonBase {
                 }
                 $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', $contentLog);
                 $manageCollectionDdLog->insert($data);
+            }else{
+                $contentLog .= $i."为空";
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', $contentLog);
             }
             //sleep(1);
         }
