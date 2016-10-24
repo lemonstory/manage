@@ -157,7 +157,8 @@ $(function() {
                     $(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
                     $("#modal_closebtn").click(function(){
-                        location.href=location.href;
+                        //location.href=location.href;
+                        location.reload()
                     });
                 } else {
                     $(".modal-body").text(data.desc);
@@ -176,7 +177,8 @@ $(function() {
                     $(".modal-body").text("操作成功");
                     $("#myModal").modal({show:true});
                     $("#modal_closebtn").click(function(){
-                        location.href=location.href;
+                        //location.href=location.href;
+                        location.reload()
                     });
                 } else {
                     $(".modal-body").text(data.desc);

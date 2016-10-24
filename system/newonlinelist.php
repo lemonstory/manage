@@ -38,7 +38,7 @@ class newonlinelist extends controller
         $agetypenamelist = $configvarobj->AGE_TYPE_NAME_LIST;
         
         $managesysobj = new ManageSystem();
-        $resultList = $managesysobj->getRecommendListByColumnSearch("share_main", "recommend_new_online", $column, $columnValue, $status, $currentPage + 1, $perPage);
+        $resultList = $managesysobj->getRecommendListByColumnSearch("share_story", "recommend_new_online", $column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $albumids = array();
             $albumlist = array();
@@ -106,7 +106,7 @@ class newonlinelist extends controller
                 $value['agetypename'] = $agetypenamelist[$value['agetype']];
                 $newonlinelist[] = $value;
             }
-            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_main", "recommend_new_online", $column, $columnValue, $status);
+            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_story", "recommend_new_online", $column, $columnValue, $status);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }
