@@ -27,7 +27,7 @@ class addsameage extends controller
             $agetype = $albuminfo['age_type'];
         } else {
             $manageobj = new ManageSystem();
-            $sameageinfo = $manageobj->getRecommendInfoByFilter("share_main", "recommend_same_age", "`albumid` = '{$albumid}'");
+            $sameageinfo = $manageobj->getRecommendInfoByFilter("share_story", "recommend_same_age", "`albumid` = '{$albumid}'");
             $agetype = $sameageinfo['agetype'];
         }
         

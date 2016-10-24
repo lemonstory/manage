@@ -29,7 +29,7 @@ class hotrecommendlist extends controller
             $column = $columnValue = '';
         }
         $managesysobj = new ManageSystem();
-        $resultList = $managesysobj->getRecommendListByColumnSearch("share_main", "recommend_hot", $column, $columnValue, $status, $currentPage + 1, $perPage);
+        $resultList = $managesysobj->getRecommendListByColumnSearch("share_story", "recommend_hot", $column, $columnValue, $status, $currentPage + 1, $perPage);
         if (!empty($resultList)) {
             $albumids = array();
             $albumlist = array();
@@ -97,7 +97,7 @@ class hotrecommendlist extends controller
                 $hotlist[] = $value;
             }
             
-            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_main", "recommend_hot", $column, $columnValue, $status);
+            $totalCount = $managesysobj->getRecommendCountByColumnSearch("share_story", "recommend_hot", $column, $columnValue, $status);
             if ($totalCount > $perPage) {
                 $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }

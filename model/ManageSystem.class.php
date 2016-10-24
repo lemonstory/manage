@@ -6,6 +6,7 @@ class ManageSystem extends ModelBase
     public $FOCUS_LINKTYPE_LIST = array('http', 'album');
     
     public $MAIN_DB_INSTANCE = 'share_main';
+    public $STORY_DB_INSTANCE = 'share_story';
     public $MANAGE_DB_INSTANCE = 'share_manage';
     public $RECOMMEND_HOT_TABLE_NAME = 'recommend_hot';
     public $RECOMMEND_SAME_AGE_TABLE_NAME = 'recommend_same_age';
@@ -131,7 +132,7 @@ class ManageSystem extends ModelBase
 	    }
 	    $albumids = implode(",", $albumids);
 	    
-	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
 	    $sql = "DELETE FROM `{$this->RECOMMEND_HOT_TABLE_NAME}` WHERE `albumid` IN ({$albumids})";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
@@ -155,7 +156,7 @@ class ManageSystem extends ModelBase
 	    }
 	    $albumids = implode(",", $albumids);
 	     
-	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
 	    $sql = "DELETE FROM `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` WHERE `albumid` IN ({$albumids})";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
@@ -179,7 +180,7 @@ class ManageSystem extends ModelBase
 	    }
 	    $albumids = implode(",", $albumids);
 	     
-	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
 	    $sql = "DELETE FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` WHERE `albumid` IN ({$albumids})";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute();
@@ -225,7 +226,7 @@ class ManageSystem extends ModelBase
 		
 		$status = $this->RECOMMEND_STATUS_OFFLINE;
 		$addtime = date("Y-m-d H:i:s");
-		$db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+		$db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "INSERT INTO `{$this->RECOMMEND_HOT_TABLE_NAME}` (`albumid`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?)";
         $st = $db->prepare($sql);
         $result = $st->execute(array($albumid, $ordernum, $status, $addtime));
@@ -257,7 +258,7 @@ class ManageSystem extends ModelBase
 	    
 	    $status = $this->RECOMMEND_STATUS_OFFLINE;
 	    $addtime = date("Y-m-d H:i:s");
-	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
 	    $sql = "INSERT INTO `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute(array($albumid, $agetype, $ordernum, $status, $addtime));
@@ -282,7 +283,7 @@ class ManageSystem extends ModelBase
 	     
 	    $status = $this->RECOMMEND_STATUS_OFFLINE;
 	    $addtime = date("Y-m-d H:i:s");
-	    $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+	    $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
 	    $sql = "INSERT INTO `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` (`albumid`, `agetype`, `ordernum`, `status`, `addtime`) VALUES (?, ?, ?, ?, ?)";
 	    $st = $db->prepare($sql);
 	    $result = $st->execute(array($albumid, $agetype, $ordernum, $status, $addtime));
@@ -414,7 +415,7 @@ class ManageSystem extends ModelBase
         }
         $setstr = rtrim($setstr, ",");
     
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "UPDATE `{$this->RECOMMEND_HOT_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
         $st = $db->prepare($sql);
         $result = $st->execute();
@@ -447,7 +448,7 @@ class ManageSystem extends ModelBase
         }
         $setstr = rtrim($setstr, ",");
     
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "UPDATE `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
         $st = $db->prepare($sql);
         $result = $st->execute();
@@ -480,7 +481,7 @@ class ManageSystem extends ModelBase
         }
         $setstr = rtrim($setstr, ",");
         
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "UPDATE `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` SET {$setstr} WHERE `albumid` IN ({$idStr})";
         $st = $db->prepare($sql);
         $result = $st->execute();
@@ -503,7 +504,7 @@ class ManageSystem extends ModelBase
             $this->setError(ErrorConf::paramError());
             return false;
         }
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "SELECT * FROM `{$this->RECOMMEND_HOT_TABLE_NAME}` WHERE `albumid` = ?";
         $st = $db->prepare($sql);
         $st->execute(array($albumid));
@@ -526,7 +527,7 @@ class ManageSystem extends ModelBase
             $this->setError(ErrorConf::paramError());
             return false;
         }
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "SELECT * FROM `{$this->RECOMMEND_NEW_ONLINE_TABLE_NAME}` WHERE `albumid` = ?";
         $st = $db->prepare($sql);
         $st->execute(array($albumid));
@@ -549,7 +550,7 @@ class ManageSystem extends ModelBase
             $this->setError(ErrorConf::paramError());
             return false;
         }
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "SELECT * FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}` WHERE `albumid` = ?";
         $st = $db->prepare($sql);
         $st->execute(array($albumid));
