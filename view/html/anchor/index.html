@@ -73,7 +73,7 @@
                         <tr>
                             <td>{$value.uid}</td>
                             <td>
-                                <a href="javascript:void(0);" id="op_album_view_{$value.uid}_nickname">{$value.nickname}
+                                <a href="/album/index.php?anchor_uid={$value.uid}" id="op_album_view_{$value.uid}_nickname">{$value.nickname}
                                 </a>
                                 <span class="badge">{$value.album_num}</span>
                             </td>
@@ -126,7 +126,7 @@
                 window.location.href = '/album/album_edit.php?id='+data.op_id+'&gourl='+window.location.href;
                 return false;
             } else if (data.op_name == 'view') {
-                window.open('/album/storylist.php?albumid='+data.op_id);
+                window.open('/album/index.php?anchor_uid='+data.op_id);
                 return false;
             }
             console.log(data);
