@@ -16,6 +16,7 @@ class cron_xmlyStory extends DaemonBase
     protected function deal()
     {
         $options = getopt("a::");
+        $album_id = 0;
         if (!empty($options)) {
 
             $album_id = $options['a'];
@@ -55,8 +56,8 @@ class cron_xmlyStory extends DaemonBase
 
             while (true) {
                 $limit = ($p - 1) * $per_page;
-                //$album_list = $album->get_list("`from`='xmly' and `add_time` > '{$end_time}' order by `id` desc", "{$limit},{$per_page}");
-                $album_list = $album->get_list("`id`=15286");
+                $album_list = $album->get_list("`from`='xmly' and `add_time` > '{$end_time}' order by `id` desc", "{$limit},{$per_page}");
+                //$album_list = $album->get_list("`id`=10712");
                 if (!$album_list) {
                     break;
                 }
@@ -69,6 +70,8 @@ class cron_xmlyStory extends DaemonBase
                 }
                 $p++;
                 sleep(1);
+                //exit;
+                
             }
         }
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_END, ManageCollectionCronLog::TYPE_XMLY_STORY, "采集喜马拉雅故事结束");
@@ -76,105 +79,160 @@ class cron_xmlyStory extends DaemonBase
 
     protected function fetch_story($album_info)
     {
-        $album = new Album();
-        $story = new Story();
-        $xmly = new Xmly();
-        $story_url = new StoryUrl();
+        $albumObj = new Album();
+        $storyObj = new Story();
+        $xmlyObj = new Xmly();
+        $storyUrlObj = new StoryUrl();
         $manageCollectionCronLog = new ManageCollectionCronLog();
+        $creatorObj = new Creator();
+        $userObj = new User();
 
         $story_list_count = 0;
         $ignore_count = 0;
         $add_count = 0;
-        $xmly_album_id = Http::sub_data($album_info['link_url'], 'album/');
+        
+        $xmly_album_info = $xmlyObj->get_album_info($album_info['link_url']);
+        //更新主播信息
+        if(!empty($xmly_album_info['anchor']['name'])) {
+
+            $name = $xmly_album_info['anchor']['name'];
+            $creator_uid = $creatorObj->getCreatorUid($name);
+            $album_creator_data = array();
+            $album_creator_data['is_anchor'] = 1;
+            if (empty($creator_uid)) {
+                $creator_uid = $creatorObj->addCreator($name, "", "", $album_creator_data['is_author'], $album_creator_data['is_translator'], $album_creator_data['is_illustrator'], $album_creator_data['is_anchor']);
+                $content = sprintf("新增主播[%s] : uid = %d \r\n", $name, $creator_uid);
+                echo $content;
+
+            } else {
+
+                $whereArr = array(
+                    "is_anchor" => 1,
+                    "creator_uid" => $creator_uid,
+                );
+                $total_count = intval($creatorObj->getCreatorCount($whereArr));
+                if($total_count == 0) {
+                    $where = "uid = {$creator_uid}";
+                    $ret = $creatorObj->update($album_creator_data, $where);
+                    $content = sprintf("修复主播[%s] : uid = %d, is_anchor = %d, ret = %d\r\n", $name, $creator_uid,$album_creator_data['is_anchor'], $ret);
+                    echo $content;
+                }
+            }
+
+            //更新主播头像
+            $user_info_list = $userObj->getUserInfo($creator_uid);
+            if(!isset($user_info_list[$creator_uid]['avatartime']) || $user_info_list[$creator_uid]['avatartime'] <= 0) {
+                if(!empty($xmly_album_info['anchor']['avatar']) && !empty($creator_uid)) {
+
+                    $ret = $userObj->setAvatarWithUrl($xmly_album_info['anchor']['avatar'], $creator_uid);
+                    $content = sprintf("更新主播[%s]头像[%s] \r\n", $creator_uid, $xmly_album_info['anchor']['avatar'], $ret);
+                    echo $content;
+                }
+            }
+
+            //更新故事主播信息
+            $story_item_list = $storyObj->get_filed_list("id,author_uid,translator_uid,illustrator_uid,anchor_uid", "`album_id` = {$album_info['id']}");
+            //检查作者信息
+            $data = array();
+            $data['anchor_uid'] = $creator_uid;
+            if (is_array($story_item_list) && !empty($story_item_list) && !empty($data)) {
+                foreach ($story_item_list as $k => $story_item) {
+                    if (empty($story_item['anchor_uid'])) {
+                        $story_id = $story_item['id'];
+                        $where = "`id` = {$story_id}";
+                        $ret = $storyObj->update($data, $where);
+                        $content = sprintf("[%d]更新故事主播[%s] %d\r\n", $story_id, $data['anchor_uid'], $ret);
+                        echo $content;
+                    }
+                }
+            }
+        }
 
         // 获取喜马拉雅的专辑故事
-        $story_url_list = $xmly->get_story_url_list($xmly_album_id);
+        $xmly_album_id = Http::sub_data($album_info['link_url'], 'album/');
+        //var_dump($xmly_album_id);
+        $story_url_list = $xmlyObj->get_story_url_list($xmly_album_id);
         $story_list_count = count($story_url_list);
-        var_dump($story_url_list);
-        var_dump($story_list_count);
         if (empty($story_url_list)) {
+
             $content = "喜马拉雅专辑{$album_info['id']} 没有故事\r\n";
+            echo $content;
+
+        } else if($album_info['story_num'] >= $story_list_count) {
+
+            $ignore_count = $ignore_count + $album_info['story_num'];
+            $content = sprintf("[%s] 故事总数量:%d, 已大于等于源内容 %d \r\n", $album_info['title'], $story_list_count, $ignore_count);
             echo $content;
             $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
 
         } else {
+
             // 判断专辑简介是否为空，若为空则读取故事专辑下第一个故事的简介
             if (empty($album_info['intro'])) {
                 $first_story_url = current($story_url_list);
-                $first_story_info = $xmly->get_story_info($first_story_url);
+                $first_story_info = $xmlyObj->get_story_info($first_story_url);
                 if (!empty($first_story_info['intro'])) {
-                    $album->update(array("intro" => $first_story_info['intro']), "`id` = '{$album_info['id']}'");
+                    $albumObj->update(array("intro" => $first_story_info['intro']), "`id` = '{$album_info['id']}'");
                     $content = "喜马拉雅专辑{$album_info['id']} 简介更新成功\r\n";
                     echo $content;
-                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
                 }
             }
 
-            // 如果故事的数量和专辑里面的故事数量相等则不再更新
-            if (count($story_url_list) == $album_info['story_num']) {
-
-                $ignore_count = $ignore_count + $album_info['story_num'];
-                $content = sprintf("[{$album_info['title']}] 故事总数量:%d, 已忽略 %d, 新增 %d\r\n", $story_list_count, $ignore_count, $add_count);
-                echo $content;
-                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
-
-            } else {
-                $vieworder = 0;
-                foreach ($story_url_list as $k2 => $v2) {
-                    // 默认故事的排序，按源页面故事排序
-                    var_dump($k2);
-                    $vieworder++;
-                    $v2 = $xmly->get_story_info($v2);
-                    if (!$v2) {
-                        $content = "$story_url_list[$k2] 获取故事信息失败 \r\n";
-                        echo $content;
-                        continue;
-                    }
-                    $source_audio_path_arr = parse_url($v2['source_audio_url']);
-                    //cdn根据域名做了切分
-                    $exists = $story->check_exists("`album_id` = {$album_info['id']} and LOCATE('{$source_audio_path_arr['path']}',`source_audio_url`) > 0");
-                    if ($exists) {
-                        $ignore_count++;
-                        $content = "$story_url_list[$k2] 已存在 \r\n";
-                        echo $content;
-                        continue;
-                    }
-                    if (empty($vieworder)) {
-                        $vieworder = $k2;
-                    }
-
-                    $story_id = $story->insert(array(
-                        'album_id' => $album_info['id'],
-                        'title' => addslashes($v2['title']),
-                        'intro' => addslashes($v2['intro']),
-                        'view_order' => $vieworder,
-                        's_cover' => $v2['s_cover'],
-                        'source_audio_url' => $v2['source_audio_url'],
-                        'add_time' => date('Y-m-d H:i:s'),
-                    ));
-                    $story_url->insert(array(
-                        'res_name' => 'story',
-                        'res_id' => $story_id,
-                        'field_name' => 'cover',
-                        'source_url' => $v2['s_cover'],
-                        'source_file_name' => ltrim(strrchr($v2['s_cover'], '/'), '/'),
-                        'add_time' => date('Y-m-d H:i:s'),
-                    ));
-                    if ($story_id) {
-                        $add_count++;
-                        //MnsQueueManager::pushAlbumToSearchQueue($story_id);
-                        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_XMLY_STORY, "{$story_id} 入库");
-                    } else {
-
-                        $content = '没有写入成功' . var_export($album_info, true) . var_export($v2, true);
-                        echo $content;
-                        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
-                    }
+            $vieworder = 0;
+            foreach ($story_url_list as $key => $story_url) {
+                // 默认故事的排序，按源页面故事排序
+                $vieworder++;
+                $story_url = $xmlyObj->get_story_info($story_url);
+                if (!$story_url) {
+                    $content = "$story_url_list[$key] 获取故事信息失败 \r\n";
+                    echo $content;
+                    continue;
                 }
+                $source_audio_path_arr = parse_url($story_url['source_audio_url']);
+                //cdn根据域名做了切分
+                $exists = $storyObj->check_exists(" LOCATE('{$source_audio_path_arr['path']}',`source_audio_url`) > 0");
+                if ($exists) {
+                    $ignore_count++;
+                    $content = "$story_url_list[$key] 已存在 \r\n";
+                    echo $content;
+                    continue;
+                }
+                if (empty($vieworder)) {
+                    $vieworder = $key;
+                }
+
+                $story_id = $storyObj->insert(array(
+                    'album_id' => $album_info['id'],
+                    'title' => addslashes($story_url['title']),
+                    'intro' => addslashes($story_url['intro']),
+                    'view_order' => $vieworder,
+                    's_cover' => $story_url['s_cover'],
+                    'source_audio_url' => $story_url['source_audio_url'],
+                    'add_time' => date('Y-m-d H:i:s'),
+                ));
+                $storyUrlObj->insert(array(
+                    'res_name' => 'story',
+                    'res_id' => $story_id,
+                    'field_name' => 'cover',
+                    'source_url' => $story_url['s_cover'],
+                    'source_file_name' => ltrim(strrchr($story_url['s_cover'], '/'), '/'),
+                    'add_time' => date('Y-m-d H:i:s'),
+                ));
+                if ($story_id) {
+                    $add_count++;
+                    //MnsQueueManager::pushAlbumToSearchQueue($story_id);
+                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, ManageCollectionCronLog::TYPE_XMLY_STORY, "{$story_id} 入库");
+                } else {
+
+                    $content = '没有写入成功' . var_export($album_info, true) . var_export($story_url, true);
+                    echo $content;
+                    $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_FAIL, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
+                }
+
                 $content = "喜马拉雅专辑 {$album_info['id']} 新增 {$add_count}";
                 echo $content;
-                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY,$content);
-                $album->update_story_num($album_info['id']);
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_TRACK_LOG, ManageCollectionCronLog::TYPE_XMLY_STORY, $content);
+                $albumObj->update_story_num($album_info['id']);
             }
         }
     }
