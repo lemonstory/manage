@@ -6,6 +6,7 @@ class ManageAlbum extends ModelBase
 
     public function getAlbumList($where = array(), $currentPage = 1, $perPage = 50)
     {
+
         if (empty($currentPage)) {
             $currentPage = 1;
         }
@@ -21,12 +22,17 @@ class ManageAlbum extends ModelBase
         if ($where) {
             $whereStr = ' WHERE 1 ';
             foreach ($where as $key => $val) {
+
                 if ($key == 'title') {
                     $whereStr .= " and `{$key}` like :{$key}";
+
                 } else if ($key == 'story_num') {
                     $whereStr .= " and `{$key}`<=:{$key}";
 
-                }else {
+                } else if ($key == 'anchor_uid') {
+                    $whereStr .= " and `{$key}` in (:{$key})";
+
+                } else {
                     $whereStr .= " and `{$key}`=:{$key}";
                 }
 
@@ -34,6 +40,7 @@ class ManageAlbum extends ModelBase
         } else {
             $whereStr = '';
         }
+
         $offset = ($currentPage - 1) * $perPage;
 
         $list = array();
@@ -82,6 +89,9 @@ class ManageAlbum extends ModelBase
                 } else if ($key == 'story_num') {
                     $whereStr .= " and `{$key}`<=:{$key}";
 
+                } else if ($key == 'anchor_uid') {
+                    $whereStr .= " and `{$key}` in (:{$key})";
+
                 } else {
                     $whereStr .= " and `{$key}`=:{$key}";
                 }
@@ -96,7 +106,6 @@ class ManageAlbum extends ModelBase
         $count = $st->fetch(PDO::FETCH_COLUMN);
         return $count;
     }
-
 }
 
 ?>
