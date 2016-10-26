@@ -26,6 +26,7 @@ class index extends controller
         $tag_id   = $this->getRequest('tag_id', '');
         $story_num   = $this->getRequest('story_num', '');
         $anchor_uid   = $this->getRequest('anchor_uid', '');
+        $author_uid   = $this->getRequest('author_uid', '');
         $search_filter = array();
 
         if ($title) {
@@ -70,9 +71,14 @@ class index extends controller
             $where['anchor_uid'] = $anchor_uid;
         }
 
+        if(!empty($author_uid)) {
+            $search_filter['author_uid'] = $author_uid;
+            $where['author_uid'] = $author_uid;
+        }
+
         $pageBanner = "";
         $baseUri = "/album/index.php?albumid={$albumid}&title={$title}&status={$status}&from={$from}";
-        $baseUri .= "&online_status={$online_status}&serial_status={$serial_status}&tag_id={$tag_id}&tag_name={$tag_name}&story_num={$story_num}&anchor_uid={$anchor_uid}";
+        $baseUri .= "&online_status={$online_status}&serial_status={$serial_status}&tag_id={$tag_id}&tag_name={$tag_name}&story_num={$story_num}&anchor_uid={$anchor_uid}&author_uid={$author_uid}";
 
         if(!empty($where['tagid'])){
             $manageAlbumTagRelationObj = new ManageAlbumTagRelation();

@@ -2,6 +2,7 @@
 class ManageListen extends ModelBase
 {
 	public $MAIN_DB_INSTANCE = 'share_main';
+	public $STORY_DB_INSTANCE = 'share_story';
 	public $RECOMMEND_SAME_AGE_TABLE_NAME = 'recommend_same_age';
 	public $LISTEN_STORY_TABLE_NAME = 'listen_story';
 	
@@ -90,7 +91,7 @@ class ManageListen extends ModelBase
         }
         
         $list = $resIds = array();
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "SELECT * FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}`";
         if (!empty($column)) {
             $sql .= " WHERE `{$column}` = '$value'";
@@ -119,7 +120,7 @@ class ManageListen extends ModelBase
             $statusWhere = "`status` = {$status}";
         }
     	
-        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $db = DbConnecter::connectMysql($this->STORY_DB_INSTANCE);
         $sql = "SELECT COUNT(*) FROM `{$this->RECOMMEND_SAME_AGE_TABLE_NAME}`";
         if (!empty($column)) {
             $sql .= " WHERE `{$column}` = '$value'";

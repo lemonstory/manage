@@ -20,7 +20,7 @@ class ManageAlbumTagRelation extends ModelBase
         if ($where) {
             $whereStr = ' WHERE 1 ';
             foreach ($where as $key=>$val){
-                if ($key == 'anchor_uid') {
+                if ($key == 'anchor_uid' || $key == 'author_uid') {
                     $whereStr .= " and `{$key}` in (:{$key})";
                 }else{
                     $whereStr .= " and `{$key}`=:{$key}";
@@ -47,7 +47,7 @@ class ManageAlbumTagRelation extends ModelBase
         if ($where) {
             $whereStr = ' WHERE 1 ';
             foreach ($where as $key=>$val){
-                if ($key == 'anchor_uid') {
+                if ($key == 'anchor_uid' || $key == 'author_uid') {
                     $whereStr .= " and `{$key}` in (:{$key})";
                 }else{
                     $whereStr .= " and `{$key}`=:{$key}";
