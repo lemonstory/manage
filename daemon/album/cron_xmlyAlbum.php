@@ -18,8 +18,8 @@ class cron_xmlyAlbum extends DaemonBase
     {
 
         $options = getopt("u::");
+        $url = "";
         if (!empty($options)) {
-
             $url = $options['u'];
         }
         $album_url = trim($url);
