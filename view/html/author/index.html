@@ -26,12 +26,12 @@
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">作者状态</label>
+                                <label class="control-label">上线状态</label>
                                 <div class="controls">
                                     <select id="status" class="span6" name="status">
                                         <option value="">全部</option>
-                                        <option {if $status eq 1}selected{/if} value="1">正常</option>
-                                        <option {if $status eq '0'}selected{/if} value="0">已删除</option>
+                                        <option {if $status eq 1}selected{/if} value="1">已上线</option>
+                                        <option {if $status eq '0'}selected{/if} value="0">未上线</option>
                                     </select>
                                 </div>
                             </div>
@@ -64,8 +64,7 @@
                             <th>头像</th>
                             <th>排序</th>
                             <th>添加时间</th>
-                            <th>状态</th>
-                            <th>操作</th>
+                            <th>上线状态</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -73,30 +72,27 @@
                         <tr>
                             <td>{$value.uid}</td>
                             <td>
-                                <a href="javascript:void(0);" id="op_album_view_{$value.uid}_nickname">{$value.nickname}
+                                <a href="javascript:void(0);" id="op_author_view_{$value.uid}_nickname">{$value.nickname}
                                 </a>
                                 <span class="badge">{$value.album_num}</span>
+                                <br/>
+                                <a target="_blank" class="btn btn-mini" href="http://baike.baidu.com/search/word?word={$value.nickname}">百科</a>
                             </td>
                             <td>
-                                <a href="/album/index.php?author_uid={$value.uid}"  id="op_album_view_{$value.uid}_cover">
+                                <a href="/album/index.php?author_uid={$value.uid}"  id="op_author_view_{$value.uid}_cover">
                                     <img src="{$value.avatar}" width="50" height="50" alt="作者头像" class="img-rounded">
                                 </a>
                             </td>
                             <td>
-                                <!--<input type="text" name="view_order" class="form-control" op_id="{$value.id}" old_val="{$value.view_order}" value="{$value.view_order}" style="width: 60px;" />-->
+                                <input type="text" name="view_order" class="form-control" op_id="{$value.uid}" old_val="{$value.view_order}" value="{$value.view_order}" style="width: 60px;" />
                             </td>
-                            <!--<td>{$value.add_time}</td>-->
-                            <td>无</td>
+                            <td>{$value.add_time}</td>
                             <td>
-                                <!--{if $value.status eq '0'}-->
-                                <!--<a href="javascript:void(0);" id="op_album_recover_{$value.id}">已删除</a>-->
-                                <!--{elseif $value.status eq 1}-->
-                                <!--<a href="javascript:void(0);" id="op_album_delete_{$value.id}">正常</a>-->
-                                <!--{/if}-->
-                                正常
-                            </td>
-                            <td>
-                                无
+                                {if $value.online_status eq '0'}
+                                <a href="javascript:void(0);" id="op_author_online_{$value.uid}">未上线</a>
+                                {elseif $value.online_status eq 1}
+                                <a href="javascript:void(0);" id="op_author_notonline_{$value.uid}">已上线</a>
+                                {/if}
                             </td>
                         </tr>
                         {/foreach}
@@ -107,7 +103,6 @@
             <!-- /block -->
         </div>
     </div>
-
     {$pageBanner}
 </div>
 
@@ -116,49 +111,50 @@
 <script>
     {literal}
     $(function() {
-        $("[id^='op_album']").on('click', function(){
+        $("[id^='op_author']").on('click', function(){
             var data = {};
             var op = $(this).attr('id');
             data.op_name = op.split('_')[2];
             data.op_id   = op.split('_')[3];
 
-            if (data.op_name == 'edit') {
-                window.location.href = '/album/album_edit.php?id='+data.op_id+'&gourl='+window.location.href;
-                return false;
-            } else if (data.op_name == 'view') {
-                window.open('/album/index.php?author_uid='+data.op_id);
-                return false;
-            }
-            console.log(data);
+//            if (data.op_name == 'edit') {
+//                window.location.href = '/album/album_edit.php?id='+data.op_id+'&gourl='+window.location.href;
+//                return false;
+//            } else if (data.op_name == 'view') {
+//                window.open('/album/index.php?author_uid='+data.op_id);
+//                return false;
+//            }
+//            console.log(data);
 
-            $.post('/album/album_op.php', data, function(json){
+            $.post('/author/author_op.php', data, function(json){
                 if (json && json.code == 10000) {
                     alert('操作成功');
                     window.location.reload();
                 } else {
+                    alert("aaa");
                     alert(json);
                 }
             },'json')
         });
-        $("#list-filter").on('click', function(){
-            var url = window.location.href.split('?')[0];
-            var params = '';
-            var data = {};
-            var form_element = $(this).closest("form").find('.auto_submit');
-            $.each(form_element, function(k,v){
-                var k = $(v).attr('name');
-                var v = $(v).attr('value');
-                params += k + '='+v+'&'
-
-            });
-
-            //添加平台下拉框条件
-            var from_id = $("#from").val();
-            if(from_id==undefined || from_id=="" || from_id==null){
-                params += 'from=' + from_id;
-            }
-            window.location.href = url+'?'+params;
-        });
+//        $("#list-filter").on('click', function(){
+//            var url = window.location.href.split('?')[0];
+//            var params = '';
+//            var data = {};
+//            var form_element = $(this).closest("form").find('.auto_submit');
+//            $.each(form_element, function(k,v){
+//                var k = $(v).attr('name');
+//                var v = $(v).attr('value');
+//                params += k + '='+v+'&'
+//
+//            });
+//
+//            //添加平台下拉框条件
+//            var from_id = $("#from").val();
+//            if(from_id==undefined || from_id=="" || from_id==null){
+//                params += 'from=' + from_id;
+//            }
+//            window.location.href = url+'?'+params;
+//        });
         $("[name='view_order']").on('change', function(){
             var old_val = parseInt($(this).attr('old_val'));
             var op_id   = parseInt($(this).attr('op_id'));
@@ -171,7 +167,7 @@
                 data.op_name = 'view_order';
                 data.op_id   = op_id;
                 data.value   = new_val;
-                $.post('/album/album_op.php', data, function(json){
+                $.post('/author/author_op.php', data, function(json){
                     if (json && json.code == 10000) {
                         alert('操作成功');
                         window.location.reload();
@@ -181,30 +177,30 @@
                 },'json');
             }
         });
-        $( "#tag_name" ).autocomplete({
-            source: function( request, response ) {
-                $.ajax( {
-                    url: "/tag/gettaglistbyname.php",
-                    dataType: "jsonp",
-                    data: {
-                        tag_name: request.term
-                    },
-                    success: function( data ) {
-                        response( $.map( data, function( item ) {
-                            return {
-                                label:item.name,
-                                value:item.name,
-                                id:item.id,
-                            }}) );
-                    }
-                } );
-            },
-            minLength: 2,
-            select: function( event, ui ) {
-                $( "#tag_name" ).val( ui.item.label );
-                $( "#tag_id" ).val( ui.item.id );
-            }
-        });
+//        $( "#tag_name" ).autocomplete({
+//            source: function( request, response ) {
+//                $.ajax( {
+//                    url: "/tag/gettaglistbyname.php",
+//                    dataType: "jsonp",
+//                    data: {
+//                        tag_name: request.term
+//                    },
+//                    success: function( data ) {
+//                        response( $.map( data, function( item ) {
+//                            return {
+//                                label:item.name,
+//                                value:item.name,
+//                                id:item.id,
+//                            }}) );
+//                    }
+//                } );
+//            },
+//            minLength: 2,
+//            select: function( event, ui ) {
+//                $( "#tag_name" ).val( ui.item.label );
+//                $( "#tag_id" ).val( ui.item.id );
+//            }
+//        });
 
 
         /* $(".recomment_hot").on('click', function(){
