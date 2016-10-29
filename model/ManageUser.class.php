@@ -38,8 +38,8 @@ class ManageUser extends ModelBase
         return $count;
     }
     
-    
-    public function getListByColumnSearch($column = '', $value = '', $status = 0, $currentPage = 1, $perPage = 50)
+    //TODO: 这部分代码是shit
+    public function getListByColumnSearch($column = '', $value = '', $status = 0, $currentPage = 1, $perPage = 50,$db = "share_manage",$table="system_user_info")
     {
         if (empty($currentPage)) {
             $currentPage = 1;
@@ -54,17 +54,17 @@ class ManageUser extends ModelBase
             $perPage = 50;
         }
         $offset = ($currentPage - 1) * $perPage;
-    
+
         $statusWhere = "";
         if (!empty($status)) {
             $statusWhere = "`status` = {$status}";
         }
         $list = $resIds = array();
-        $db = DbConnecter::connectMysql("share_manage");
-        $sql = "SELECT * FROM `system_user_info`";
+        $db = DbConnecter::connectMysql($db);
+        $sql = "SELECT * FROM `{$table}`";
         if (!empty($column)) {
-            if ($column == 'searchcontent') {
-                $sql .= " WHERE `{$column}` like '%$value'%";
+            if ($column == 'nickname') {
+                $sql .= " WHERE `{$column}` like '%$value%'";
             } else {
                 $sql .= " WHERE `{$column}` = '$value'";
             }
@@ -76,25 +76,25 @@ class ManageUser extends ModelBase
                 $sql .= " WHERE {$statusWhere}";
             }
         }
-    
-        $sql .= " ORDER BY `status`, 'uid' DESC LIMIT {$offset}, {$perPage}";
+
+        $sql .= " ORDER BY `uid` DESC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);
-    
+
         return $result;
     }
-    
-    
-    public function getCountByColumnSearch($column = '', $value = '', $status = 0)
+
+
+    public function getCountByColumnSearch($column = '', $value = '', $status = 0,$db = "share_manage",$table="system_user_info")
     {
         $statusWhere = "";
         if (!empty($status)) {
             $statusWhere = "`status` = {$status}";
         }
-    
-        $db = DbConnecter::connectMysql('share_manage');
-        $sql = "SELECT COUNT(*) FROM `system_user_info`";
+
+        $db = DbConnecter::connectMysql($db);
+        $sql = "SELECT COUNT(*) FROM `$table`";
         if (!empty($column)) {
             $sql .= " WHERE `{$column}` = '$value'";
             if (!empty($statusWhere)) {

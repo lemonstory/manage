@@ -23,28 +23,27 @@ class getuserlist extends controller
         $userObj = new User();
         $manageimsiobj = new ManageImsi();
         $totalCount = 1;
+        $dealUserList = array();
+
         if (!empty($searchContent)) {
-            // 搜索
-            if ($searchCondition == 'uid') {
-                $uid = intval($searchContent);
-            } elseif ($searchCondition == 'nickname') {
-                $nicknamemd5obj = new NicknameMd5();
-                $uid = $nicknamemd5obj->checkNameIsExist($searchContent);
-            }
-            
-            $userList = $userObj->getUserInfo($uid);
-            if(empty($userList)) {
-                $this->showErrorJson(ErrorConf::userNoExist());
-            }
-            $userimsilist = $manageimsiobj->getUserImsiListByUids($uid);
+            $column = $searchCondition;
+            $columnValue = $searchContent;
         } else {
-            $manageUserObj = new ManageUser();
-            $userList = $manageUserObj->getUserList($currentPage + 1, $perPage);
-            if(empty($userList)) {
-                $this->showErrorJson(ErrorConf::userNoExist());
+            $column = $columnValue = '';
+        }
+        $manageobj = new ManageUser();
+        $status = "";
+
+        $db = "share_main";
+        $table = "user_info";
+        $userList = $manageobj->getListByColumnSearch($column, $columnValue, $status, $currentPage + 1, $perPage, $db, $table);
+
+        if (!empty($userList)) {
+            $totalCount = $manageobj->getCountByColumnSearch($column, $columnValue, $status, $db, $table);
+            if ($totalCount > $perPage) {
+                $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
             }
-            $totalCount = $manageUserObj->getUserTotalCount();
-           
+
             $uids = array();
             foreach ($userList as $userValue) {
                 $uids[] = $userValue['uid'];
@@ -52,24 +51,20 @@ class getuserlist extends controller
             if (!empty($uids)) {
                 $userimsilist = $manageimsiobj->getUserImsiListByUids($uids);
             }
-            
-            if ($totalCount > $perPage) {
-                $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
+
+            $configvarobj = new ConfigVar();
+            $statusnamelist = $configvarobj->OPTION_STATUS_NAME;
+
+            $aliOssObj = new AliOss();
+
+            foreach ($userList as $value) {
+                $value['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 80);
+                $value['statusname'] = $statusnamelist[$value['status']];
+                $value['uimid'] = $userimsilist[$value['uid']]['uimid'];
+                $dealUserList[] = $value;
             }
         }
-        
-        $configvarobj = new ConfigVar();
-        $statusnamelist = $configvarobj->OPTION_STATUS_NAME;
-        
-        $aliOssObj = new AliOss();
-        $dealUserList = array();
-        foreach ($userList as $value) {
-            $value['avatar'] = $aliOssObj->getAvatarUrl($value['uid'], $value['avatartime'], 80);
-            $value['statusname'] = $statusnamelist[$value['status']];
-            $value['uimid'] = $userimsilist[$value['uid']]['uimid'];
-            $dealUserList[] = $value;
-        }
-        
+
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('userList', $dealUserList);
         $smartyObj->assign('totalCount', $totalCount);
