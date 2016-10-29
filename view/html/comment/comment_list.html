@@ -16,7 +16,6 @@
                                 <label class="control-label">专辑ID</label>
                                 <div class="controls">
                                     <input type="text" class="span6 auto_submit" name="albumid" value="{$searchFilter.albumid}">
-                                    <p class="help-block">专辑ID</p>
                                 </div>
                             </div>
                             <div class="control-group">
@@ -83,8 +82,8 @@
                             {foreach from=$commentList item=value}
                             <tr>
                                 <td>{$value.id}</td>
-                                <td>{$value.userid}</td>
-                                <td>{$value.albumid}</td>
+                                <td><a target="_blank" href="/user/getuserlist.php?searchCondition=uid&searchContent={$value.userid}">{$value.userid}</a></td>
+                                <td><a target="_blank" href="/album/index.php?albumid={$value.albumid}">{$value.albumid}</a></td>
                                 <td>
                                   <div id="comment_show_{$value.id}">{$value.content}</div>
                                   <div id="comment_edit_{$value.id}" style="display:none;">
