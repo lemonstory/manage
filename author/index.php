@@ -15,7 +15,7 @@ class index extends controller
 
         $currentPage = $this->getRequest('p') + 0;
         $perPage = $this->getRequest('perPage', 20) + 0;
-        $author_uid = $this->getRequest('authorUid', '');
+        $creator_uid = $this->getRequest('creator_uid', '');
         $nickname = $this->getRequest('nickname', "");
         $online_status   = $this->getRequest('online_status', '');
 
@@ -31,6 +31,11 @@ class index extends controller
         if (empty($perPage)) {
             $perPage = 20;
         }
+        if(!empty($creator_uid)) {
+            $creator_uid = intval($creator_uid);
+            $whereArr['creator_uid'] = "{$creator_uid}";
+
+        }
         if(!empty($nickname)) {
             $nickname = trim($nickname);
             $whereArr['nickname'] = "%{$nickname}%";
@@ -39,13 +44,13 @@ class index extends controller
             $online_status = intval($online_status);
             $whereArr['online_status'] = "{$online_status}";
         }
-        
+
         $creator = new Creator();
         $totalCount = $creator->getCreatorCount($whereArr);
         $authorList = $creator->getCreatorList($whereArr, $currentPage + 1, $perPage);
 
         $pageBanner = "";
-        $baseUri = "/author/index.php?author_uid={$author_uid}&nickname={$nickname}&online_status={$online_status}";
+        $baseUri = "/author/index.php?creator_uid={$creator_uid}&nickname={$nickname}&online_status={$online_status}";
         if ($totalCount > $perPage) {
             $pageBanner = Page::NumeralPager($currentPage, ceil($totalCount/$perPage), $baseUri, $totalCount);
         }
@@ -55,6 +60,7 @@ class index extends controller
         $smartyObj->assign('p', $currentPage);
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('pageBanner', $pageBanner);
+        $smartyObj->assign('creator_uid', $creator_uid);
         $smartyObj->assign('nickname', $nickname);
         $smartyObj->assign('online_status', $online_status);
         $smartyObj->assign('authorList', $authorList);

@@ -16,7 +16,7 @@
                             <div class="control-group">
                                 <label class="control-label">作者UID</label>
                                 <div class="controls">
-                                    <input type="text" class="span6 auto_submit" name="albumid" value="{$anchor_uid}">
+                                    <input type="text" class="span6 auto_submit" name="creator_uid" value="{$creator_uid}">
                                 </div>
                             </div>
                             <div class="control-group">
@@ -72,7 +72,7 @@
                         <tr>
                             <td><a target="_blank" href="/user/edituser.php?uid={$value.uid}&show_baby=0&show_address=0">{$value.uid}</a></td>
                             <td>
-                                <a href="javascript:void(0);" id="op_author_view_{$value.uid}_nickname">{$value.nickname}
+                                <a target="_blank" href="/album/index.php?&author_uid={$value.uid}" >{$value.nickname}
                                 </a>
                                 <span class="badge">{$value.album_num}</span>
                                 <br/>
