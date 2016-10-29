@@ -57,7 +57,7 @@ class cron_genAlbumCreator extends DaemonBase
             if ($this->circulation_process) {
                 $limit = ($p - 1) * $per_page;
                 $album_list = $album->get_list("`story_num` > 0 order by `id` asc", "{$limit},{$per_page}");
-                //$album_list = $album->get_list("`id`=15144");
+                //$album_list = $album->get_list("`id`=15437");
             }
 
             if (!$album_list) {
@@ -76,7 +76,7 @@ class cron_genAlbumCreator extends DaemonBase
                 //获取每个故事的作者
                 $album_id = $v['id'];
                 $filed = "`author_uid`,`translator_uid`,`illustrator_uid`,`anchor_uid`";
-                $story_where = "`album_id` = {$album_id} AND `status` = 1";
+                $story_where = "`album_id` = {$album_id}";
                 $order = "order by `view_order`";
                 $story_list = $story->get_filed_list($filed,$story_where,$order);
                 foreach ($story_list as $sk => $story_item) {
@@ -119,7 +119,6 @@ class cron_genAlbumCreator extends DaemonBase
                 $data['illustrator_uid'] = empty($story_illustrator_uid_arr) ? "" : implode(",",$story_illustrator_uid_arr);
                 $data['anchor_uid'] = empty($story_anchor_uid_arr) ? "" : implode(",",$story_anchor_uid_arr);
                 $album_where = "`id` = {$album_id}";
-
                 if(!empty($data['author_uid']) || !empty($data['translator_uid']) || !empty($data['illustrator_uid']) || !empty($data['anchor_uid'])) {
                     $repair_num++;
                     $ret = $album->update($data,$album_where);
