@@ -6,6 +6,8 @@ class edituser extends controller
     public function action()
     {
         $uid = $this->getRequest('uid');
+        $show_baby = $this->getRequest('show_baby',true);
+        $show_address = $this->getRequest('show_address',true);
         $action = $this->getRequest('action');
         if (empty($uid)) {
             $userinfo = array();
@@ -90,6 +92,8 @@ class edituser extends controller
         
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('userinfo', $userinfo);
+        $smartyObj->assign('show_baby', $show_baby);
+        $smartyObj->assign('show_address', $show_address);
         $smartyObj->assign('addresslist', $addresslist);
         $smartyObj->assign('useractive', "active");
         $smartyObj->assign('getuserlistside', "active");

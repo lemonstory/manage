@@ -40,7 +40,7 @@
                                     <p class="help-block"></p>
                                 </div>
                             </div>
-                            
+                            {if $show_baby}
                             <legend>宝宝信息</legend>
                             <div class="control-group">
                                 <label class="control-label" for="date01">生日<span class="required">*</span></label>
@@ -60,7 +60,8 @@
                                     <p class="help-block"></p>
                                 </div>
                             </div>
-                            
+                            {/if}
+                            {if $show_baby}
                             <legend>地址信息</legend>
                             {foreach from=$addresslist item=addressvalue}
                             <div class="control-group">
@@ -96,6 +97,7 @@
                                 </div>
                             </div><br /><br />
                             {/foreach}
+                            {/if}
                             
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">保存</button>
