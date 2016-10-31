@@ -68,7 +68,13 @@
                             <div class="control-group">
                                 <label class="control-label" for="date01">作者</label>
                                 <div class="controls">
-                                    <input type="text" class="input-xlarge datepicker" name="author" value="{$author_name_str}"> <span>多个作者以逗号(,)分隔</span>
+                                    <input type="text" class="input-xlarge datepicker" name="author" value="{$author_name_str}"> <span>多个作者以逗号(,)分隔 (作者和作者UID同时输入时,作者的优先级高)</span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">作者UID</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="author_uid" value="{$author_uid}"> <span>多个作者以逗号(,)分隔</span>
                                 </div>
                             </div>
                             <div class="control-group">

@@ -11,9 +11,10 @@ class album_edit extends controller
         if ($_POST) {
 
             $albumid = (int)$this->getRequest('id');
-            $title = $this->getRequest('title');
-            $intro = $this->getRequest('intro');
-            $author = $this->getRequest('author');
+            $title = trim($this->getRequest('title'));
+            $intro = trim($this->getRequest('intro'));
+            $author = trim($this->getRequest('author'));
+            $author_uid = trim($this->getRequest('author_uid', ""));
             $min_age = (int)$this->getRequest('min_age');
             $max_age = (int)$this->getRequest('max_age');
             $view_order = (int)$this->getRequest('view_order', 0);
@@ -28,7 +29,7 @@ class album_edit extends controller
             if (!$title) {
                 return $this->showErrorJson(ErrorConf::albumTitleNotEmpty());
             } else {
-                $newalbuminfo['title'] = $title;
+                $newalbuminfo['title'] = addslashes($title);
             }
             if (!$intro) {
                 return $this->showErrorJson(ErrorConf::albumIntroNotEmpty());
@@ -42,11 +43,12 @@ class album_edit extends controller
             $newalbuminfo['max_age'] = $max_age;
             $newalbuminfo['view_order'] = $view_order;
 
-            //作者处理
+            //作者名称处理
             $author = trim($author);
-            $author_uid = "";
-            if(!empty($author)) {
-                $authorArr = explode(",",$author);
+
+            if (!empty($author)) {
+                $author_uid = "";
+                $authorArr = explode(",", $author);
                 $author_uid_arr = array();
                 foreach ($authorArr as $key => $name) {
                     $creator_uid = $creatorObj->getCreatorUid($name);
@@ -61,13 +63,16 @@ class album_edit extends controller
                     }
                     $author_uid_arr[] = $creator_uid;
                 }
+                $author_uid = implode(",", $author_uid_arr);
+                $newalbuminfo['author_uid'] = $author_uid;
 
-                $author_uid = implode(",",$author_uid_arr);
+            } elseif (!empty($author_uid)) {
+                //作者uid处理
+                $newalbuminfo['author_uid'] = $author_uid;
             }
-            $newalbuminfo['author_uid'] = $author_uid;
 
             if ($albumid) {
-                $album->update($newalbuminfo, "`id`={$albumid}");
+                $ret = $album->update($newalbuminfo, "`id`={$albumid}");
             } else {
                 $albumid = $album->insert(array(
                     'title' => $title,
@@ -96,7 +101,7 @@ class album_edit extends controller
             }
 
             //更新创作者专辑数量
-            if(is_array($author_uid_arr) && !empty($author_uid_arr)) {
+            if (is_array($author_uid_arr) && !empty($author_uid_arr)) {
                 foreach ($author_uid_arr as $creator_item_uid) {
                     $where = " ( FIND_IN_SET({$creator_item_uid},`author_uid`) OR FIND_IN_SET({$creator_item_uid},`translator_uid`) OR FIND_IN_SET({$creator_item_uid},`illustrator_uid`) OR FIND_IN_SET({$creator_item_uid},`anchor_uid`) ) AND `online_status` = 1 AND `status` = 1";
                     $sql = "SELECT `id`,`min_age`,`max_age` FROM `album` WHERE {$where}";
@@ -104,7 +109,7 @@ class album_edit extends controller
                     $db = DbConnecter::connectMysql('share_story');
                     $st = $db->query($sql);
                     $albums_arr = $st->fetchAll();
-                    if(is_array($albums_arr) && !empty($albums_arr)) {
+                    if (is_array($albums_arr) && !empty($albums_arr)) {
 
                         $count = count($albums_arr);
                         $data = array();
@@ -156,6 +161,7 @@ class album_edit extends controller
 
         //获取专辑作者
         $author_name_arr = array();
+        $author_uid = "";
 
         if (!empty($albuminfo['author_uid'])) {
 
@@ -172,12 +178,14 @@ class album_edit extends controller
                     $author_name_arr[] = $authorArr[0]['nickname'];
                 }
             }
+            $author_uid = $albuminfo['author_uid'];
         }
 
         $author_name_str = implode(",", $author_name_arr);
         $smartyObj = $this->getSmartyObj();
         $smartyObj->assign('albuminfo', $albuminfo);
         $smartyObj->assign('author_name_str', $author_name_str);
+        $smartyObj->assign('author_uid', $author_uid);
         $smartyObj->assign("checkedtaglist", $checkedtaglist);
         $smartyObj->assign("headerdata", $this->headerCommonData());
         $smartyObj->display("album/album_edit.html");
