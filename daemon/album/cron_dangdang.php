@@ -18,7 +18,7 @@ class cron_dangdang extends DaemonBase {
         $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageCollectionDdLog = new ManageCollectionDdLog();
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', "test_dangdang开始");
-        for($i=591757;$i<800000;$i++){
+        for($i=2313833;$i<2500000;$i++){
             $url = 'http://product.dangdang.com/'.$i.'.html';
             $content = $httpObj->get($url);
             $tmp = $httpObj->sub_data($content,'<li class="clearfix fenlei"','</li>');
@@ -44,6 +44,31 @@ class cron_dangdang extends DaemonBase {
                         break;
                     }
                 }
+                if(!empty($data['age'])){
+                    //获取编辑推荐作者简介等
+                    $tmp1 = $httpObj->sub_data($content,'var prodSpuInfo = ',';');
+                    $tmp1Arr = json_decode($tmp1,true);
+                    $contentUrl = '';
+                    $contentUrl .= 'http://product.dangdang.com/?r=callback%2Fdetail';
+                    $contentUrl .= '&productId='.$i;
+                    $contentUrl .= '&templateType='.$tmp1Arr['template'];
+                    $contentUrl .= '&describeMap='.$tmp1Arr['describeMap'];
+                    $contentUrl .= '&shopId='.$tmp1Arr['shopId'];
+                    $contentUrl .= '&categoryPath='.$tmp1Arr['categoryPath'];
+
+                    $dataJson = $httpObj->get($contentUrl);
+                    $dataArr = json_decode($dataJson,true);
+                    $tmpEdit = $httpObj->sub_data($dataArr['data']['html'],'编辑推荐','内容推荐');
+                    $tmpEdit = trim(strip_tags($tmpEdit));
+                    $data['about_the_author'] = $tmpEdit;
+                    $tmpAuthor = $httpObj->sub_data($dataArr['data']['html'],'作者简介','目　　录');
+                    $tmpAuthor = trim(strip_tags($tmpAuthor));
+                    $data['edit_recommend'] = $tmpAuthor;
+                }else{
+                    $data['about_the_author'] = '';
+                    $data['edit_recommend'] = '';
+                }
+
                 $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', $contentLog);
                 $manageCollectionDdLog->insert($data);
             }else{

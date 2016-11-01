@@ -19,7 +19,8 @@ class ManageCollectionDdLog extends ModelBase
         }
 
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "REPLACE INTO {$this->table}(`dd_id`,`title`,`url`,`age`) VALUES(:dd_id,:title,:url,:age)";
+        $sql = "REPLACE INTO {$this->table}(`dd_id`,`title`,`url`,`age`,`about_the_author`,`edit_recommend`)
+                VALUES(:dd_id,:title,:url,:age,:about_the_author,:edit_recommend)";
         $st = $db->prepare($sql);
         $st->execute($data);
         return true;
