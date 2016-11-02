@@ -25,4 +25,14 @@ class ManageCollectionDdLog extends ModelBase
         $st->execute($data);
         return true;
     }
+    
+    public function getByTitle($title){
+        $db = DbConnecter::connectMysql('share_story');
+        $sql = "SELECT `dd_id`,`age` FROM `{$this->table}` WHERE `title` like :title AND `age`!=''";
+
+        $st = $db->prepare($sql);
+        $st->execute(array('title'=>$title));
+        $info = $st->fetch(PDO::FETCH_ASSOC);
+        return $info;
+    }
 }

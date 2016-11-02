@@ -19,6 +19,7 @@ class deal_age extends DaemonBase {
     public static $referer    = 'http://www.baidu.com/';
 
     protected function deal() {
+        $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageTagNewObj =new ManageTagNew();
         $albumObj = new Album();
         $magegeAlbumTagRelationObj = new ManageAlbumTagRelation();
@@ -32,6 +33,26 @@ class deal_age extends DaemonBase {
                 //exit();
             }
         }
+
+        //从当当匹配数据
+        $manageCollectionDdLog = new ManageCollectionDdLog();
+        $albumList = $albumObj->get_list_new('1','id,title','id desc',2000);
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age', "从当当匹配年龄开始");
+        foreach ($albumList as $val){
+            $contentLog = '';
+            preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $val['title'], $matches);
+            $title = join('', $matches[0]);
+            $ddInfo = $manageCollectionDdLog->getByTitle($title);
+
+            if(!empty($ddInfo)){
+                $contentLog .= '匹配成功->'.$val['id'].'->'.$val['title'];
+                if(!empty($ddInfo['age'])){
+                    $contentLog .= '->age'.$ddInfo['age'];
+                }
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, 'deal_age', $contentLog);
+            }
+        }
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_END, 'deal_age', "从当当匹配年龄结束");
 
     }
     protected function checkLogPath() {}
