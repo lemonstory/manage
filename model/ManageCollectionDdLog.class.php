@@ -31,7 +31,7 @@ class ManageCollectionDdLog extends ModelBase
         $sql = "SELECT `dd_id`,`age` FROM `{$this->table}` WHERE `title` like :title AND `age`!=''";
 
         $st = $db->prepare($sql);
-        $st->execute(array('title'=>$title));
+        $st->execute(array('title'=>$title.'%'));
         $info = $st->fetch(PDO::FETCH_ASSOC);
         return $info;
     }

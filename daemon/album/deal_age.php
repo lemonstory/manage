@@ -36,7 +36,7 @@ class deal_age extends DaemonBase {
 
         //从当当匹配数据
         $manageCollectionDdLog = new ManageCollectionDdLog();
-        $albumList = $albumObj->get_list_new('1','id,title','id desc',2000);
+        $albumList = $albumObj->get_list_new('1','id,title','id desc',20000);
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age', "从当当匹配年龄开始");
         foreach ($albumList as $val){
             $contentLog = '';
@@ -45,7 +45,7 @@ class deal_age extends DaemonBase {
             $ddInfo = $manageCollectionDdLog->getByTitle($title);
 
             if(!empty($ddInfo)){
-                $contentLog .= '匹配成功->'.$val['id'].'->'.$val['title'];
+                $contentLog .= '匹配成功->'.$title.'->'.$val['id'].'->'.$val['title'];
                 if(!empty($ddInfo['age'])){
                     $contentLog .= '->age'.$ddInfo['age'];
                 }
