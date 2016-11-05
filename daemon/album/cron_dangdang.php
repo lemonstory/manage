@@ -17,9 +17,9 @@ class cron_dangdang extends DaemonBase {
 
         $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageCollectionDdLog = new ManageCollectionDdLog();
-        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', "test_dangdang开始");
-        //for($i=2913605;$i<3500000;$i++){
-        for($i=20219948;$i<20663328;$i++){
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'dd_books', "采集当当开始");
+        //for($i=3500000;$i<4000000;$i++){
+        for($i=20684540;$i<20693351;$i++){
             $url = 'http://product.dangdang.com/'.$i.'.html';
             $content = $httpObj->get($url);
             $tmp = $httpObj->sub_data($content,'<li class="clearfix fenlei"','</li>');
@@ -29,12 +29,24 @@ class cron_dangdang extends DaemonBase {
                 $contentLog .= "url->".$url.",";
                 $data['dd_id'] = $i;
                 $data['url'] = $url;
-                $title = $httpObj->sub_data($content,'<title>','</title>');
-                $title = mb_convert_encoding($title, 'utf-8', 'GBK,UTF-8,ASCII');
-                $titleArr = explode('》',$title);
+                $titleAll = $httpObj->sub_data($content,'<title>','</title>');
+                $titleAll = mb_convert_encoding($titleAll, 'utf-8', 'GBK,UTF-8,ASCII');
+
+
+                $titleArr = explode('》',$titleAll);
                 $title = str_replace("《","",$titleArr[0]);
                 $contentLog .= "title->".$title.",";
                 $data['title'] = $title;
+
+                //采集作者信息
+                $data['author'] = '';
+                $authorArr = $httpObj->sub_data($titleAll,'(',')');
+                if(!empty($authorArr)){
+                    $authorArr = explode(' ',$authorArr);
+                    $data['author'] = $authorArr[0];
+                }
+
+                //年龄处理
                 $tmp = mb_convert_encoding($tmp, 'utf-8', 'GBK,UTF-8,ASCII');
                 $ageArr = array('0-2','3-6','7-10','11-14');
                 $data['age'] = '';
@@ -45,6 +57,7 @@ class cron_dangdang extends DaemonBase {
                         break;
                     }
                 }
+
                 if(!empty($data['age'])){
                     //获取编辑推荐作者简介等
                     $tmp1 = $httpObj->sub_data($content,'var prodSpuInfo = ',';');
@@ -70,17 +83,17 @@ class cron_dangdang extends DaemonBase {
                     $data['edit_recommend'] = '';
                 }
 
-                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', $contentLog);
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'dd_books', $contentLog);
                 if(strpos($tmp,'图书')!==false) {
                     $manageCollectionDdLog->insert($data);
                 }
             }else{
                 $contentLog .= $i."为空";
-                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age_dangdang', $contentLog);
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'dd_books', $contentLog);
             }
             //sleep(1);
         }
-        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_END, 'deal_age_dangdang', "test_dangdang结束");
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_END, 'dd_books', "采集当当结束");
 
 
 
