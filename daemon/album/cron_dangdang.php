@@ -10,7 +10,6 @@ include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 
 class cron_dangdang extends DaemonBase {
     protected $isWhile = false;
-    public static $is_ajax    = false;
 
     protected function deal() {
         $httpObj = new Http();
@@ -18,8 +17,8 @@ class cron_dangdang extends DaemonBase {
         $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageCollectionDdLog = new ManageCollectionDdLog();
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'dd_books', "采集当当开始");
-        //for($i=3500000;$i<4000000;$i++){
-        for($i=20684540;$i<20693351;$i++){
+        for($i=4206596;$i<4500000;$i++){
+        //for($i=21121736;$i<21500000;$i++){
             $url = 'http://product.dangdang.com/'.$i.'.html';
             $content = $httpObj->get($url);
             $tmp = $httpObj->sub_data($content,'<li class="clearfix fenlei"','</li>');

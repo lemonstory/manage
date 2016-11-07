@@ -35,4 +35,14 @@ class ManageCollectionDdLog extends ModelBase
         $info = $st->fetch(PDO::FETCH_ASSOC);
         return $info;
     }
+
+    public function getByAuthor($author){
+        $db = DbConnecter::connectMysql('share_story');
+        $sql = "SELECT `dd_id`,`about_the_author` FROM `{$this->table}` WHERE `author` like :author";
+
+        $st = $db->prepare($sql);
+        $st->execute(array('author'=>$author.'%'));
+        $info = $st->fetch(PDO::FETCH_ASSOC);
+        return $info;
+    }
 }
