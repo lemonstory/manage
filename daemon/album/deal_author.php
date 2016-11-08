@@ -22,15 +22,20 @@ class deal_author extends DaemonBase {
         $whereArr = array(
             "is_author" => 1,
         );
-        $authorList = $creator->getCreatorList($whereArr, 1, 20);
+        $authorList = $creator->getCreatorList($whereArr, 1, 2000);
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_author', "从当当匹配作者开始");
         foreach ($authorList as $val){
             $contentLog = '';
             $authorInfo = $manageCollectionDdLog->getByAuthor($val['nickname']);
             if(!empty($authorInfo)){
-                var_dump($val['nickname']);
-                var_dump($authorInfo);
-                $contentLog .='成功匹配作者'.$val['nickname'];
+                $contentLog .='成功匹配作者'.$val['nickname'].'->dd_id:'.$authorInfo['dd_id'];
+                if(!empty($authorInfo['about_the_author'])){
+                    $contentLog .='->'.$authorInfo['about_the_author'];
+                    //修改作者简介
+                    $data = array('intro'=>$authorInfo['about_the_author']);
+                    $where = 'uid='.$val['uid'];
+                    //$creator->update($data,$where);
+                }
                 $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, 'deal_author', $contentLog);
             }
         }
