@@ -40,10 +40,20 @@ class deal_age extends DaemonBase {
             $title = join('', $matches[0]);
             $ddInfo = $manageCollectionDdLog->getByTitle($title);
 
-            if(!empty($ddInfo)){
-                $contentLog .= '匹配成功->'.$title.'->'.$val['id'].'->'.$val['title'];
+            if(!empty($ddInfo)&&!empty($title)){
+                $contentLog .= '匹配成功->'.$title.'->album_id'.$val['id'].'->'.$val['title'];
                 if(!empty($ddInfo['age'])){
                     $contentLog .= '->age'.$ddInfo['age'];
+
+                    //修改年龄信息
+                    $ageArr = explode('-',$ddInfo['age']);
+                    $data =array('min_age'=>$ageArr[0],'max_age'=>$ageArr[1]);
+                    $where = 'id='.$val['id'];
+                    if(empty($val['min_age'])&&empty($val['max_age'])){
+                        //$albumObj->update($data, $where = '');
+                        $contentLog .= '->修改:'.$ageArr[0].':'.$ageArr[1];
+                    }
+
                 }
                 $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, 'deal_age', $contentLog);
             }
