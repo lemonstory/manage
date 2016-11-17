@@ -52,7 +52,11 @@ class ManageCollectionDdLog extends ModelBase
         if ($where) {
             $whereStr = ' WHERE 1 ';
             foreach ($where as $key=>$val){
-                $whereStr .= " and `{$key}`=:{$key}";
+                if($key=='title'||$key=='author'){
+                    $whereStr .= " and `{$key}` like :{$key}";
+                }else{
+                    $whereStr .= " and `{$key}`=:{$key}";
+                }
             }
         } else {
             $whereStr = '';
@@ -82,7 +86,11 @@ class ManageCollectionDdLog extends ModelBase
         if ($where) {
             $whereStr = ' WHERE 1 ';
             foreach ($where as $key=>$val){
-                $whereStr .= " and `{$key}`=:{$key}";
+                if($key=='title'||$key=='author'){
+                    $whereStr .= " and `{$key}` like :{$key}";
+                }else{
+                    $whereStr .= " and `{$key}`=:{$key}";
+                }
             }
         } else {
             $whereStr = '';
