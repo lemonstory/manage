@@ -136,7 +136,7 @@ class collection extends controller
         $albuminfo = $album->get_album_info($albumid);
 
         if (!$albuminfo) {
-            return '不存在的专辑';
+            $albuminfo = array();
         }
 
         $smartyObj = $this->getSmartyObj();

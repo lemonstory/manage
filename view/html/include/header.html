@@ -77,8 +77,9 @@
                     {php}if ($privObj->checkPrivilege('comment')){{/php}
                     <li class="dropdown {$commentlistactive}{$commentcollectionactive}">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">评论管理 <b class="caret"></b></a>
-                        <ul class="dropdown-menu" id="menu1">
+                        <ul class="dropdown-menu" id="menu2">
                             <li class="{$commentlistactive}"><a href="/comment/commentlist.php">评论管理</a></li>
+                            <li class="{$ddinfolistactive}"><a href="/comment/ddInfoList.php">当当数据列表</a></li>
                         </ul>
                     </li>
                     {php}}{/php}
@@ -197,14 +198,18 @@
                 </li>
                 {php}}{/php}
                 {php}}{/php}
-                {elseif ($commentlistactive || $commentcollectionactive)}
+                {elseif ($commentlistactive || $commentcollectionactive || $ddinfolistactive)}
                 {php}if ($privObj->checkPrivilege('comment')){{/php}
                 {php}if ($privObj->checkPrivilege('comment.collection')){{/php}
-                <li class="{$commentcollectionactive}"><a href="/comment/collection.php"><i
-                        class="icon-chevron-right"></i>评论采集</a></li>
+                <li class="{$commentcollectionactive}"><a href="/comment/collection.php"><i class="icon-chevron-right"></i>评论采集</a>
+                </li>
                 {php}}{/php}
                 {php}if ($privObj->checkPrivilege('comment.commentlist')){{/php}
                 <li class="{$commentlistactive}"><a href="/comment/commentlist.php"><i class="icon-chevron-right"></i>评论列表</a>
+                </li>
+                {php}}{/php}
+                {php}if ($privObj->checkPrivilege('comment.ddinfolist')){{/php}
+                <li class="{$ddinfolistactive}"><a href="/comment/ddInfoList.php"><i class="icon-chevron-right"></i>当当数据列表</a>
                 </li>
                 {php}}{/php}
                 {php}}{/php}
