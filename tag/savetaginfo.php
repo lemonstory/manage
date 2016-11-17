@@ -38,7 +38,7 @@ class savetaginfo extends controller
         $updatedata['pid'] = $pid;
         $updatedata['ordernum'] = $ordernum;
         
-        if (empty($pid)) {
+        //if (empty($pid)) {
             // 封面处理
             if (!empty($_FILES['cover'])) {
                 $uploadobj = new Upload();
@@ -50,7 +50,7 @@ class savetaginfo extends controller
                     $updatedata['covertime'] = time();
                 }
             }
-        }
+        //}
         $tagnewobj->updateTagInfo($tagid, $tagname, $updatedata);
         $this->showSuccJson();
     }

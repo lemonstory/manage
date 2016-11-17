@@ -17,8 +17,8 @@ class cron_dangdang extends DaemonBase {
         $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageCollectionDdLog = new ManageCollectionDdLog();
         $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'dd_books', "采集当当开始");
-        for($i=4545701;$i<5000000;$i++){
-        //for($i=21448102;$i<21500000;$i++){
+        //for($i=7288561;$i<8000000;$i++){
+        for($i=23504255;$i<24000000;$i++){
             $url = 'http://product.dangdang.com/'.$i.'.html';
             $content = $httpObj->get($url);
             $tmp = $httpObj->sub_data($content,'<li class="clearfix fenlei"','</li>');
@@ -30,7 +30,6 @@ class cron_dangdang extends DaemonBase {
                 $data['url'] = $url;
                 $titleAll = $httpObj->sub_data($content,'<title>','</title>');
                 $titleAll = mb_convert_encoding($titleAll, 'utf-8', 'GBK,UTF-8,ASCII');
-
 
                 $titleArr = explode('》',$titleAll);
                 $title = str_replace("《","",$titleArr[0]);
