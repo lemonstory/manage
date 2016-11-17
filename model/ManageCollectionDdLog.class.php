@@ -45,4 +45,57 @@ class ManageCollectionDdLog extends ModelBase
         $info = $st->fetch(PDO::FETCH_ASSOC);
         return $info;
     }
+
+    public function getDdInfoTotalCount($where = array())
+    {
+        $db = DbConnecter::connectMysql('share_story');
+        if ($where) {
+            $whereStr = ' WHERE 1 ';
+            foreach ($where as $key=>$val){
+                $whereStr .= " and `{$key}`=:{$key}";
+            }
+        } else {
+            $whereStr = '';
+        }
+        $sql = "SELECT COUNT(*) FROM `{$this->table}` $whereStr";
+
+        $st = $db->prepare($sql);
+        $st->execute($where);
+        $count = $st->fetch(PDO::FETCH_COLUMN);
+        return $count;
+    }
+
+    public function getDdInfoList($where = array(), $currentPage = 1, $perPage = 50)
+    {
+        if (empty($currentPage)) {
+            $currentPage = 1;
+        }
+        if ($currentPage <= 0) {
+            $currentPage = 1;
+        }
+        if (empty($perPage)) {
+            $perPage = 50;
+        }
+        if ($perPage <= 0) {
+            $perPage = 50;
+        }
+        if ($where) {
+            $whereStr = ' WHERE 1 ';
+            foreach ($where as $key=>$val){
+                $whereStr .= " and `{$key}`=:{$key}";
+            }
+        } else {
+            $whereStr = '';
+        }
+        $offset = ($currentPage - 1) * $perPage;
+
+        $list = array();
+        $db = DbConnecter::connectMysql('share_story');
+        $sql = "SELECT * FROM `{$this->table}` {$whereStr} ORDER BY `dd_id` DESC LIMIT {$offset}, {$perPage}";
+
+        $st = $db->prepare($sql);
+        $st->execute($where);
+        $list = $st->fetchAll(PDO::FETCH_ASSOC);
+        return $list;
+    }
 }
