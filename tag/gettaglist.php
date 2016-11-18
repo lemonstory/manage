@@ -66,6 +66,9 @@ class gettaglist extends controller
                 if (!empty($secondtaglist)) {
                     foreach ($secondtaglist as $secondtaginfo) {
                         $secondtagid = $secondtaginfo['id'];
+                        if (!empty($secondtaginfo['cover'])) {
+                            $secondtaginfo['cover'] = $aliossobj->getImageUrlNg("tag", $secondtaginfo['cover'], 0, $secondtaginfo['covertime']);
+                        }
                         if ($secondtaginfo['pid'] == $firsttagid) {
                             $taglist[$firsttagid]['secondtaglist'][$secondtagid] = $secondtaginfo;
                             // 添加专辑标签时，二级标签的checkbox是否选中状态
@@ -117,6 +120,9 @@ class gettaglist extends controller
                     if (!empty($secondtaglist)) {
                         foreach ($secondtaglist as $secondtaginfo) {
                             $secondtagid = $secondtaginfo['id'];
+                            if (!empty($secondtaginfo['cover'])) {
+                                $secondtaginfo['cover'] = $aliossobj->getImageUrlNg("tag", $secondtaginfo['cover'], 0, $secondtaginfo['covertime']);
+                            }
                             if ($secondtaginfo['pid'] == $firsttagid) {
                                 $taglist[$firsttagid]['secondtaglist'][$secondtagid] = $secondtaginfo;
                                 // 添加专辑标签时，二级标签的checkbox是否选中状态
