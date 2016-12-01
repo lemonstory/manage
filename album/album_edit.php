@@ -18,6 +18,7 @@ class album_edit extends controller
             $min_age = (int)$this->getRequest('min_age');
             $max_age = (int)$this->getRequest('max_age');
             $view_order = (int)$this->getRequest('view_order', 0);
+            $buy_link = trim($this->getRequest('buy_link', ""));
 
             $newalbuminfo = $albuminfo = array();
             if ($albumid) {
@@ -39,6 +40,13 @@ class album_edit extends controller
             if (strlen($view_order) == 0) {
                 return $this->showErrorJson(ErrorConf::albumViewOrderNotEmpty());
             }
+
+            if (filter_var($buy_link, FILTER_VALIDATE_URL) === FALSE) {
+                return $this->showErrorJson(ErrorConf::UrlError());
+            } else {
+                $newalbuminfo['buy_link'] = $buy_link;
+            }
+
             $newalbuminfo['min_age'] = $min_age;
             $newalbuminfo['max_age'] = $max_age;
             $newalbuminfo['view_order'] = $view_order;
