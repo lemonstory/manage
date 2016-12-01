@@ -1,0 +1,73 @@
+{include file="include/header.html"}
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">当当数据列表筛选</div>
+            </div>
+        </div>
+        <div class="block-content collapse in">
+            <div class="span12">
+                <form class="form-horizontal" action="/comment/ddInfoList.php" method="post">
+                    <fieldset>
+                        <legend>当当数据查询</legend>
+                        <div class="control-group">
+                            <label class="control-label">书名</label>
+                            <div class="controls">
+                                <input type="text" class="span6 auto_submit" name="title" value="{$searchFilter.title}">
+                                <p class="help-block">支持模糊查询 前后模糊 %书名% 较慢  建议 书名% </p>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">作者</label>
+                            <div class="controls">
+                                <input type="text" class="span6 auto_submit" name="author" value="{$searchFilter.author}">
+                                <p class="help-block">支持模糊查询 前后模糊 %作者% 较慢  建议 作者% </p>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="list-filter">确定</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div>
+            <!-- block -->
+            <div class="block">
+                <div class="navbar navbar-inner block-header">
+                    <div class="muted pull-left">当当数据列表</div>
+                    <div class="pull-right"><span class="badge badge-info">{$totalCount}</span></div>
+                </div>
+            </div>
+
+            <div class="block-content collapse in">
+                <table class="table table-striped">
+                    <thead>
+                        <th>当当id</th>
+                        <th>书名</th>
+                        <th>作者</th>
+                        <th>作者简介</th>
+                        <th>编辑推荐</th>
+                    </thead>
+                    <tbody>
+                        {foreach from=$ddList item=value}
+                        <tr>
+                            <td>{$value.dd_id}</td>
+                            <td><a href="{$value.url}" target="_blank"> {$value.title}</a></td>
+                            <td>{$value.author}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="include/footer.html"}

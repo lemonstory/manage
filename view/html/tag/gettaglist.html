@@ -105,7 +105,7 @@
 	                                <td>{$secondtaginfo.id}</td>
 	                                <td>{$value.name}</td>
 	                                <td style="color:green;"><a href="/tag/albumtaglist.php?tag_id={$secondtaginfo.id}">{$secondtaginfo.name}</a></td>
-                                    <td>&nbsp;</td>
+                                    <td>{if $secondtaginfo.cover}<img src="{$secondtaginfo.cover}" width="45" height="45" />{else}&nbsp;{/if}</td>
 	                                <td><input type="text" name="order" class="form-control" op_id="{$secondtaginfo.id}" old_val="{$secondtaginfo.ordernum}" value="{$secondtaginfo.ordernum}" style="width: 60px;" /></td>
 	                                <td id="status_{$secondtaginfo.id}">
 	                                    {if $secondtaginfo.status eq '1'}已上线

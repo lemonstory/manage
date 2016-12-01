@@ -13,12 +13,9 @@ include_once (dirname ( dirname ( __FILE__ ) ) . "/DaemonBase.php");
 
 class deal_age extends DaemonBase {
     protected $isWhile = false;
-    public static $is_ajax    = false;
-    public static $cookie     = '';
-    public static $user_agent = 'User-Agent:Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36';
-    public static $referer    = 'http://www.baidu.com/';
 
     protected function deal() {
+        $manageCollectionCronLog = new ManageCollectionCronLog();
         $manageTagNewObj =new ManageTagNew();
         $albumObj = new Album();
         $magegeAlbumTagRelationObj = new ManageAlbumTagRelation();
@@ -32,6 +29,36 @@ class deal_age extends DaemonBase {
                 //exit();
             }
         }
+
+        //从当当匹配数据
+        $manageCollectionDdLog = new ManageCollectionDdLog();
+        $albumList = $albumObj->get_list_new('1','id,title','id desc',20000);
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_START, 'deal_age', "从当当匹配年龄开始");
+        foreach ($albumList as $val){
+            $contentLog = '';
+            preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $val['title'], $matches);
+            $title = join('', $matches[0]);
+            $ddInfo = $manageCollectionDdLog->getByTitle($title);
+
+            if(!empty($ddInfo)&&!empty($title)){
+                $contentLog .= '匹配成功->'.$title.'->album_id'.$val['id'].'->'.$val['title'];
+                if(!empty($ddInfo['age'])){
+                    $contentLog .= '->age'.$ddInfo['age'];
+
+                    //修改年龄信息
+                    $ageArr = explode('-',$ddInfo['age']);
+                    $data =array('min_age'=>$ageArr[0],'max_age'=>$ageArr[1]);
+                    $where = 'id='.$val['id'];
+                    if(empty($val['min_age'])&&empty($val['max_age'])){
+                        //$albumObj->update($data, $where = '');
+                        $contentLog .= '->修改:'.$ageArr[0].':'.$ageArr[1];
+                    }
+
+                }
+                $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_SUCESS, 'deal_age', $contentLog);
+            }
+        }
+        $manageCollectionCronLog->writeLog(ManageCollectionCronLog::ACTION_SPIDER_END, 'deal_age', "从当当匹配年龄结束");
 
     }
     protected function checkLogPath() {}
