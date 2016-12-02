@@ -91,7 +91,7 @@
                         <tbody>
                             {foreach from=$sameagelist item=value}
                             <tr>
-                                <td>{$value.albumid}</td>
+                                <td><a href="/album/album_edit.php?id={$value.albumid}" target="_blank">{$value.albumid}</a></td>
                                 <td>
                                     <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">
                                         {$value.albuminfo.title}
