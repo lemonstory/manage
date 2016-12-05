@@ -45,7 +45,7 @@ class story_edit extends controller
                 }
             }
 
-            return $this->showSuccJson('操作成功');
+            $this->showSuccJson();
         }
 
         $storyid   = (int)$this->getRequest('id', 0);

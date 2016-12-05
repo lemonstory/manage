@@ -70,7 +70,7 @@
                         </thead>
                         <tbody>
                             {foreach from=$storyList item=value}
-                            <tr>
+                            <tr id="{$value.id}">
                                 <td>{$value.id}</td>
                                 <td>{$value.title}</td>
                                 <td>{if ($value.albumtitle)}{$value.albumtitle}({$value.album_id}){else}无{/if}</td>
