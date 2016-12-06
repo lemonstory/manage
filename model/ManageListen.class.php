@@ -104,7 +104,7 @@ class ManageListen extends ModelBase
             }
         }
         
-        $sql .= " ORDER BY `status` ASC, `ordernum` ASC, `albumid` ASC LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `status` ASC, `ordernum` DESC, `albumid` ASC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);
