@@ -18,12 +18,13 @@ class index extends controller
             $this->showErrorJson("专辑数据不存在");
         }
 
+        $ret = true;
         if ($op_name == 'delete') {
             $album->update(array('status' => 0), "`id`={$op_id}");
-            $ret = $open_search_obj->removeAlbumFromSearch($op_id);
+            //$ret = $open_search_obj->removeAlbumFromSearch($op_id);//使用RDS数据源，无需手动同步
         } else if ($op_name == 'recover') {
             $album->update(array('status' => 1), "`id`={$op_id}");
-            $ret = $open_search_obj->addAlbumToSearchWithAlbumid($op_id);
+            //$ret = $open_search_obj->addAlbumToSearchWithAlbumid($op_id);//使用RDS数据源，无需手动同步
         } else if ($op_name == 'view_order') {
             $value = (int)$this->getRequest('value', 0);
             $album->update(array('view_order' => $value), "`id`={$op_id}");
