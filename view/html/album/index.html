@@ -112,7 +112,7 @@
         </div>
         <!-- /block -->
     </div>
-    
+
     <div class="row-fluid">
         <div>
             <!-- block -->
@@ -147,6 +147,8 @@
                                     <span class="badge"><a href="{$value.link_url}" target="_blank">{$value.from}</a></span>
                                     <br><br>
                                     {foreach from=$value.taglist item=taginfo}<span class="badge"><a href="/album/index.php?tag_id={$taginfo.id}">{$taginfo.name}</a></span>{/foreach}
+                                    <br><br>
+                                    <span class="badge" style="background-color: orange">播放：{$value.listenCount}</span>
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);" id="op_album_view_{$value.id}_cover">
@@ -200,7 +202,7 @@
             <!-- /block -->
         </div>
     </div>
-    
+
     {$pageBanner}
 </div>
 
@@ -223,7 +225,7 @@ $(function() {
             return false;
         }
         console.log(data);
-    	
+
     	$.post('/album/album_op.php', data, function(json){
     		if (json && json.code == 10000) {
                 alert('操作成功');
@@ -242,7 +244,7 @@ $(function() {
             var k = $(v).attr('name');
     		var v = $(v).attr('value');
             params += k + '='+v+'&'
-    		
+
     	});
 
         //添加平台下拉框条件
@@ -299,7 +301,7 @@ $(function() {
         }
     });
 
-    
+
     /* $(".recomment_hot").on('click', function(){
     	$(".modal-body").text("");
         var data = {};
