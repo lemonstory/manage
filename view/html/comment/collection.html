@@ -11,7 +11,7 @@
             <div class="block-content collapse in">
                 <div class="span12">
                     <form class="form-horizontal" action="/comment/collection.php">
-                        <input type="hidden" name="album_id" value="{$albuminfo.id}">
+                        <input id="album_id" type="hidden" name="album_id" value="{$albuminfo.id}">
                         <input type="hidden" name="id" value="{$albuminfo.id}" />
                         <fieldset>
                             <legend>评论采集</legend>
@@ -60,7 +60,9 @@ $(function() {
     	$(".help-inline").remove();
     	$.post('/comment/collection.php', $(this).closest("form").serialize(), function(json){
     		if (json && json.code == 10000) {
-    			alert('采集成功');
+                toastr.info('采集成功');
+                var album_id = $('#album_id').val();
+                window.location.href = '/comment/commentlist.php?albumid='+ album_id;
     		} else {
     			var name = json.desc.split('-')[0];
                 var msg  = json.desc.split('-')[1];
