@@ -148,7 +148,7 @@
                                     <br><br>
                                     {foreach from=$value.taglist item=taginfo}<span class="badge"><a href="/album/index.php?tag_id={$taginfo.id}">{$taginfo.name}</a></span>{/foreach}
                                     <br><br>
-                                    <span class="badge" style="background-color: orange">播放：{$value.listenCount}</span>
+                                    <span class="badge"><i class="icon-play"></i> {$value.listenCount}</span>
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);" id="op_album_view_{$value.id}_cover">
