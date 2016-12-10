@@ -140,7 +140,8 @@ $(function() {
     function result(json)
     {
         if (json && json.code == 10000) {
-            alert('操作成功');
+            toastr.success('操作成功');
+            location.reload();
             //window.location.href = '/album/index.php';
         } else {
             var name = json.desc.split('-')[0];

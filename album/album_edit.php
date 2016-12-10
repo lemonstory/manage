@@ -41,7 +41,7 @@ class album_edit extends controller
                 return $this->showErrorJson(ErrorConf::albumViewOrderNotEmpty());
             }
 
-            if (filter_var($buy_link, FILTER_VALIDATE_URL) === FALSE) {
+            if ($buy_link && filter_var($buy_link, FILTER_VALIDATE_URL) === FALSE) {
                 return $this->showErrorJson(ErrorConf::UrlError());
             } else {
                 $newalbuminfo['buy_link'] = $buy_link;
@@ -74,10 +74,10 @@ class album_edit extends controller
                 $author_uid = implode(",", $author_uid_arr);
                 $newalbuminfo['author_uid'] = $author_uid;
 
-            } elseif (!empty($author_uid)) {
+            } //elseif (!empty($author_uid)) {
                 //作者uid处理
                 $newalbuminfo['author_uid'] = $author_uid;
-            }
+            //}
 
             if ($albumid) {
                 $ret = $album->update($newalbuminfo, "`id`={$albumid}");
@@ -109,7 +109,7 @@ class album_edit extends controller
             }
 
             //更新创作者专辑数量
-            if (is_array($author_uid_arr) && !empty($author_uid_arr)) {
+            if (!empty($author_uid_arr) && is_array($author_uid_arr)) {
                 foreach ($author_uid_arr as $creator_item_uid) {
                     $where = " ( FIND_IN_SET({$creator_item_uid},`author_uid`) OR FIND_IN_SET({$creator_item_uid},`translator_uid`) OR FIND_IN_SET({$creator_item_uid},`illustrator_uid`) OR FIND_IN_SET({$creator_item_uid},`anchor_uid`) ) AND `online_status` = 1 AND `status` = 1";
                     $sql = "SELECT `id`,`min_age`,`max_age` FROM `album` WHERE {$where}";
