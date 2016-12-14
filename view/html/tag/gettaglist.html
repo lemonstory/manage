@@ -21,7 +21,7 @@
                                     <p class="help-block"></p>
                                 </div>
                             </div>
-                            
+
                             <div class="control-group">
                                 <label class="control-label">内容</label>
                                 <div class="controls">
@@ -40,7 +40,7 @@
         </div>
         <!-- /block -->
     </div>
-    
+
     <div class="row-fluid">
         <div>
             <!-- block -->
@@ -134,7 +134,7 @@
             <!-- /block -->
         </div>
     </div>
-    
+
     {$pageBanner}
 </div>
 
@@ -142,6 +142,25 @@
 <script>
 {literal}
 $(function() {
+    //根据pid参数展开列表
+    //获取url参数函数
+    function GetQueryString(name)
+    {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+    var pid = GetQueryString("pid");
+    if (pid != null) {
+        var stag="secondtaglist_" + pid;
+        $("." + stag).fadeIn();
+        $('#'+pid).text("收起");
+        var thisId = window.location.hash;
+        if(thisId != "" && thisId != undefined){
+            window.location.hash = thisId;
+        }
+    }
+
 	$(".openclose_buton").click(function(){
 		var tagid = $(this).attr("id");
 		var button_text = $(this).text();
@@ -154,7 +173,7 @@ $(function() {
             $(this).text("展开");
         }
 	});
-	
+
     var setstatusurl = "/tag/settaginfostatus.php";
     $(".offline").click(function(){
         $(".modal-body").text("");
@@ -174,7 +193,7 @@ $(function() {
             }, "json");
         }
     });
-    
+
     $(".online").click(function(){
         $(".modal-body").text("");
         if(confirm("确定要上线吗？")) {
@@ -193,7 +212,7 @@ $(function() {
             }, "json");
         }
     });
-    
+
     $(".delete").click(function(){
         $(".modal-body").text("");
         if(confirm("此操作，会删除所有专辑中的该标签。确定要删除吗？")) {
@@ -213,7 +232,7 @@ $(function() {
             }, "json");
         }
     });
-    
+
     $("[name='order']").on('change', function(){
         $(".modal-body").text("");
         var old_val = parseInt($(this).attr('old_val'));
@@ -240,14 +259,14 @@ $(function() {
             },'json');
         }
     });
-    
+
     $("#submit_form").click(function(){
     	var tagidobj = $("input:checked");
     	var tagidstr = "";
         tagidobj.each(function(i) {
             tagidstr += $(tagidobj[i]).val() + ",";
         });
-        
+
         var albumid = $("#albumid").val();
         var url = "/tag/addalbumtagrelation.php";
         $.post(url, {albumid:albumid, tagidstr:tagidstr}, function(data){

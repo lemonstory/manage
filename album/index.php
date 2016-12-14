@@ -115,7 +115,11 @@ class index extends controller
             $tagids = array_unique($tagids);
             // 获取标签信息
             $taglist = $tagnewobj->getTagInfoByIds($tagids);
-            
+
+            //获取播放量
+            $manageobj = new ManageListen();
+            $listenCounts = $manageobj->getListenCountByIds($albumids);
+
             foreach ($albumList as $k => $v) {
                 if ($v['cover']) {
                     $albumList[$k]['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $v['cover'], 100, $v['cover_time']);
@@ -135,6 +139,7 @@ class index extends controller
                     }
                     $albumList[$k]['taglist'][$tagid] = $taglist[$tagid];
                 }
+                $albumList[$k]['listenCount'] = isset($listenCounts[$v['id']])?$listenCounts[$v['id']]:0;
             }
         }
         

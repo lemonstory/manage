@@ -94,7 +94,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="control-group">
                                 <label class="control-label">专辑标签</label>
                                 <div class="controls">
@@ -108,7 +108,17 @@
                                     </p>
                                 </div>
                             </div>
-                            
+
+                            <div class="control-group">
+                                <label class="control-label">图书购买链接</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xxlarge datepicker" type="url" pattern="https?://.+" name="buy_link" value="{$albuminfo.buy_link}">
+                                    {if $albuminfo.buy_link neq ""}
+                                    <p class="help-block"><a href="{$albuminfo.buy_link}" target="_blank">点击查看</a></p>
+                                    {/if}
+                                </div>
+                            </div>
+
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
                                 <button type="reset" class="btn">重置</button>
@@ -121,7 +131,7 @@
         </div>
         <!-- /block -->
     </div>
-    
+
     {$pageBanner}
 </div>
 <script>
@@ -130,7 +140,8 @@ $(function() {
     function result(json)
     {
         if (json && json.code == 10000) {
-            alert('操作成功');
+            toastr.success('操作成功');
+            location.reload();
             //window.location.href = '/album/index.php';
         } else {
             var name = json.desc.split('-')[0];
@@ -140,36 +151,36 @@ $(function() {
             errObj.after('<span for="'+name+'" class="help-inline">'+msg+'</span>');
         }
     }
-    var options = { 
-       // target:        '#output',   // target element(s) to be updated with server response 
-        // beforeSubmit:  result,  // pre-submit callback 
+    var options = {
+       // target:        '#output',   // target element(s) to be updated with server response
+        // beforeSubmit:  result,  // pre-submit callback
         success:       result,  // post-submit callback
         error:       result,  // post-submit callback
-        resetForm: false, 
+        resetForm: false,
         dataType:  'json',
- 
-        // other available options: 
-        url:       '/album/album_edit.php',         // override for form's 'action' attribute 
-        type:      'post'        // 'get' or 'post', override for form's 'method' attribute 
-        // dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
-        // clearForm: true        // clear all form fields after successful submit 
-        // resetForm: true        // reset the form after successful submit 
- 
-        // $.ajax options can be used here too, for example: 
-        //timeout:   3000 
-    }; 
- 
+
+        // other available options:
+        url:       '/album/album_edit.php',         // override for form's 'action' attribute
+        type:      'post'        // 'get' or 'post', override for form's 'method' attribute
+        // dataType:  null        // 'xml', 'script', or 'json' (expected server response type)
+        // clearForm: true        // clear all form fields after successful submit
+        // resetForm: true        // reset the form after successful submit
+
+        // $.ajax options can be used here too, for example:
+        //timeout:   3000
+    };
+
     $("#submit_form").on('click', function(e){
         $(".help-inline").remove();
         e.preventDefault();
         $(".control-group").removeClass("error");
-        $("form").ajaxSubmit(options); 
- 
-        // !!! Important !!! 
-        // always return false to prevent standard browser submit and page navigation 
-        return false; 
+        $("form").ajaxSubmit(options);
+
+        // !!! Important !!!
+        // always return false to prevent standard browser submit and page navigation
+        return false;
     });
-    
+
     $(".deltag").click(function(){
     	var albumid = $("input[name='id']").val();
     	var tagid = $(this).attr("id");

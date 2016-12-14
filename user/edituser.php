@@ -9,6 +9,7 @@ class edituser extends controller
         $show_baby = $this->getRequest('show_baby',true);
         $show_address = $this->getRequest('show_address',true);
         $action = $this->getRequest('action');
+        $creatorInfo = false;
         if (empty($uid)) {
             $userinfo = array();
             $addresslist = array();
@@ -76,6 +77,15 @@ class edituser extends controller
                             $extendobj->updateUserAddressInfo($addressid, $uid, $addressdata);
                         }
                     }
+
+                    //如果是作者...保存作者信息
+                    if (!empty($userinfo['type']) && $userinfo['type'] == '4' && !empty($userinfo['indentity']) && $userinfo['indentity'] == '2') {
+                        $creator = new Creator();
+                        $creatorData['intro'] = $this->getRequest('creator_intro');
+                        $creatorData['card'] = $this->getRequest('creator_card');
+                        $creatorData['award'] = $this->getRequest('creator_award');
+                        $creator->update($creatorData, "`uid`={$uid}");
+                    }
                 }
                 
                 $this->redirect("/user/edituser.php?uid=$uid");
@@ -88,6 +98,15 @@ class edituser extends controller
                 
                 $addresslist = $extendobj->getUserAddressList($uid);
             }
+
+            //如果是作者...
+            if (!empty($userinfo['type']) && $userinfo['type'] == '4' && !empty($userinfo['indentity']) && $userinfo['indentity'] == '2') {
+                $show_baby = false;
+                $show_address = false;
+                $creator = new Creator();
+                $creatorInfo = $creator->getCreatorInfo($uid);
+                $userinfo['name_gb2312']=urlencode(iconv('utf-8','gb2312',$userinfo['nickname']));
+            }
         }
         
         $smartyObj = $this->getSmartyObj();
@@ -95,6 +114,7 @@ class edituser extends controller
         $smartyObj->assign('show_baby', $show_baby);
         $smartyObj->assign('show_address', $show_address);
         $smartyObj->assign('addresslist', $addresslist);
+        $smartyObj->assign('creatorInfo', $creatorInfo);
         $smartyObj->assign('useractive', "active");
         $smartyObj->assign('getuserlistside', "active");
         $smartyObj->assign("headerdata", $this->headerCommonData());

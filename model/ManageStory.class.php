@@ -24,7 +24,7 @@ class ManageStory extends ModelBase
         
         $list = array();
         $db = DbConnecter::connectMysql('share_story');
-        $sql = "SELECT * FROM `story` {$where} ORDER BY `id` DESC LIMIT {$offset}, {$perPage}";
+        $sql = "SELECT * FROM `story` {$where} ORDER BY status DESC, view_order ASC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $list = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -64,12 +64,17 @@ class ManageStory extends ModelBase
         } else {
             $where = '';
         }
-        $sql = "SELECT COUNT(`id`) FROM `story` {$where} GROUP BY `status`";
+        $sql = "SELECT status, COUNT(id) num FROM `story` {$where} GROUP BY `status`";
         
         $st = $db->prepare($sql);
         $st->execute();
-        $count = $st->fetchAll(PDO::FETCH_COLUMN);
-        return $count;
+        $count = $st->fetchAll(PDO::FETCH_ASSOC);
+        $data = array(0,0);
+        foreach ($count as $item) {
+            $data[intval($item['status'])] = $item['num'];
+        }
+
+        return $data;
     }
     
 }

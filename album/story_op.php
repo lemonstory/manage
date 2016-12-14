@@ -22,11 +22,11 @@ class story_op extends controller
 
         if ($op_name == 'delete') {
             $story->update(array('status' => 0), "`id`={$op_id}");
-            $ret = $open_search_obj->removeStroyFromSearch($op_id);
+//            $ret = $open_search_obj->removeStroyFromSearch($op_id);
 
         } else if ($op_name == 'recover') {
             $story->update(array('status' => 1), "`id`={$op_id}");
-            $ret = $open_search_obj->addStoryoSearchWithStoryid($op_id);
+//            $ret = $open_search_obj->addStoryoSearchWithStoryid($op_id);
         } else if ($op_name == 'add_story_to_album') {
         	$albumid = (int)$this->getRequest('albumid', '');
         	$manageAlbum = new ManageAlbum();
@@ -36,12 +36,12 @@ class story_op extends controller
         	}
             $story = new Story();
             $story->update(array('album_id' => $albumid), "`id`={$op_id}");
-            $ret = $open_search_obj->addStoryoSearchWithStoryid($op_id);
+//            $ret = $open_search_obj->addStoryoSearchWithStoryid($op_id);
 
         } else if ($op_name == 'removealbum') {
             $story = new Story();
             $story->update(array('album_id' => 0), "`id`={$op_id}");
-            $ret = $open_search_obj->removeStroyFromSearch($op_id);
+//            $ret = $open_search_obj->removeStroyFromSearch($op_id);
         } else if ($op_name == 'view_order') {
             $value = (int)$this->getRequest('value', 0);
             $story->update(array('view_order' => $value), "`id`={$op_id}");

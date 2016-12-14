@@ -70,11 +70,11 @@
                         <tbody>
                         {foreach from=$authorList item=value}
                         <tr>
-                            <td><a target="_blank" href="/user/edituser.php?uid={$value.uid}&show_baby=0&show_address=0">{$value.uid}</a></td>
+                            <td>{$value.uid}</td>
                             <td>
-                                <a target="_blank" href="/album/index.php?&author_uid={$value.uid}" >{$value.nickname}
-                                </a>
-                                <span class="badge">{$value.album_num}</span>
+                                <a target="_blank" href="/user/edituser.php?uid={$value.uid}&show_baby=0&show_address=0">{$value.nickname}</a>
+
+                                <a target="_blank" href="/album/index.php?&author_uid={$value.uid}" ><span class="badge">{$value.album_num}</span></a>
                                 <br/>
                                 <a target="_blank" class="btn btn-mini" href="http://baike.baidu.com/search/word?word={$value.nickname}">百科</a>
                             </td>

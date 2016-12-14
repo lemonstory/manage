@@ -356,9 +356,9 @@ class ManageSystem extends ModelBase
         }
         
         if ($tablename == 'focus') {
-            $sql .= " ORDER BY `ordernum` ASC, `status` ASC, `id` ASC LIMIT {$offset}, {$perPage}";
+            $sql .= " ORDER BY `ordernum` DESC, `status` ASC, `id` ASC LIMIT {$offset}, {$perPage}";
         } else {
-            $sql .= " ORDER BY `ordernum` ASC, `status` ASC,`albumid` ASC LIMIT {$offset}, {$perPage}";
+            $sql .= " ORDER BY `ordernum` DESC, `status` ASC,`albumid` ASC LIMIT {$offset}, {$perPage}";
         }
         $st = $db->prepare($sql);
         $st->execute();

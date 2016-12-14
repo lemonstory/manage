@@ -1,5 +1,6 @@
 <?php
 include_once '../controller.php';
+include_once SERVER_ROOT . 'libs/simple_html_dom.php';
 
 class collection extends controller
 {
@@ -58,15 +59,20 @@ class collection extends controller
             $start = 0; // 统计采集数 不能超过$count
 
             while (true) {
-                $url_page = "http://product.dangdang.com/comment/comment.php?product_id={$dangdang_id}&datatype=1&page={$page}&filtertype=2&sysfilter=1&sorttype=1";
+                //$url_page = "http://product.dangdang.com/comment/comment.php?product_id={$dangdang_id}&datatype=1&page={$page}&filtertype=2&sysfilter=1&sorttype=1";
+                //新URL
+                $url_page = "http://product.dangdang.com/?r=callback%2Fcomment-list&productId={$dangdang_id}&mediumId=0&pageIndex={$page}&sortType=1&filterType=1&isSystem=0&tagId=0";
 
                 $content = Http::ajax_get($url_page);
-                $content = iconv("GBK", "UTF-8", $content);
-                $r = json_decode($content, true);
+                //$content = iconv("GBK", "UTF-8", $content);
+                $r = json_decode($content);
 
-                if (isset($r['data']) && $r['data']) {
-                    foreach($r['data'] as $k => $v) {
-                        $exists = $comment->check_exists("`albumid`={$albumid} and `content`='{$v['content']}'");
+                if (!empty($r->data->html)) {
+                    $html = new simple_html_dom();
+                    $html->load($r->data->html);
+                    $data = $html->find('.describe_detail');
+                    foreach ($data as $item) {
+                        $exists = $comment->check_exists("`albumid`={$albumid} and `content`='{$item->innertext}'");
                         if (!$exists) {
                             // 随机uid
                             $uid = $uid_list[array_rand($uid_list)];
@@ -74,7 +80,7 @@ class collection extends controller
                                 'userid'     => $uid,
                                 'albumid'    => $albumid,
                                 'star_level' => mt_rand(4, 5),
-                                'content'    => $v['content'],
+                                'content'    => $item->innertext,
                                 'status'     => 2,
                                 'addtime'    => $this->get_rand_time()
                             ));
@@ -109,6 +115,7 @@ class collection extends controller
                         }
                         
                     }
+                    $html->clear();
                 } else {
                     break;
                 }

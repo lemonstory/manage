@@ -5,7 +5,29 @@ class ManageListen extends ModelBase
 	public $STORY_DB_INSTANCE = 'share_story';
 	public $RECOMMEND_SAME_AGE_TABLE_NAME = 'recommend_same_age';
 	public $LISTEN_STORY_TABLE_NAME = 'listen_story';
-	
+    public $LISTEN_ALBUM_COUNT_TABLE_NAME = 'listen_album_count';
+
+    public function getListenCountByIds($albumids)
+    {
+        if (empty($albumids)) {
+            return array();
+        }
+        if (!is_array($albumids)) {
+            $albumids = array($albumids);
+        }
+        $albumidstr = implode(",", $albumids);
+        $db = DbConnecter::connectMysql($this->MAIN_DB_INSTANCE);
+        $sql = "SELECT albumid, num FROM `{$this->LISTEN_ALBUM_COUNT_TABLE_NAME}` WHERE albumid in ($albumidstr)";
+        $st = $db->prepare($sql);
+        $st->execute();
+        $result = $st->fetchAll(PDO::FETCH_ASSOC);
+        $counts = array();
+        foreach ($result as $item) {
+            $counts[$item['albumid']] = number_format(floatval($item['num']));
+        }
+        return $counts;
+    }
+
 	public function getListByColumnSearch($column = '', $value = '', $currentPage = 1, $perPage = 50)
 	{
 	    if (empty($currentPage)) {
@@ -104,7 +126,7 @@ class ManageListen extends ModelBase
             }
         }
         
-        $sql .= " ORDER BY `status` ASC, `ordernum` ASC, `albumid` ASC LIMIT {$offset}, {$perPage}";
+        $sql .= " ORDER BY `status` ASC, `ordernum` DESC, `albumid` ASC LIMIT {$offset}, {$perPage}";
         $st = $db->prepare($sql);
         $st->execute();
         $result = $st->fetchAll(PDO::FETCH_ASSOC);

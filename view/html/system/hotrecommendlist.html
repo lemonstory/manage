@@ -16,7 +16,8 @@
                                 <div class="controls">
                                     <select id="selectError" name="searchCondition">
                                         <option value="">全部</option>
-                                        <option {if $searchCondition=="albumid"}selected{/if} value="albumid">专辑ID</option>
+                                        <option {if $searchCondition=="albumid"}selected{/if} value="albumid">专辑ID
+                                        </option>
                                         <!-- <option {if $searchCondition=="title"}selected{/if} value="title">专辑标题</option> -->
                                     </select>
                                 </div>
@@ -32,11 +33,12 @@
                                     <p class="help-block">请选择查询条件</p>
                                 </div>
                             </div>
-                            
+
                             <div class="control-group">
                                 <label class="control-label">内容</label>
                                 <div class="controls">
-                                    <input type="text" class="span6" id="typeahead" name="searchContent" value="{$searchContent}">
+                                    <input type="text" class="span6" id="typeahead" name="searchContent"
+                                           value="{$searchContent}">
                                     <p class="help-block">输入查询内容</p>
                                 </div>
                             </div>
@@ -51,7 +53,7 @@
         </div>
         <!-- /block -->
     </div>
-    
+
     <div class="row-fluid">
         <div>
             <!-- block -->
@@ -63,62 +65,63 @@
                 <div class="block-content collapse in">
                     <table class="table table-striped">
                         <thead>
-                            <tr>
-                                <th>id</th>
-						        <th>标题</th>
-						        <th width="20%">推荐的标签</th>
-						        <th>封面</th>
-						        <th>推荐语</th>
-						        <th>旧版排序</th>
-						        <th>添加时间</th>
-						        <th>状态</th>
-						        <th>操作</th>
-                            </tr>
+                        <tr>
+                            <th>id</th>
+                            <th>标题</th>
+                            <th width="20%">推荐的标签</th>
+                            <th>封面</th>
+                            <th>推荐语</th>
+                            <th data-toggle="tooltip" data-placement="top" title="数字越大，排序越靠前">排序</th>
+                            <th>添加时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {foreach from=$hotlist item=value}
-                            <tr>
-                                <td>{$value.albumid}</td>
-                                <td>
-                                    <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">
-                                        {$value.albuminfo.title}
-                                    </a>
-                                    <span class="badge">{$value.albuminfo.story_num}</span>
-                                    <br><br>
-                                    {foreach from=$value.albuminfo.taglist item=taginfo}
-                                        <span class="badge">{$taginfo.name}</span>
-                                    {/foreach}
-                                </td>
-                                <td>
-                                    {foreach from=$value.albuminfo.recommendtaglist item=taginfo}
-                                        <span class="badge">{$taginfo.name}</span>
-                                    {/foreach}
-                                </td>
-                                <td>
-                                     <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">
-                                        <img src="{$value.albuminfo.cover}" width="100" height="100" />
-                                    </a>
-                                </td>
-                                <td>{$value.albuminfo.recommenddesc}</td>
-                                <td><input type="text" name="order" class="form-control" op_id="{$value.albumid}" old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;" /></td>
-                                <td>{$value.addtime}</td>
-                                <td id="status_{$value.albumid}">
-                                    {if $value.status eq '1'}已上线
-                                    {elseif $value.status eq '2'}未上线
-                                    {/if}
-                                </td>
-                                <td>
-                                    <a href="/system/addhotrecommend.php?albumid={$value.albumid}&action=edit">编辑</a>&nbsp;
-                                    {if $value.status eq 1}
-                                    <a href="javascript:void(0);" id="{$value.albumid}" class="offline">下线</a>
-                                    {/if}
-                                    {if $value.status eq 2}
-                                    <a href="javascript:void(0);" id="{$value.albumid}" class="online">上线</a>
-                                    {/if}
-                                    &nbsp;<a href="javascript:void(0);" id="{$value.albumid}" class="delete">删除</a>
-                                </td>
-                            </tr>
-                            {/foreach}
+                        {foreach from=$hotlist item=value}
+                        <tr>
+                            <td><a href="/album/album_edit.php?id={$value.albumid}" target="_blank">{$value.albumid}</a></td>
+                            <td>
+                                <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">
+                                    {$value.albuminfo.title}
+                                </a>
+                                <span class="badge">{$value.albuminfo.story_num}</span>
+                                <br><br>
+                                {foreach from=$value.albuminfo.taglist item=taginfo}
+                                <span class="badge">{$taginfo.name}</span>
+                                {/foreach}
+                            </td>
+                            <td>
+                                {foreach from=$value.albuminfo.recommendtaglist item=taginfo}
+                                <span class="badge">{$taginfo.name}</span>
+                                {/foreach}
+                            </td>
+                            <td>
+                                <a href="/album/storylist.php?albumid={$value.albumid}" target="_blank">
+                                    <img src="{$value.albuminfo.cover}" width="100" height="100"/>
+                                </a>
+                            </td>
+                            <td>{$value.albuminfo.recommenddesc}</td>
+                            <td><input type="text" name="order" class="form-control" op_id="{$value.albumid}"
+                                       old_val="{$value.ordernum}" value="{$value.ordernum}" style="width: 60px;"/></td>
+                            <td>{$value.addtime}</td>
+                            <td id="status_{$value.albumid}">
+                                {if $value.status eq '1'}已上线
+                                {elseif $value.status eq '2'}未上线
+                                {/if}
+                            </td>
+                            <td>
+                                <a href="/system/addhotrecommend.php?albumid={$value.albumid}&action=edit">编辑</a>&nbsp;
+                                {if $value.status eq 1}
+                                <a href="javascript:void(0);" id="{$value.albumid}" class="offline">下线</a>
+                                {/if}
+                                {if $value.status eq 2}
+                                <a href="javascript:void(0);" id="{$value.albumid}" class="online">上线</a>
+                                {/if}
+                                &nbsp;<a href="javascript:void(0);" id="{$value.albumid}" class="delete">删除</a>
+                            </td>
+                        </tr>
+                        {/foreach}
                         </tbody>
                     </table>
                 </div>
@@ -126,100 +129,100 @@
             <!-- /block -->
         </div>
     </div>
-    
+
     {$pageBanner}
 </div>
 
 
 <script>
-{literal}
-$(function() {
-	var setstatusurl = "/system/sethotrecommendstatus.php";
-    $(".offline").click(function(){
-        $(".modal-body").text("");
-        if(confirm("确定要下线吗？")) {
-            var albumid = $(this).attr("id");
-            $.post(setstatusurl, {type:'status', albumid:albumid, status:2}, function(data){
-                if(data.code == "10000") {
-                    $(".modal-body").text("操作成功");
-                    $("#myModal").modal({show:true});
-                    $("#modal_closebtn").click(function(){
-                        location.href=location.href;
-                    });
-                } else {
-                    $(".modal-body").text(data.desc);
-                    $("#myModal").modal({show:true});
-                }
-            }, "json");
-        }
+    {literal}
+    $(function () {
+        var setstatusurl = "/system/sethotrecommendstatus.php";
+        $(".offline").click(function () {
+            $(".modal-body").text("");
+            if (confirm("确定要下线吗？")) {
+                var albumid = $(this).attr("id");
+                $.post(setstatusurl, {type: 'status', albumid: albumid, status: 2}, function (data) {
+                    if (data.code == "10000") {
+                        $(".modal-body").text("操作成功");
+                        $("#myModal").modal({show: true});
+                        $("#modal_closebtn").click(function () {
+                            location.href = location.href;
+                        });
+                    } else {
+                        $(".modal-body").text(data.desc);
+                        $("#myModal").modal({show: true});
+                    }
+                }, "json");
+            }
+        });
+
+        $(".online").click(function () {
+            $(".modal-body").text("");
+            if (confirm("确定要上线吗？")) {
+                var albumid = $(this).attr("id");
+                $.post(setstatusurl, {type: 'status', albumid: albumid, status: 1}, function (data) {
+                    if (data.code == "10000") {
+                        $(".modal-body").text("操作成功");
+                        $("#myModal").modal({show: true});
+                        $("#modal_closebtn").click(function () {
+                            location.href = location.href;
+                        });
+                    } else {
+                        $(".modal-body").text(data.desc);
+                        $("#myModal").modal({show: true});
+                    }
+                }, "json");
+            }
+        });
+
+        $(".delete").click(function () {
+            $(".modal-body").text("");
+            if (confirm("确定要删除吗？")) {
+                var albumid = $(this).attr("id");
+                var delurl = "/system/delhotrecommend.php";
+                $.post(delurl, {albumid: albumid}, function (data) {
+                    if (data.code == "10000") {
+                        $(".modal-body").text("删除成功");
+                        $("#myModal").modal({show: true});
+                        $("#modal_closebtn").click(function () {
+                            location.href = location.href;
+                        });
+                    } else {
+                        $(".modal-body").text(data.desc);
+                        $("#myModal").modal({show: true});
+                    }
+                }, "json");
+            }
+        });
+
+        $("[name='order']").on('change', function () {
+            $(".modal-body").text("");
+            var old_val = parseInt($(this).attr('old_val'));
+            var op_id = parseInt($(this).attr('op_id'));
+            var new_val = parseInt($(this).val());
+            if (old_val == new_val) {
+                return false;
+            } else {
+                var data = {};
+                data.type = 'ordernum';
+                data.albumid = op_id;
+                data.ordernum = new_val;
+                $.post('/system/sethotrecommendstatus.php', data, function (json) {
+                    if (json.code == 10000) {
+                        $(".modal-body").text("设置成功");
+                        $("#myModal").modal({show: true});
+                        $("#modal_closebtn").click(function () {
+                            location.href = location.href;
+                        });
+                    } else {
+                        $(".modal-body").text(json.desc);
+                        $("#myModal").modal({show: true});
+                    }
+                }, 'json');
+            }
+        });
     });
-    
-    $(".online").click(function(){
-        $(".modal-body").text("");
-        if(confirm("确定要上线吗？")) {
-        	var albumid = $(this).attr("id");
-            $.post(setstatusurl, {type:'status', albumid:albumid, status:1}, function(data){
-                if(data.code == "10000") {
-                    $(".modal-body").text("操作成功");
-                    $("#myModal").modal({show:true});
-                    $("#modal_closebtn").click(function(){
-                        location.href=location.href;
-                    });
-                } else {
-                    $(".modal-body").text(data.desc);
-                    $("#myModal").modal({show:true});
-                }
-            }, "json");
-        }
-    });
-    
-    $(".delete").click(function(){
-        $(".modal-body").text("");
-        if(confirm("确定要删除吗？")) {
-            var albumid = $(this).attr("id");
-            var delurl = "/system/delhotrecommend.php";
-            $.post(delurl, {albumid:albumid}, function(data){
-                if(data.code == "10000") {
-                    $(".modal-body").text("删除成功");
-                    $("#myModal").modal({show:true});
-                    $("#modal_closebtn").click(function(){
-                        location.href=location.href;
-                    });
-                } else {
-                    $(".modal-body").text(data.desc);
-                    $("#myModal").modal({show:true});
-                }
-            }, "json");
-        }
-    });
-    
-    $("[name='order']").on('change', function(){
-        $(".modal-body").text("");
-        var old_val = parseInt($(this).attr('old_val'));
-        var op_id   = parseInt($(this).attr('op_id'));
-        var new_val = parseInt($(this).val());
-        if (old_val == new_val) {
-            return false;
-        } else {
-            var data = {};
-            data.type = 'ordernum';
-            data.albumid = op_id;
-            data.ordernum = new_val;
-            $.post('/system/sethotrecommendstatus.php', data, function(json){
-                if (json.code == 10000) {
-                    $(".modal-body").text("设置成功");
-                    $("#myModal").modal({show:true});
-                    $("#modal_closebtn").click(function(){
-                        location.href=location.href;
-                    });
-                } else {
-                    $(".modal-body").text(json.desc);
-                    $("#myModal").modal({show:true});
-                }
-            },'json');
-        }
-    });
-});
-{/literal}
+    {/literal}
 </script>
 {include file="include/footer.html"}

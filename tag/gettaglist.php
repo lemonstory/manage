@@ -44,7 +44,7 @@ class gettaglist extends controller
         
         $aliossobj = new AliOss();
         $managetagnewobj = new ManageTagNew();
-        $orderby = "ORDER BY `status` ASC, `ordernum` ASC, `id` ASC";
+        $orderby = "ORDER BY `status` ASC, `ordernum` DESC, `id` ASC";
         if (!empty($searchContent)) {
             $where = "`{$searchCondition}` = '{$searchContent}'";
             $resultlist = $managetagnewobj->getTagListByColumnSearch($where, $orderby, $currentPage + 1, $perPage);
