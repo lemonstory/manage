@@ -50,7 +50,7 @@ class deal_age extends DaemonBase {
                     $data =array('min_age'=>$ageArr[0],'max_age'=>$ageArr[1]);
                     $where = 'id='.$val['id'];
                     if(empty($val['min_age'])&&empty($val['max_age'])){
-                        //$albumObj->update($data, $where = '');
+                        //$albumObj->update($data, $where);
                         $contentLog .= '->修改:'.$ageArr[0].':'.$ageArr[1];
                     }
 
