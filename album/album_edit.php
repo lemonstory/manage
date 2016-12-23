@@ -41,7 +41,7 @@ class album_edit extends controller
                 return $this->showErrorJson(ErrorConf::albumViewOrderNotEmpty());
             }
 
-            if ($buy_link && filter_var($buy_link, FILTER_VALIDATE_URL) === FALSE) {
+            if ($buy_link && filter_var($buy_link, FILTER_VALIDATE_URL) === false) {
                 return $this->showErrorJson(ErrorConf::UrlError());
             } else {
                 $newalbuminfo['buy_link'] = $buy_link;
@@ -53,11 +53,9 @@ class album_edit extends controller
 
             //作者名称处理
             $author = trim($author);
-
+            $author_uid_arr = array();
             if (!empty($author)) {
-                $author_uid = "";
                 $authorArr = explode(",", $author);
-                $author_uid_arr = array();
                 foreach ($authorArr as $key => $name) {
                     $creator_uid = $creatorObj->getCreatorUid($name);
                     if (empty($creator_uid)) {
@@ -74,10 +72,11 @@ class album_edit extends controller
                 $author_uid = implode(",", $author_uid_arr);
                 $newalbuminfo['author_uid'] = $author_uid;
 
-            } //elseif (!empty($author_uid)) {
-                //作者uid处理
-                $newalbuminfo['author_uid'] = $author_uid;
-            //}
+            }
+            //作者uid处理
+            $oldAuthorIds = empty($albuminfo['author_uid']) ? array() : explode(',', $albuminfo['author_uid']);
+            $newalbuminfo['author_uid'] = $author_uid;
+
 
             if ($albumid) {
                 $ret = $album->update($newalbuminfo, "`id`={$albumid}");
@@ -109,23 +108,22 @@ class album_edit extends controller
             }
 
             //更新创作者专辑数量
-            if (!empty($author_uid_arr) && is_array($author_uid_arr)) {
-                foreach ($author_uid_arr as $creator_item_uid) {
-                    $where = " ( FIND_IN_SET({$creator_item_uid},`author_uid`) OR FIND_IN_SET({$creator_item_uid},`translator_uid`) OR FIND_IN_SET({$creator_item_uid},`illustrator_uid`) OR FIND_IN_SET({$creator_item_uid},`anchor_uid`) ) AND `online_status` = 1 AND `status` = 1";
-                    $sql = "SELECT `id`,`min_age`,`max_age` FROM `album` WHERE {$where}";
-                    //var_dump($sql);
-                    $db = DbConnecter::connectMysql('share_story');
-                    $st = $db->query($sql);
-                    $albums_arr = $st->fetchAll();
-                    if (is_array($albums_arr) && !empty($albums_arr)) {
+            $needUpdateAuthors = array_merge($oldAuthorIds, $author_uid_arr);
+            foreach ($needUpdateAuthors as $creator_item_uid) {
+                $where = " ( FIND_IN_SET({$creator_item_uid},`author_uid`) OR FIND_IN_SET({$creator_item_uid},`translator_uid`) OR FIND_IN_SET({$creator_item_uid},`illustrator_uid`) OR FIND_IN_SET({$creator_item_uid},`anchor_uid`) ) AND `online_status` = 1 AND `status` = 1";
+                $sql = "SELECT `id`,`min_age`,`max_age` FROM `album` WHERE {$where}";
+                //var_dump($sql);
+                $db = DbConnecter::connectMysql('share_story');
+                $st = $db->query($sql);
+                $albums_arr = $st->fetchAll();
+                if (is_array($albums_arr) && !empty($albums_arr)) {
 
-                        $count = count($albums_arr);
-                        $data = array();
-                        $data['album_num'] = $count;
-                        $data['age_level_album_num'] = json_encode($album->getAgeLevelWithAlbums($albums_arr));
-                        $where = "uid = {$creator_item_uid}";
-                        $ret = $creatorObj->update($data, $where);
-                    }
+                    $count = count($albums_arr);
+                    $data = array();
+                    $data['album_num'] = $count;
+                    $data['age_level_album_num'] = json_encode($album->getAgeLevelWithAlbums($albums_arr));
+                    $where = "uid = {$creator_item_uid}";
+                    $ret = $creatorObj->update($data, $where);
                 }
             }
 
@@ -144,7 +142,8 @@ class album_edit extends controller
         }
         if (!empty($albuminfo['cover'])) {
             $aliossobj = new AliOss();
-            $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 460, $albuminfo['cover_time']);
+            $albuminfo['cover'] = $aliossobj->getImageUrlNg($aliossobj->IMAGE_TYPE_ALBUM, $albuminfo['cover'], 460,
+                $albuminfo['cover_time']);
         }
 
         // 获取选中的标签列表

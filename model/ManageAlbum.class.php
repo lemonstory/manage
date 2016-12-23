@@ -29,10 +29,13 @@ class ManageAlbum extends ModelBase
                 } else if ($key == 'story_num') {
                     $whereStr .= " and `{$key}`<=:{$key}";
 
-                } else if ($key == 'anchor_uid' || $key == 'author_uid') {
+                } else if ($key == 'anchor_uid') {
                     $whereStr .= " and `{$key}` in (:{$key})";
 
-                } else {
+                } else if ( $key == 'author_uid') {
+                    $whereStr .= " and FIND_IN_SET(:{$key}, `author_uid`)";
+
+                }  else {
                     $whereStr .= " and `{$key}`=:{$key}";
                 }
 
@@ -89,8 +92,11 @@ class ManageAlbum extends ModelBase
                 } else if ($key == 'story_num') {
                     $whereStr .= " and `{$key}`<=:{$key}";
 
-                } else if ($key == 'anchor_uid' || $key == 'author_uid') {
+                } else if ($key == 'anchor_uid') {
                     $whereStr .= " and `{$key}` in (:{$key})";
+
+                } else if ( $key == 'author_uid') {
+                    $whereStr .= " and FIND_IN_SET(:{$key}, `author_uid`)";
 
                 } else {
                     $whereStr .= " and `{$key}`=:{$key}";
