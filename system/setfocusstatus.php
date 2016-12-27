@@ -3,6 +3,7 @@ include_once '../controller.php';
 
 class setfocusstatus extends controller
 {
+    const CACHE_INSTANCE = 'cache';
     public function action()
     {
         $focusid = $this->getRequest('focusid', 0) + 0;
@@ -27,8 +28,19 @@ class setfocusstatus extends controller
                 $this->showErrorJson($manageobj->getError());
             }
         }
+        $this->clearIndexCache();
         
         $this->showSuccJson();
+    }
+
+    protected function clearIndexCache()
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $albumIdKey = RedisKey::getIndexDataKey($i);
+            $redisobj = AliRedisConnecter::connRedis(self::CACHE_INSTANCE);
+            $redisobj->delete($albumIdKey);
+        }
+        return true;
     }
 }
 new setfocusstatus();

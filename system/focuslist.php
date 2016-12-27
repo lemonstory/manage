@@ -49,6 +49,7 @@ class focuslist extends controller
         $smartyObj->assign('perPage', $perPage);
         $smartyObj->assign('searchCondition', $searchCondition);
         $smartyObj->assign('searchContent', $searchContent);
+        $smartyObj->assign('status', $status);
         $smartyObj->assign('pageBanner', $pageBanner);
         $smartyObj->assign('focuslist', $focuslist);
         $smartyObj->assign('indexactive', "active");

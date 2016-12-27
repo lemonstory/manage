@@ -12,13 +12,13 @@
 
             <div class="block-content collapse in">
                 <div class="span12">
-                    <form class="form-horizontal" method="post" action="/system/focuslist.php">
+                    <form class="form-horizontal action="/system/focuslist.php">
                         <fieldset>
                             <legend></legend>
                             <div class="control-group">
                                 <label class="control-label">条件</label>
                                 <div class="controls">
-                                    <select id="selectError" name="searchCondition">
+                                    <select id="searchCondition" name="searchCondition">
                                         <option value="">全部</option>
                                         <option {if $searchCondition=="id"}selected{/if} value="id">ID</option>
                                     </select>
@@ -27,10 +27,10 @@
                             <div class="control-group">
                                 <label class="control-label">状态</label>
                                 <div class="controls">
-                                    <select id="selectError" name="status">
+                                    <select id="status" name="status">
                                         <option value="0">全部</option>
-                                        <option {if $searchCondition=="1"}selected{/if} value="1">已上线</option>
-                                        <option {if $searchCondition=="2"}selected{/if} value="2">未上线</option>
+                                        <option {if $status==1}selected{/if} value="1">已上线</option>
+                                        <option {if $status==2}selected{/if} value="2">未上线</option>
                                     </select>
                                     <p class="help-block"></p>
                                 </div>
@@ -93,7 +93,7 @@
                                 {/foreach}
                                 {/if}
 
-                            <td>{if $value.linktype=='http'}<a href="{$value.linkurl}">{$value.linkurl}</a>{elseif
+                            <td>{if $value.linktype=='http'}<a href="{$value.linkurl}">点击查看</a>{elseif
                                 $value.linktype=='album'}{$value.linkurl}{/if}
                             </td>
                             <td><input type="text" name="order" class="form-control" op_id="{$value.id}"
