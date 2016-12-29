@@ -38,7 +38,7 @@
         </div>
         <!-- /block -->
     </div>
-    
+
     <div class="row-fluid">
         <!-- block -->
         <div class="block">
@@ -73,6 +73,24 @@
         </div>
         <!-- /block -->
     </div>
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">手动更新</div>
+                <div class="pull-right"><span class="badge badge-warning"></span></div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span3">
+                    <button id="updateIndex" class="btn btn-large btn-default" type="button">更新首页</button>
+                </div>
+                <div class="span3">
+                    <button id="updateAuthor" class="btn btn-large btn-default" type="button">更新作者专辑数</button>
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
 </div>
 <!--/.fluid-container-->
 <script src="/static/vendors/easypiechart/jquery.easy-pie-chart.js"></script>
@@ -88,6 +106,17 @@ $(function() {
         } else {
         	$(this).easyPieChart({animate: 1000});
         }
+    });
+
+    $('#updateIndex').click(function () {
+        $.get('/redis/update_index.php',function (data) {
+                toastr.success('操作成功');
+        });
+    });
+    $('#updateAuthor').click(function () {
+        $.get('/author/update_author.php',function (data) {
+                toastr.success('操作成功');
+        });
     });
 });
 {/literal}
