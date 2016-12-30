@@ -18,7 +18,7 @@ class update_index  extends controller
             $redisobj = AliRedisConnecter::connRedis(self::CACHE_INSTANCE);
             $redisobj->delete($albumIdKey);
         }
-        $this->showSuccJson();
+        $this->showSuccJson('SUCCESS');
     }
 }
 new update_index();
