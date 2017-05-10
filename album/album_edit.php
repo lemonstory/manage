@@ -9,7 +9,6 @@ class album_edit extends controller
         $creatorObj = new Creator();
 
         if ($_POST) {
-
             $albumid = (int)$this->getRequest('id');
             $title = trim($this->getRequest('title'));
             $intro = trim($this->getRequest('intro'));

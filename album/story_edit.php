@@ -44,7 +44,6 @@ class story_edit extends controller
                     ), "`id`={$storyid}");
                 }
             }
-
             $this->showSuccJson();
         }
 
