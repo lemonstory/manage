@@ -40,7 +40,7 @@ class story_edit extends controller
                     // 更新cover_time
                     $story->update(array(
                         'cover_time' => time(),
-                        'cover'      => str_replace("album/", '', $path),
+                        'cover'      => str_replace("story/", '', $path),
                     ), "`id`={$storyid}");
                 }
             }

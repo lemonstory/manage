@@ -1,0 +1,135 @@
+{include file="include/header.html"}
+<script src="/static/vendors/jquery.form.min.js"></script>
+<div class="span9" id="content">
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left"></div>
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <form class="form-horizontal" action="/album/story_add.php">
+                        <input type="hidden" name="album_id" value="{$album_id}"/>
+                        <input type="hidden" name="{$session_upload_progress_name}" value="story" />
+                        <fieldset>
+                            <legend>添加故事</legend>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">故事名称<span class="required">*</span></label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="title"
+                                           value="">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">简介</label>
+                                <div class="controls">
+                                    <textarea class="span6 m-wrap" name="intro"></textarea>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">时长</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="times"
+                                           value="">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="date01">文件大小</label>
+                                <div class="controls">
+                                    <input type="text" class="input-xlarge datepicker" name="file_size"
+                                           value="">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="fileInput-cover">封面</label>
+                                <div class="controls">
+                                    <div class="uploader" id="uniform-fileInput-cover">
+                                        <input class="input-file uniform_on" id="fileInput-cover" type="file" name="cover">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="fileInput-story">文件</label>
+                                <div class="controls">
+                                    <div class="uploader" id="uniform-fileInput">
+                                        <input class="input-file uniform_on" id="fileInput-story" type="file" name="story">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submit_form">提交</button>
+                                <button type="reset" class="btn">重置</button>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+
+    {$pageBanner}
+</div>
+<script>
+    {literal}
+    $(function () {
+        //新增获取url参数函数
+        function GetQueryString(name)
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+
+        function result(json) {
+            if (json && json.code == 10000) {
+                toastr.info('操作成功');
+                var sid = GetQueryString("id");
+                {/literal}
+                window.location.href = '/album/storylist.php?albumid={$album_id}'+'#'+sid;
+                {literal}
+
+            } else {
+                var name = json.desc.split('-')[0];
+                var msg = json.desc.split('-')[1];
+                var errObj = $("[name='" + name + "']");
+                errObj.closest(".control-group").addClass('error');
+                errObj.after('<span for="' + name + '" class="help-inline">' + msg + '</span>');
+            }
+        }
+
+        var options = {
+            // target:        '#output',   // target element(s) to be updated with server response
+            // beforeSubmit:  result,  // pre-submit callback
+            success: result,  // post-submit callback
+            error: result,  // post-submit callback
+            resetForm: false,
+            dataType: 'json',
+
+            // other available options:
+            url: '/album/story_add.php',         // override for form's 'action' attribute
+            type: 'post'        // 'get' or 'post', override for form's 'method' attribute
+            // dataType:  null        // 'xml', 'script', or 'json' (expected server response type)
+            // clearForm: true        // clear all form fields after successful submit
+            // resetForm: true        // reset the form after successful submit
+
+            // $.ajax options can be used here too, for example:
+            //timeout:   3000
+        };
+
+        $("#submit_form").on('click', function (e) {
+            $(".help-inline").remove();
+            e.preventDefault();
+            $(".control-group").removeClass("error");
+            $("form").ajaxSubmit(options);
+
+            // !!! Important !!!
+            // always return false to prevent standard browser submit and page navigation
+            return false;
+        })
+    });
+    {/literal}
+</script>
+{include file="include/footer.html"}
